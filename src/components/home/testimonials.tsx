@@ -10,8 +10,8 @@ const TESTIMONIALS = [
     handle: "Google Play",
     avatarInitial: "ম",
     avatarColor: "from-emerald-500 to-teal-600",
-    ratingBn: "মুসলিমস ডে একটি পারফেক্ট অ্যাপ! একজন প্রকৃত মুসলিমের দিন হেলা ঈমান, শৃঙ্খলা আর প্রশান্তির এক অপূর্ব মেলবন্ধন।",
-    ratingEn: "A perfect Islamic app! Every Muslim's day begins with faith, discipline, and inner peace — all in one place.",
+    ratingBn: "islahbd একটি পারফেক্ট অ্যাপ! একজন প্রকৃত মুসলিমের দিন হেলা ঈমান, শৃঙ্খলা আর প্রশান্তির এক অপূর্ব মেলবন্ধন।",
+    ratingEn: "islahbd is a perfect app! Every Muslim's day begins with faith, discipline, and inner peace — all in one place.",
   },
   {
     name: "মোহাম্মদ ইব্রাহিম",
@@ -83,7 +83,7 @@ export function Testimonials() {
             ))}
           </div>
           <p className="text-muted-foreground text-sm">
-            {t("10M+ ডাউনলোড • 4.8 রেটিং", "10M+ Downloads • 4.8 Rating")}
+            {t("50K+ ডাউনলোড • 4.8 রেটিং", "50K+ Downloads • 4.8 Rating")}
           </p>
         </motion.div>
 

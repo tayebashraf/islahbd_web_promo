@@ -70,14 +70,14 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4 w-fit">
               <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center shadow-md">
-                <span className="font-arabic text-lg text-[#111827] font-bold leading-none">ت</span>
+                <span className="font-bold text-sm text-[#111827] leading-none">ই</span>
               </div>
-              <span className="font-display font-bold text-xl text-foreground">Tazkirah</span>
+              <span className="font-display font-bold text-xl text-foreground">islahbd</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
               {t(
-                "আপনার দৈনন্দিন ইসলামিক জীবনকে সহজ ও সুন্দর করতে আমরা প্রতিশ্রুতিবদ্ধ।",
-                "We are committed to making your daily Islamic life easier and more beautiful."
+                "মারকাজুল ইহসানের অফিশিয়াল ইসলামিক অ্যাপ। আপনার দৈনন্দিন ইসলামিক জীবনকে সহজ ও সুন্দর করতে প্রতিশ্রুতিবদ্ধ।",
+                "Markazul Ihsan's official Islamic app. Committed to making your daily Islamic life easier and more beautiful."
               )}
             </p>
             {/* Social */}
@@ -122,9 +122,9 @@ export function Footer() {
             {t("সর্বস্বত্ব সংরক্ষিত", "All rights reserved")}.
           </p>
           <div className="flex items-center gap-4">
-            <a href="mailto:hello@tazkirah.com" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <a href="mailto:info@islahbd.com" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
               <Mail className="w-3.5 h-3.5" />
-              hello@tazkirah.com
+              info@islahbd.com
             </a>
             <button
               onClick={() => setLang(lang === "bn" ? "en" : "bn")}

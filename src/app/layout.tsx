@@ -34,12 +34,12 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "ইসলামিক অ্যাপ", "নামাজের সময়", "কুরআন", "হাদিস", "দোয়া",
-    "Islamic app Bangladesh", "prayer times", "Quran app", "Tazkirah",
-    "Muslims Day alternative", "ইসলাম", "মুসলিম অ্যাপ",
+    "islahbd", "ইসলামিক অ্যাপ", "মারকাজুল ইহসান", "নামাজের সময়", "কুরআন", "আমল", "হজ্জ গাইড", "দোয়া",
+    "Islamic app Bangladesh", "prayer times", "Quran app", "islahbd app",
+    "Markazul Ihsan", "ইসলাম", "মুসলিম অ্যাপ", "বাংলাদেশ ইসলামিক অ্যাপ",
   ],
-  authors: [{ name: "Tazkirah Team" }],
-  creator: "Tazkirah",
+  authors: [{ name: "Markazul Ihsan" }],
+  creator: "islahbd",
   openGraph: {
     type: "website",
     locale: "bn_BD",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
     description: SITE_DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Tazkirah App" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "islahbd — Markazul Ihsan Islamic App" }],
   },
   twitter: {
     card: "summary_large_image",

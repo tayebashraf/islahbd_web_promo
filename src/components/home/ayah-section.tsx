@@ -17,7 +17,7 @@ export function AyahSection() {
   }, []);
 
   const share = async () => {
-    const text = `${ayah.arabic}\n\n"${lang === "bn" ? ayah.translationBn : ayah.translation}"\n— ${ayah.reference}\n\ntazkirah.com`;
+    const text = `${ayah.arabic}\n\n"${lang === "bn" ? ayah.translationBn : ayah.translation}"\n— ${ayah.reference}\n\nislahbd.com`;
     if (navigator.share) await navigator.share({ text });
     else await navigator.clipboard.writeText(text);
   };

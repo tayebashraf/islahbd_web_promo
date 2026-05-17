@@ -8,9 +8,9 @@ import { ArrowRight, Bell, Star, Download, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 const STATS = [
-  { value: "10M+", bn: "ডাউনলোড", en: "Downloads" },
+  { value: "50K+", bn: "ডাউনলোড", en: "Downloads" },
   { value: "4.8★", bn: "রেটিং", en: "Rating" },
-  { value: "11+", bn: "বছরের বিশ্বাস", en: "Years Trusted" },
+  { value: "15+", bn: "ফিচার", en: "Features" },
 ];
 
 export function Hero() {
@@ -63,7 +63,7 @@ export function Hero() {
             >
               <Badge variant="gold" className="mb-6 text-xs px-3 py-1.5 gap-1.5">
                 <Bell className="w-3 h-3" />
-                {t("শীঘ্রই আসছে", "Coming Soon")}
+                {t("islahBD অফিশিয়াল ইসলামিক অ্যাপ", "islahBD Official Islamic App")}
               </Badge>
             </motion.div>
 
@@ -75,14 +75,14 @@ export function Hero() {
             >
               {t(
                 <>
-                  আর কোনো{" "}
-                  <span className="text-gold">নামাজ মিস</span>{" "}
-                  করবেন না
+                  islahBD —{" "}
+                  <span className="text-gold">সর্বদা</span>{" "}
+                  আল্লাহকে স্মরণ করুন
                 </>,
                 <>
-                  Never Miss{" "}
-                  <span className="text-gold">Another Prayer</span>{" "}
-                  Again
+                  islahBD —{" "}
+                  <span className="text-gold">Always</span>{" "}
+                  Remember Allah
                 </>
               )}
             </motion.h1>
@@ -94,8 +94,8 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               {t(
-                "নামাজের সময়, কুরআন তেলাওয়াত, হাদিস, দোয়া, কিবলা — সবকিছু এক অ্যাপে। আপনার দৈনন্দিন ইসলামিক জীবনের বিশ্বস্ত সঙ্গী।",
-                "Prayer times, Quran recitation, Hadith, Dua, Qibla — everything in one app. Your trusted companion for daily Islamic life."
+                "নামাজের সময়, কুরআন, আমল, হজ্জ গাইড, দোয়া, তাসবিহ, লাইভ, নাশিদ — সবকিছু এক অ্যাপে। আপনার দৈনন্দিন ইসলামিক জীবনের বিশ্বস্ত সঙ্গী।",
+                "Prayer times, Quran, Amal, Hajj guide, Dua, Tasbeeh, Live, Nasheed — everything in one app. Your trusted companion for daily Islamic life."
               )}
             </motion.p>
 
@@ -192,77 +192,114 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
           >
             <div className="relative animate-float">
-              {/* Phone frame */}
-              <div className="relative w-[280px] sm:w-[320px] h-[580px] sm:h-[640px]">
-                {/* Glow */}
-                <div className="absolute inset-0 rounded-[3rem] bg-gold/20 blur-3xl scale-110 prayer-card-glow" />
+              {/* Ambient glow — soft, centered, subtle */}
+              <div className="absolute inset-[-8%] rounded-[50%] pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at 50% 60%, rgba(203,161,53,0.18) 0%, rgba(6,95,70,0.10) 50%, transparent 75%)", filter: "blur(32px)" }} />
+
+              {/* iPhone 15 Pro frame */}
+              <div className="relative w-[270px] sm:w-[310px]" style={{ aspectRatio: "393/852" }}>
+
+                {/* Physical side buttons — left */}
+                <div className="absolute -left-[3.5px] top-[96px] w-[3.5px] h-[34px] rounded-l-[2px]"
+                  style={{ background: "linear-gradient(180deg, #4a4a4f 0%, #3a3a3f 40%, #4a4a4f 100%)" }} />
+                <div className="absolute -left-[3.5px] top-[148px] w-[3.5px] h-[66px] rounded-l-[2px]"
+                  style={{ background: "linear-gradient(180deg, #4a4a4f 0%, #3a3a3f 40%, #4a4a4f 100%)" }} />
+                <div className="absolute -left-[3.5px] top-[228px] w-[3.5px] h-[66px] rounded-l-[2px]"
+                  style={{ background: "linear-gradient(180deg, #4a4a4f 0%, #3a3a3f 40%, #4a4a4f 100%)" }} />
+                {/* Physical side button — right (power) */}
+                <div className="absolute -right-[3.5px] top-[168px] w-[3.5px] h-[84px] rounded-r-[2px]"
+                  style={{ background: "linear-gradient(180deg, #4a4a4f 0%, #3a3a3f 40%, #4a4a4f 100%)" }} />
+
+                {/* Outer titanium frame */}
+                <div
+                  className="absolute inset-0 rounded-[3.2rem] pointer-events-none z-30"
+                  style={{
+                    background: "transparent",
+                    boxShadow: [
+                      "0 0 0 1.5px #a0a0a8",
+                      "0 0 0 3px #6b6b72",
+                      "0 0 0 4px #4a4a52",
+                      "inset 0 0 0 1px rgba(255,255,255,0.08)",
+                    ].join(", "),
+                  }}
+                />
 
                 {/* Phone body */}
-                <div className="relative w-full h-full rounded-[3rem] bg-gradient-to-b from-[#1C2333] to-[#0D1117] border border-white/10 shadow-2xl overflow-hidden">
-                  {/* Notch */}
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 rounded-full bg-black/80 z-10" />
+                <div
+                  className="relative w-full h-full overflow-hidden"
+                  style={{
+                    borderRadius: "3.2rem",
+                    background: "linear-gradient(145deg, #1c1c1e 0%, #0d0d0f 60%, #1a1a1c 100%)",
+                    boxShadow: [
+                      "0 60px 120px rgba(0,0,0,0.7)",
+                      "0 30px 60px rgba(0,0,0,0.5)",
+                      "0 0 0 0.5px rgba(255,255,255,0.12)",
+                      "inset 0 1px 0 rgba(255,255,255,0.1)",
+                    ].join(", "),
+                  }}
+                >
+                  {/* Screen — clipped inside body */}
+                  <div className="absolute inset-[3px] overflow-hidden" style={{ borderRadius: "calc(3.2rem - 3px)" }}>
+                    {/* App screenshot */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/home.png"
+                      alt="islahBD app home screen"
+                      className="w-full h-full object-cover object-top"
+                    />
 
-                  {/* Screen content */}
-                  <div className="absolute inset-0 p-4 pt-12 flex flex-col gap-3">
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-1 pt-2">
-                      <div>
-                        <p className="text-[10px] text-white/50">ঢাকা, বাংলাদেশ</p>
-                        <p className="text-xs text-white/80 font-medium">{t("আজকের নামাজ", "Today's Prayer")}</p>
-                      </div>
-                      <div className="w-8 h-8 rounded-full gradient-gold flex items-center justify-center">
-                        <span className="font-arabic text-sm text-[#111827] font-bold">ت</span>
-                      </div>
+                    {/* Screen top-edge glare */}
+                    <div
+                      className="absolute inset-x-0 top-0 h-[35%] pointer-events-none"
+                      style={{
+                        background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%)",
+                      }}
+                    />
+
+                    {/* Dynamic Island */}
+                    <div
+                      className="absolute top-[10px] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center"
+                      style={{
+                        width: 120,
+                        height: 34,
+                        borderRadius: 20,
+                        background: "#000",
+                        boxShadow: "inset 0 1px 2px rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.8)",
+                      }}
+                    >
+                      {/* Front camera dot */}
+                      <div className="w-[10px] h-[10px] rounded-full bg-[#1a1a1a] border border-[#2a2a2a] ml-auto mr-3" />
                     </div>
 
-                    {/* Current prayer hero */}
-                    <div className="rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/20 p-4 text-center">
-                      <p className="text-[10px] text-gold/80 mb-1">{t("পরবর্তী নামাজ", "Next Prayer")}</p>
-                      <p className="text-2xl font-bold text-white mb-0.5">আসর</p>
-                      <p className="text-3xl font-display font-bold text-gold">০৪:৩২</p>
-                      <div className="mt-2 h-1 rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-gold to-gold-light" />
-                      </div>
-                      <p className="text-[10px] text-white/50 mt-1">১ ঘণ্টা ১৮ মিনিট বাকি</p>
+                    {/* Status bar time */}
+                    <div className="absolute top-[14px] left-[20px] z-10">
+                      <span className="text-white text-[11px] font-semibold" style={{ letterSpacing: "-0.3px" }}>9:41</span>
                     </div>
 
-                    {/* Prayer list */}
-                    {[
-                      { name: "ফজর", time: "০৫:০২", done: true },
-                      { name: "যোহর", time: "১২:০৮", done: true },
-                      { name: "আসর", time: "০৪:৩২", done: false, active: true },
-                      { name: "মাগরিব", time: "০৬:২১", done: false },
-                      { name: "এশা", time: "০৭:৪৫", done: false },
-                    ].map((p) => (
-                      <div
-                        key={p.name}
-                        className={`flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
-                          p.active
-                            ? "bg-gold/15 border border-gold/30"
-                            : "bg-white/4"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-2 h-2 rounded-full ${p.done ? "bg-emerald-400" : p.active ? "bg-gold animate-pulse-gold" : "bg-white/20"}`} />
-                          <span className={`text-xs font-medium ${p.active ? "text-gold" : p.done ? "text-white/50" : "text-white/80"}`}>{p.name}</span>
-                        </div>
-                        <span className={`text-xs ${p.active ? "text-gold font-bold" : "text-white/50"}`}>{p.time}</span>
-                      </div>
-                    ))}
-
-                    {/* Bottom tabs */}
-                    <div className="mt-auto flex items-center justify-around py-2 border-t border-white/8">
-                      {["🏠", "📖", "🤲", "🧭", "👤"].map((icon, i) => (
-                        <button key={i} className={`text-lg opacity-${i === 0 ? "100" : "40"}`}>{icon}</button>
-                      ))}
+                    {/* Status bar icons */}
+                    <div className="absolute top-[14px] right-[16px] z-10 flex items-center gap-1">
+                      <svg width="16" height="11" viewBox="0 0 16 11" fill="white" opacity="0.9"><rect x="0" y="4" width="3" height="7" rx="0.5"/><rect x="4" y="3" width="3" height="8" rx="0.5"/><rect x="8" y="1.5" width="3" height="9.5" rx="0.5"/><rect x="12" y="0" width="3" height="11" rx="0.5"/></svg>
+                      <svg width="15" height="11" viewBox="0 0 15 11" fill="white" opacity="0.9"><path d="M7.5 2.2C9.8 2.2 11.9 3.2 13.3 4.8L14.7 3.3C12.9 1.3 10.3 0 7.5 0S2.1 1.3.3 3.3L1.7 4.8C3.1 3.2 5.2 2.2 7.5 2.2z"/><path d="M7.5 5.5c1.4 0 2.7.6 3.6 1.5l1.4-1.5C11.2 4.2 9.4 3.3 7.5 3.3S3.8 4.2 2.5 5.5l1.4 1.5C4.8 6.1 6.1 5.5 7.5 5.5z"/><circle cx="7.5" cy="9" r="1.5"/></svg>
+                      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" strokeOpacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 000-4z" fill="white" fillOpacity="0.4"/></svg>
                     </div>
+
+                    {/* Bottom home indicator */}
+                    <div className="absolute bottom-[8px] left-1/2 -translate-x-1/2 w-[120px] h-[5px] rounded-full bg-white/30" />
                   </div>
+
+                  {/* Side edge specular highlight */}
+                  <div
+                    className="absolute inset-0 pointer-events-none rounded-[3.2rem]"
+                    style={{
+                      background: "linear-gradient(115deg, rgba(255,255,255,0.07) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.04) 100%)",
+                    }}
+                  />
                 </div>
               </div>
 
               {/* Floating badges */}
               <motion.div
-                className="absolute -left-12 top-20 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
+                className="absolute -left-14 top-24 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
               >
@@ -271,7 +308,7 @@ export function Hero() {
               </motion.div>
 
               <motion.div
-                className="absolute -right-8 bottom-28 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
+                className="absolute -right-10 bottom-32 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
                 animate={{ y: [0, 6, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}
               >

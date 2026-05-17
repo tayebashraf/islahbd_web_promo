@@ -2,17 +2,17 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useLang } from "@/components/providers/lang-provider";
-import { BookOpen, ScrollText, HandMetal, Compass, Calendar, Calculator, Star, Clock, Moon, CircleDot, CheckCircle2 } from "lucide-react";
+import { BookOpen, ScrollText, HandMetal, Compass, Calendar, Star, Clock, Moon, CircleDot, CheckCircle2, MapPin, Music, Radio, BookMarked, Heart, Users, Library } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  BookOpen, ScrollText, HandMetal, Compass, Calendar, Calculator, Star, Clock, Moon, CircleDot,
+  BookOpen, ScrollText, HandMetal, Compass, Calendar, Star, Clock, Moon, CircleDot, MapPin, Music, Radio, BookMarked, Heart, Users, Library,
 };
 
 const FEATURES_DATA = [
   {
     icon: "Clock",
-    gradient: "from-gold/20 to-amber-500/10",
-    iconColor: "text-gold",
+    gradient: "from-orange-500/20 to-amber-500/10",
+    iconColor: "text-orange-600 dark:text-orange-400",
     bn: "নামাজের সময়",
     en: "Prayer Times",
     descBn: "সঠিক অবস্থান-ভিত্তিক নামাজের সময় এবং আযানের রিমাইন্ডার।",
@@ -24,17 +24,17 @@ const FEATURES_DATA = [
     iconColor: "text-emerald-600 dark:text-emerald-400",
     bn: "কুরআন",
     en: "Quran",
-    descBn: "অডিও তেলাওয়াত, অনুবাদ, তাফসীর এবং ওয়ার্ড-বাই-ওয়ার্ড মোড।",
-    descEn: "Audio recitation, translation, tafseer, and word-by-word mode.",
+    descBn: "অডিও তেলাওয়াত সহ কুরআন এবং হাফেজি কুরআন পিডিএফ।",
+    descEn: "Quran with audio recitation and Hafezi Quran PDF.",
   },
   {
     icon: "ScrollText",
-    gradient: "from-amber-500/20 to-orange-500/10",
-    iconColor: "text-amber-600 dark:text-amber-400",
-    bn: "হাদিস",
-    en: "Hadith",
-    descBn: "বিশুদ্ধ হাদিস সংগ্রহ বাংলা অনুবাদ সহ।",
-    descEn: "Authentic hadith collections with Bangla translations.",
+    gradient: "from-pink-500/20 to-rose-500/10",
+    iconColor: "text-pink-600 dark:text-pink-400",
+    bn: "আমল",
+    en: "Amal",
+    descBn: "দৈনন্দিন ইসলামিক আমলসমূহ একত্রিত করুন।",
+    descEn: "Curated daily Islamic deeds and practices.",
   },
   {
     icon: "HandMetal",
@@ -46,58 +46,103 @@ const FEATURES_DATA = [
     descEn: "Morning/evening adhkar and Masnoon duas with audio.",
   },
   {
-    icon: "Compass",
+    icon: "MapPin",
     gradient: "from-sky-500/20 to-blue-500/10",
     iconColor: "text-sky-600 dark:text-sky-400",
-    bn: "কিবলা দিক",
-    en: "Qibla Direction",
-    descBn: "GPS-ভিত্তিক সঠিক কিবলার দিক অ্যানিমেটেড কম্পাস সহ।",
-    descEn: "GPS-based accurate Qibla direction with animated compass.",
+    bn: "হজ্জ ও উমরাহ",
+    en: "Hajj & Umrah",
+    descBn: "হজ্জ ও উমরাহর গাইড, ধাপে ধাপে নির্দেশিকা।",
+    descEn: "Step-by-step Hajj and Umrah guide with detailed instructions.",
   },
   {
     icon: "CircleDot",
     gradient: "from-rose-500/20 to-pink-500/10",
     iconColor: "text-rose-600 dark:text-rose-400",
     bn: "ডিজিটাল তাসবিহ",
-    en: "Digital Tasbih",
+    en: "Digital Tasbeeh",
     descBn: "হ্যাপটিক ফিডব্যাক সহ ডিজিটাল তাসবিহ কাউন্টার।",
-    descEn: "Digital tasbih counter with haptic feedback.",
+    descEn: "Digital tasbeeh counter with haptic feedback.",
+  },
+  {
+    icon: "Compass",
+    gradient: "from-cyan-500/20 to-sky-500/10",
+    iconColor: "text-cyan-600 dark:text-cyan-400",
+    bn: "কিবলা দিক",
+    en: "Qibla Direction",
+    descBn: "GPS-ভিত্তিক সঠিক কিবলার দিক অ্যানিমেটেড কম্পাস সহ।",
+    descEn: "GPS-based accurate Qibla direction with animated compass.",
   },
   {
     icon: "Calendar",
-    gradient: "from-orange-500/20 to-amber-500/10",
-    iconColor: "text-orange-600 dark:text-orange-400",
+    gradient: "from-teal-500/20 to-emerald-500/10",
+    iconColor: "text-teal-600 dark:text-teal-400",
     bn: "ইসলামিক ক্যালেন্ডার",
     en: "Islamic Calendar",
     descBn: "হিজরি ক্যালেন্ডার, রমজান ট্র্যাকার, ইসলামিক ইভেন্ট।",
     descEn: "Hijri calendar, Ramadan tracker, Islamic events.",
   },
   {
-    icon: "Calculator",
-    gradient: "from-teal-500/20 to-cyan-500/10",
-    iconColor: "text-teal-600 dark:text-teal-400",
-    bn: "যাকাত ক্যালকুলেটর",
-    en: "Zakat Calculator",
-    descBn: "স্বর্ণ, রূপা ও সম্পদের উপর সঠিক যাকাত হিসাব।",
-    descEn: "Accurate zakat calculation on gold, silver and assets.",
+    icon: "Radio",
+    gradient: "from-red-500/20 to-rose-500/10",
+    iconColor: "text-red-600 dark:text-red-400",
+    bn: "লাইভ",
+    en: "Live",
+    descBn: "মারকাজুল ইহসানের লাইভ প্রোগ্রাম সরাসরি দেখুন।",
+    descEn: "Watch Markazul Ihsan live programs in real-time.",
+  },
+  {
+    icon: "Music",
+    gradient: "from-green-500/20 to-emerald-500/10",
+    iconColor: "text-green-600 dark:text-green-400",
+    bn: "হামদ ও নাত",
+    en: "Hamd & Naat",
+    descBn: "ইসলামিক হামদ, নাত ও নাশিদ সংগ্রহ।",
+    descEn: "Collection of Islamic Hamd, Naat and Nasheed.",
+  },
+  {
+    icon: "BookMarked",
+    gradient: "from-amber-500/20 to-yellow-500/10",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    bn: "ফাযায়েল",
+    en: "Fazilat",
+    descBn: "আমলের ফাযায়েল ও মর্যাদা সম্পর্কে জানুন।",
+    descEn: "Learn about the virtues and merits of Islamic deeds.",
+  },
+  {
+    icon: "Star",
+    gradient: "from-gold/20 to-amber-500/10",
+    iconColor: "text-gold",
+    bn: "মালফুযাত",
+    en: "Malfuzat",
+    descBn: "বুজুর্গানে দ্বীনের বাণী ও উপদেশ সমগ্র।",
+    descEn: "Sayings and wisdoms of Islamic scholars.",
+  },
+  {
+    icon: "Heart",
+    gradient: "from-indigo-500/20 to-blue-500/10",
+    iconColor: "text-indigo-600 dark:text-indigo-400",
+    bn: "ওয়াজিফা ও দরূদ",
+    en: "Wazifa & Darud",
+    descBn: "বিশেষ ওয়াজিফা এবং দরূদ শরিফের সংকলন।",
+    descEn: "Collection of special Wazifa and Darud Sharif.",
   },
   {
     icon: "Moon",
-    gradient: "from-indigo-500/20 to-blue-500/10",
+    gradient: "from-indigo-500/20 to-violet-500/10",
     iconColor: "text-indigo-600 dark:text-indigo-400",
-    bn: "রমজান মোড",
-    en: "Ramadan Mode",
+    bn: "রমজান",
+    en: "Ramadan",
     descBn: "সেহরি-ইফতার সময়, রোজার ট্র্যাকার এবং বিশেষ দোয়া।",
     descEn: "Sehri-Iftar times, fasting tracker and special duas.",
   },
   {
-    icon: "Star",
-    gradient: "from-pink-500/20 to-rose-500/10",
-    iconColor: "text-pink-600 dark:text-pink-400",
-    bn: "ইসলামিক নাম",
-    en: "Islamic Names",
-    descBn: "অর্থ ও উৎস সহ হাজারো ইসলামিক নামের সংগ্রহ।",
-    descEn: "Thousands of Islamic names with meanings and origins.",
+    icon: "Library",
+    gradient: "from-stone-500/20 to-amber-500/10",
+    iconColor: "text-stone-600 dark:text-stone-400",
+    bn: "লাইব্রেরি",
+    en: "Library",
+    descBn: "ইসলামিক বইয়ের ডিজিটাল লাইব্রেরি ও বুকশপ।",
+    descEn: "Digital Islamic library and bookshop.",
   },
 ];
 
@@ -106,6 +151,7 @@ const HIGHLIGHTS = [
   { bn: "বাংলা + ইংরেজি ভাষা", en: "Bangla + English" },
   { bn: "অফলাইন সাপোর্ট", en: "Offline support" },
   { bn: "পুশ নোটিফিকেশন", en: "Push notifications" },
+  { bn: "কাস্টমাইজযোগ্য হোম", en: "Customizable home" },
 ];
 
 export function Features() {
@@ -129,14 +175,14 @@ export function Features() {
           </span>
           <h2 id="features-heading" className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-5 text-balance">
             {t(
-              <>সবকিছু এক <span className="text-gold">জায়গায়</span></>,
-              <>Everything in <span className="text-gold">One Place</span></>
+              <>সবকিছু এক <span className="text-gold">অ্যাপে</span></>,
+              <>Everything in <span className="text-gold">One App</span></>
             )}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
             {t(
-              "একটি অ্যাপেই পাচ্ছেন আপনার দৈনন্দিন ইসলামিক জীবনের জন্য প্রয়োজনীয় সব সরঞ্জাম।",
-              "Get all the tools you need for your daily Islamic life in one beautiful app."
+              "মারকাজুল ইহসানের islahbd অ্যাপে পাচ্ছেন আপনার দৈনন্দিন ইসলামিক জীবনের জন্য প্রয়োজনীয় সব সরঞ্জাম।",
+              "Markazul Ihsan's islahbd app — all tools for your daily Islamic life in one beautiful place."
             )}
           </p>
 
@@ -152,7 +198,7 @@ export function Features() {
         </motion.div>
 
         {/* Grid */}
-        <div ref={ref} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div ref={ref} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-3">
           {FEATURES_DATA.map((feature, i) => {
             const Icon = ICON_MAP[feature.icon] || Star;
             return (

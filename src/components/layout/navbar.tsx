@@ -43,12 +43,12 @@ export function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group focus-ring rounded-lg" aria-label="Tazkirah home">
+          <Link href="/" className="flex items-center gap-2.5 group focus-ring rounded-lg" aria-label="islahbd home">
             <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-              <span className="font-arabic text-lg text-[#111827] leading-none font-bold">ت</span>
+              <span className="font-bold text-sm text-[#111827] leading-none">ই</span>
             </div>
             <span className="font-display font-bold text-xl tracking-tight text-foreground">
-              Tazkirah
+              islahbd
             </span>
           </Link>
 

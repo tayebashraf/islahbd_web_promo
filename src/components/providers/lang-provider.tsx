@@ -25,7 +25,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("bn");
 
   useEffect(() => {
-    const stored = localStorage.getItem("tazkirah-lang") as Lang | null;
+    const stored = localStorage.getItem("islahbd-lang") as Lang | null;
     if (stored) { setLangState(stored); return; }
     const browser = navigator.language.toLowerCase();
     setLangState(browser.startsWith("en") ? "en" : "bn");
@@ -33,7 +33,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    localStorage.setItem("tazkirah-lang", l);
+    localStorage.setItem("islahbd-lang", l);
     document.documentElement.lang = l === "bn" ? "bn" : "en";
   };
 
