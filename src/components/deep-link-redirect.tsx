@@ -5,58 +5,66 @@ import { useEffect } from "react";
 const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=com.islahbd.app";
 const APP_STORE_URL =
-  "https://apps.apple.com/app/islahbd/id6743452793"; // update with real App Store ID
+  "https://apps.apple.com/app/islahbd/id6743452793"; // replace with real App Store numeric ID
 
 interface DeepLinkRedirectProps {
-  /** Full https deep link, e.g. https://islahbd.com/boyan/abc123 */
+  /** Full https deep link e.g. https://islahbd.com/boyan/abc123 */
   deepLink: string;
   section: string;
-  token: string | null;
+  token: string;
 }
 
 export function DeepLinkRedirect({ deepLink, section, token }: DeepLinkRedirectProps) {
   useEffect(() => {
-    if (!token) {
-      // No token — just go to Play Store
-      window.location.replace(PLAY_STORE_URL);
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPad|iPhone|iPod/i.test(ua) && !(window as unknown as { MSStream?: unknown }).MSStream;
+
+    if (isAndroid) {
+      // Android App Links open the app directly if installed.
+      // intent:// URI is the reliable fallback that goes to Play Store when app absent.
+      const intentUrl =
+        `intent://${new URL(deepLink).pathname}` +
+        `#Intent;scheme=https;host=islahbd.com;` +
+        `package=com.islahbd.app;` +
+        `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
+
+      window.location.replace(intentUrl);
       return;
     }
 
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isAndroid = /Android/.test(navigator.userAgent);
-    const storeUrl = isIOS ? APP_STORE_URL : PLAY_STORE_URL;
+    if (isIOS) {
+      // iOS Universal Links: try the https URL — if app installed, OS intercepts it.
+      // After 2 s with no interception, redirect to App Store.
+      const timer = setTimeout(() => {
+        window.location.replace(APP_STORE_URL);
+      }, 2000);
 
-    // Try to open the app. If not installed, browser ignores the link or
-    // shows an error — after 2 s we redirect to the store.
-    const fallbackTimer = setTimeout(() => {
-      window.location.replace(storeUrl);
-    }, 2000);
-
-    // On mobile: attempt the deep link
-    if (isIOS || isAndroid) {
       window.location.href = deepLink;
-    } else {
-      // Desktop — skip app attempt, go to store page
-      clearTimeout(fallbackTimer);
-      window.location.replace(PLAY_STORE_URL);
+
+      return () => clearTimeout(timer);
     }
 
-    // If the app opens, the page will be backgrounded — timer won't fire.
-    return () => clearTimeout(fallbackTimer);
-  }, [deepLink, token]);
+    // Desktop / unknown — go to Play Store as default
+    window.location.replace(PLAY_STORE_URL);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-[#0f172a] px-4 text-center text-white">
       <div className="text-5xl">📲</div>
       <h1 className="text-2xl font-bold">Opening islahBD…</h1>
-      <p className="text-slate-400">
-        {token
-          ? "Opening content in the app. If nothing happens, you'll be redirected to the store."
-          : "Redirecting to the app store…"}
+      <p className="text-slate-400 max-w-sm">
+        Opening {section} content in the app. If nothing happens you&apos;ll be
+        redirected to the store automatically.
       </p>
       <div className="h-1 w-48 overflow-hidden rounded-full bg-slate-700">
-        <div className="h-full animate-[progress_2s_linear_forwards] rounded-full bg-emerald-500" />
+        <div
+          className="h-full rounded-full bg-emerald-500"
+          style={{ animation: "progress 2s linear forwards" }}
+        />
       </div>
+      <p className="text-xs text-slate-600 mt-2">token: {token}</p>
     </div>
   );
 }
