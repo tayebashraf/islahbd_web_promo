@@ -31,6 +31,22 @@ const nextConfig: NextConfig = {
           { key: "Content-Type", value: "application/javascript; charset=utf-8" },
         ],
       },
+      // Android App Links verification file
+      {
+        source: "/.well-known/assetlinks.json",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Cache-Control", value: "public, max-age=3600" },
+        ],
+      },
+      // iOS Universal Links verification file (no extension — must be served as JSON)
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Cache-Control", value: "public, max-age=3600" },
+        ],
+      },
     ];
   },
 };
