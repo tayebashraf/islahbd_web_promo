@@ -1,11 +1,13 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "com.islahbd.app",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_SHA256_FINGERPRINT"
+        "7B:18:97:2B:E2:CA:EC:36:AE:05:28:61:ED:1D:20:09:98:CB:59:22:71:F6:F6:29:15:33:0A:00:18:E0:83:47"
       ]
     }
   }

@@ -22,17 +22,25 @@ export function DeepLinkRedirect({ deepLink, section, token }: DeepLinkRedirectP
       !(window as unknown as { MSStream?: unknown }).MSStream;
 
     // ── Android ────────────────────────────────────────────────────────────
-    // intent:// URI: OS opens app if installed; browser_fallback_url fires if not.
-    // Android handles everything — no timer needed.
+    // Android App Links: OS intercepts the https:// URL directly if assetlinks.json
+    // is verified — app opens with no browser visible. Falls back to intent:// if
+    // App Links verification has not completed (e.g. fresh install before first boot
+    // verification run), which then falls to Play Store if app not installed.
     if (isAndroid) {
-      const path = new URL(deepLink).pathname; // e.g. /boyan/abc123
+      // Primary: App Links — OS intercepts before browser renders anything
+      window.location.replace(deepLink);
+
+      // Fallback after 1.5 s: app not installed or App Links not yet verified
+      const path = new URL(deepLink).pathname;
       const intentUrl =
         `intent:/${path}` +
         `#Intent;scheme=islahbd;host=open;` +
         `package=com.islahbd.app;` +
         `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
 
-      window.location.replace(intentUrl);
+      setTimeout(() => {
+        window.location.replace(intentUrl);
+      }, 1500);
       return;
     }
 
