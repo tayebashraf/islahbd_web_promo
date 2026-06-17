@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HamdnaatDeepLinkPage({ params }: Props) {
   const { token } = await params;
-  const deepLink = `https://islahbd.com/hamdnaat/${token}`;
+  const deepLink = `https://www.islahbd.com/hamdnaat/${token}`;
   return (
     <DeepLinkRedirect deepLink={deepLink} section="hamdnaat" token={token} />
   );

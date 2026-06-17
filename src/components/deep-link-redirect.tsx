@@ -8,7 +8,7 @@ const APP_STORE_URL =
   "https://apps.apple.com/us/app/islahbd/id6762509692";
 
 interface DeepLinkRedirectProps {
-  deepLink: string; // https://islahbd.com/<section>/<token>
+  deepLink: string; // https://www.islahbd.com/<section>/<token>
   section: string;
   token: string;
 }

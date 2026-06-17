@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BoyanDeepLinkPage({ params }: Props) {
   const { token } = await params;
-  const deepLink = `https://islahbd.com/boyan/${token}`;
+  const deepLink = `https://www.islahbd.com/boyan/${token}`;
   return (
     <DeepLinkRedirect deepLink={deepLink} section="boyan" token={token} />
   );
