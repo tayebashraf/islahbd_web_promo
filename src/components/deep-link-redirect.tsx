@@ -13,34 +13,30 @@ interface DeepLinkRedirectProps {
   token: string;
 }
 
-export function DeepLinkRedirect({ deepLink, section, token }: DeepLinkRedirectProps) {
+export function DeepLinkRedirect({ section, token }: DeepLinkRedirectProps) {
   useEffect(() => {
     const ua = navigator.userAgent;
     const isAndroid = /Android/i.test(ua);
+    // iPhone/iPod report in UA. iPadOS 13+ masquerades as Mac, so also treat a
+    // touch-capable "Macintosh" as iOS.
     const isIOS =
-      /iPad|iPhone|iPod/i.test(ua) &&
+      (/iPad|iPhone|iPod/i.test(ua) ||
+        (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) &&
       !(window as unknown as { MSStream?: unknown }).MSStream;
 
     // ── Android ────────────────────────────────────────────────────────────
-    // Android App Links: OS intercepts the https:// URL directly if assetlinks.json
-    // is verified — app opens with no browser visible. Falls back to intent:// if
-    // App Links verification has not completed (e.g. fresh install before first boot
-    // verification run), which then falls to Play Store if app not installed.
+    // Do NOT redirect to the https:// deepLink first: it points at this same
+    // domain, so if App Links verification has not completed the browser simply
+    // reloads this redirect page (infinite loop) and any pending fallback timer
+    // is destroyed. Go straight to intent:// — it opens the app when installed
+    // and uses S.browser_fallback_url (Play Store) automatically when not.
     if (isAndroid) {
-      // Primary: App Links — OS intercepts before browser renders anything
-      window.location.replace(deepLink);
-
-      // Fallback after 1.5 s: app not installed or App Links not yet verified
-      const path = new URL(deepLink).pathname;
       const intentUrl =
-        `intent:/${path}` +
-        `#Intent;scheme=islahbd;host=open;` +
-        `package=com.islahbd.app;` +
+        `intent://open/${section}/${token}` +
+        `#Intent;scheme=islahbd;package=com.islahbd.app;` +
         `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
 
-      setTimeout(() => {
-        window.location.replace(intentUrl);
-      }, 1500);
+      window.location.replace(intentUrl);
       return;
     }
 
@@ -51,21 +47,34 @@ export function DeepLinkRedirect({ deepLink, section, token }: DeepLinkRedirectP
     if (isIOS) {
       let didOpenApp = false;
 
-      const onVisibilityChange = () => {
+      // App opened → tab backgrounds. Catch via any of these (Safari fires
+      // different events depending on version).
+      const markOpened = () => {
         if (document.hidden) didOpenApp = true;
       };
-      document.addEventListener("visibilitychange", onVisibilityChange);
+      const onPageHide = () => {
+        didOpenApp = true;
+      };
+      document.addEventListener("visibilitychange", markOpened);
+      window.addEventListener("pagehide", onPageHide);
+      window.addEventListener("blur", onPageHide);
+
+      const cleanupListeners = () => {
+        document.removeEventListener("visibilitychange", markOpened);
+        window.removeEventListener("pagehide", onPageHide);
+        window.removeEventListener("blur", onPageHide);
+      };
 
       window.location.href = `islahbd://open/${section}/${token}`;
 
       const timer = setTimeout(() => {
-        document.removeEventListener("visibilitychange", onVisibilityChange);
+        cleanupListeners();
         if (!didOpenApp) window.location.replace(APP_STORE_URL);
       }, 2000);
 
       return () => {
         clearTimeout(timer);
-        document.removeEventListener("visibilitychange", onVisibilityChange);
+        cleanupListeners();
       };
     }
 
