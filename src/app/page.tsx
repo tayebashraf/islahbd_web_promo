@@ -7,6 +7,7 @@ import { Testimonials } from "@/components/home/testimonials";
 import { AppDownload } from "@/components/home/app-download";
 import { BlogPreview } from "@/components/home/blog-preview";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
+import { fetchLiveStatus } from "@/lib/live-status";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const liveStatus = await fetchLiveStatus();
+
   return (
     <>
-      <Hero />
+      <Hero liveStatus={liveStatus} />
       <Features />
       <PrayerWidget />
       <AyahSection />
