@@ -1,8 +1,22 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useLang } from "@/components/providers/lang-provider";
 import { BookOpen, ScrollText, HandMetal, Compass, Calendar, Star, Clock, Moon, CircleDot, CheckCircle2, MapPin, Music, Radio, BookMarked, Heart, Users, Library } from "lucide-react";
+
+function LiveDot() {
+  const [on, setOn] = useState(true);
+  useEffect(() => {
+    const id = setInterval(() => setOn((v) => !v), 900);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span
+      className="inline-block w-1.5 h-1.5 rounded-full bg-red-500"
+      style={{ opacity: on ? 1 : 0.15, transition: "opacity 0.3s ease" }}
+    />
+  );
+}
 
 const ICON_MAP: Record<string, React.ElementType> = {
   BookOpen, ScrollText, HandMetal, Compass, Calendar, Star, Clock, Moon, CircleDot, MapPin, Music, Radio, BookMarked, Heart, Users, Library,
@@ -83,12 +97,13 @@ const FEATURES_DATA = [
   },
   {
     icon: "Radio",
-    gradient: "from-red-500/20 to-rose-500/10",
+    gradient: "from-red-500/25 to-rose-600/15",
     iconColor: "text-red-600 dark:text-red-400",
     bn: "লাইভ",
     en: "Live",
     descBn: "মারকাজুল ইহসানের লাইভ প্রোগ্রাম সরাসরি দেখুন।",
     descEn: "Watch Markazul Ihsan live programs in real-time.",
+    isLive: true,
   },
   {
     icon: "Music",
@@ -204,12 +219,26 @@ export function Features() {
             return (
               <motion.div
                 key={feature.en}
-                className={`relative group p-5 rounded-2xl border border-border bg-card hover:border-gold/30 transition-all card-hover cursor-default bg-gradient-to-br ${feature.gradient}`}
+                className={`relative group p-5 rounded-2xl border transition-all card-hover cursor-default bg-gradient-to-br ${feature.gradient} ${
+                  (feature as { isLive?: boolean }).isLive
+                    ? "border-red-500/35 bg-card ring-1 ring-red-500/20 hover:border-red-500/55 hover:ring-red-500/35"
+                    : "border-border bg-card hover:border-gold/30"
+                }`}
                 initial={{ opacity: 0, y: 24 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-background/60 ${feature.iconColor}`}>
+                {/* Live badge */}
+                {(feature as { isLive?: boolean }).isLive && (
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/30">
+                    <LiveDot />
+                    <span className="text-[9px] font-bold text-red-500 uppercase tracking-wider">Live</span>
+                  </div>
+                )}
+
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-background/60 ${feature.iconColor} ${
+                  (feature as { isLive?: boolean }).isLive ? "ring-1 ring-red-500/25" : ""
+                }`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <h3 className="font-semibold text-sm text-foreground mb-1.5 leading-snug">
@@ -219,7 +248,11 @@ export function Features() {
                   {t(feature.descBn, feature.descEn)}
                 </p>
                 {/* Hover accent */}
-                <div className="absolute inset-x-0 bottom-0 h-0.5 rounded-b-2xl bg-gradient-to-r from-transparent via-gold to-transparent opacity-0 group-hover:opacity-60 transition-opacity" />
+                <div className={`absolute inset-x-0 bottom-0 h-0.5 rounded-b-2xl bg-gradient-to-r opacity-0 transition-opacity ${
+                  (feature as { isLive?: boolean }).isLive
+                    ? "from-transparent via-red-500 to-transparent group-hover:opacity-70"
+                    : "from-transparent via-gold to-transparent group-hover:opacity-60"
+                }`} />
               </motion.div>
             );
           })}

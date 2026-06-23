@@ -1,17 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/components/providers/lang-provider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Bell, Star, Download, ChevronDown } from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, Bell, Star, Radio, ChevronDown } from "lucide-react";
 
 const STATS = [
   { value: "50K+", bn: "ডাউনলোড", en: "Downloads" },
   { value: "4.8★", bn: "রেটিং", en: "Rating" },
   { value: "15+", bn: "ফিচার", en: "Features" },
 ];
+
+function LivePulse() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => setVisible((v) => !v), 900);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span
+      className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0"
+      style={{ opacity: visible ? 1 : 0.2, transition: "opacity 0.3s ease" }}
+    />
+  );
+}
 
 export function Hero() {
   const { t } = useLang();
@@ -56,15 +69,31 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left — text */}
           <div>
+            {/* Top badges row */}
             <motion.div
+              className="flex flex-wrap items-center gap-3 mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Badge variant="gold" className="mb-6 text-xs px-3 py-1.5 gap-1.5">
+              <Badge variant="gold" className="text-xs px-3 py-1.5 gap-1.5">
                 <Bell className="w-3 h-3" />
                 {t("islahBD অফিশিয়াল ইসলামিক অ্যাপ", "islahBD Official Islamic App")}
               </Badge>
+
+              {/* Live highlight pill */}
+              <a
+                href="#live"
+                className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold
+                  bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400
+                  hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-200
+                  hover:scale-105 cursor-pointer"
+                style={{ textDecoration: "none" }}
+              >
+                <LivePulse />
+                <Radio className="w-3 h-3" />
+                {t("লাইভ চলছে", "Live Now")}
+              </a>
             </motion.div>
 
             <motion.h1
@@ -114,11 +143,63 @@ export function Hero() {
               ))}
             </motion.div>
 
+            {/* Live feature highlight card */}
+            <motion.div
+              id="live"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="mb-8"
+            >
+              <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/8 via-rose-500/5 to-transparent p-4 group hover:border-red-500/40 transition-all duration-300">
+                {/* Animated glow edge */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+
+                <div className="flex items-start gap-4">
+                  {/* Icon */}
+                  <div className="relative shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-red-500/15 border border-red-500/25 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                      <Radio className="w-5 h-5 text-red-500" />
+                    </div>
+                    {/* Pulsing ring */}
+                    <span className="absolute inset-0 rounded-xl border border-red-500/40 animate-ping" style={{ animationDuration: "2s" }} />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <LivePulse />
+                      <span className="text-xs font-bold text-red-500 uppercase tracking-widest">
+                        {t("লাইভ", "Live")}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground border border-border rounded-full px-2 py-0.5">
+                        {t("মারকাজুল ইহসান", "Markazul Ihsan")}
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-foreground leading-snug mb-1">
+                      {t(
+                        "সরাসরি লাইভ প্রোগ্রাম — অ্যাপ থেকে দেখুন",
+                        "Live programs — watch directly in the app"
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t(
+                        "মারকাজুল ইহসানের বয়ান, তাফসির ও বিশেষ অনুষ্ঠান সরাসরি দেখুন। নোটিফিকেশন চালু রাখুন।",
+                        "Watch Markazul Ihsan lectures, tafseer & special programs live. Enable notifications to never miss one."
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom shimmer on hover */}
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </motion.div>
+
             {/* Waitlist form */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.45 }}
             >
               {submitted ? (
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-deep/10 border border-emerald-deep/20 text-emerald-600 dark:text-emerald-400">
@@ -153,7 +234,7 @@ export function Hero() {
               className="flex items-center gap-3 mt-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
               <a
                 href="#"
@@ -308,9 +389,34 @@ export function Hero() {
               </motion.div>
 
               <motion.div
-                className="absolute -right-10 bottom-32 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
+                className="absolute -right-10 bottom-32 rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
+                style={{
+                  background: "rgba(239,68,68,0.15)",
+                  border: "1px solid rgba(239,68,68,0.35)",
+                  backdropFilter: "blur(16px)",
+                }}
                 animate={{ y: [0, 6, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="relative w-6 h-6 rounded-full bg-red-500/25 flex items-center justify-center shrink-0">
+                    <Radio className="w-3 h-3 text-red-400" />
+                    <span className="absolute inset-0 rounded-full border border-red-500/50 animate-ping" style={{ animationDuration: "1.5s" }} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <LivePulse />
+                      <p className="text-[10px] text-red-400 font-bold uppercase tracking-wider">{t("লাইভ", "Live")}</p>
+                    </div>
+                    <p className="text-xs text-white font-medium">{t("বয়ান চলছে", "On Air Now")}</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="absolute -left-14 bottom-16 glass-dark rounded-2xl px-3 py-2.5 shadow-xl hidden sm:block"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 4, repeat: Infinity, delay: 2 }}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
