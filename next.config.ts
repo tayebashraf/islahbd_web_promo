@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   poweredByHeader: false,
+  async rewrites() {
+    // Proxy HLS stream same-origin to eliminate browser CORS on cdn.eslahbd.com.
+    return [
+      {
+        source: "/hls/:path*",
+        destination: "https://cdn.eslahbd.com/live/:path*",
+      },
+    ];
+  },
   async headers() {
     return [
       {

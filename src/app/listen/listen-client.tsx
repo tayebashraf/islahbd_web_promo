@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Hls from "hls.js";
 
 const BACKEND = "https://islahbd-production.up.railway.app";
 const STATUS_URL = `${BACKEND}/api/live/status/`;
-const POLL_MS = 15000;
+const POLL_MS = 5000;
+const CDN_ORIGIN = "https://cdn.eslahbd.com/live";
+
+// Rewrite CDN HLS URLs to same-origin proxy to avoid browser CORS blocks.
+function toProxiedUrl(streamUrl: string): string {
+  if (streamUrl.startsWith(CDN_ORIGIN)) {
+    return streamUrl.replace(CDN_ORIGIN, "/hls");
+  }
+  return streamUrl;
+}
 
 interface LiveStatus {
   isLive: boolean;
@@ -13,31 +22,41 @@ interface LiveStatus {
   speaker: string;
   listeners: number;
   provider: string;
-  streamUrl: string; // resolved playback url (HLS .m3u8 or Icecast mount)
+  streamUrl: string;
 }
 
 export function ListenClient() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [status, setStatus] = useState<LiveStatus | null>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Detach hls.js and pause the media element. React state (playing/loading)
-  // is synced by the <audio> onPause handler, so we never setState in effects.
-  const teardownMedia = () => {
+  const teardownMedia = useCallback(() => {
+    if (retryTimerRef.current) {
+      clearTimeout(retryTimerRef.current);
+      retryTimerRef.current = null;
+    }
+    hlsRef.current?.destroy();
+    hlsRef.current = null;
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
       audio.removeAttribute("src");
       audio.load();
     }
-    hlsRef.current?.destroy();
-    hlsRef.current = null;
-  };
+  }, []);
 
-  // Poll live status from the backend; auto-tear-down when it goes offline.
+  const stop = useCallback(() => {
+    teardownMedia();
+    setPlaying(false);
+    setLoading(false);
+    setError("");
+  }, [teardownMedia]);
+
+  // Poll live status; tear down when stream goes offline.
   useEffect(() => {
     let active = true;
     const fetchStatus = async () => {
@@ -47,9 +66,9 @@ export function ListenClient() {
         const data = (await res.json()) as LiveStatus;
         if (!active) return;
         setStatus(data);
-        if (!data.isLive) teardownMedia();
+        if (!data.isLive) stop();
       } catch {
-        /* transient network error — keep last known status */
+        /* transient — keep last status */
       }
     };
     fetchStatus();
@@ -59,46 +78,85 @@ export function ListenClient() {
       clearInterval(id);
       teardownMedia();
     };
-  }, []);
+  }, [stop, teardownMedia]);
 
-  const stop = () => {
-    teardownMedia();
-    setPlaying(false);
-    setLoading(false);
-  };
+  const play = useCallback(
+    async (url?: string) => {
+      const rawUrl = url ?? status?.streamUrl;
+      const streamUrl = rawUrl ? toProxiedUrl(rawUrl) : undefined;
+      const audio = audioRef.current;
+      if (!streamUrl || !audio) return;
 
-  const play = async () => {
-    const url = status?.streamUrl;
-    const audio = audioRef.current;
-    if (!url || !audio) return;
-    setError("");
-    setLoading(true);
+      teardownMedia();
+      setError("");
+      setLoading(true);
 
-    // Safari/iOS play HLS natively; everyone else needs hls.js for .m3u8.
-    const isHls = url.includes(".m3u8");
-    try {
-      if (isHls && !audio.canPlayType("application/vnd.apple.mpegurl") && Hls.isSupported()) {
-        const hls = new Hls({ lowLatencyMode: true });
-        hlsRef.current = hls;
-        hls.loadSource(url);
-        hls.attachMedia(audio);
-        hls.on(Hls.Events.ERROR, (_e, data) => {
-          if (data.fatal) {
-            setError("স্ট্রিম লোড করা যায়নি");
-            stop();
-          }
-        });
-      } else {
-        audio.src = url;
+      const isHls = streamUrl.includes(".m3u8");
+
+      // Safari/iOS native HLS — just set src and play.
+      if (!isHls || audio.canPlayType("application/vnd.apple.mpegurl")) {
+        audio.src = streamUrl;
+        try {
+          await audio.play();
+          setPlaying(true);
+        } catch {
+          setError("চালানো যায়নি — আবার চেষ্টা করুন");
+        } finally {
+          setLoading(false);
+        }
+        return;
       }
-      await audio.play();
-      setPlaying(true);
-    } catch {
-      setError("চালানো যায়নি — আবার চেষ্টা করুন");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      if (!Hls.isSupported()) {
+        setError("এই ব্রাউজার HLS সাপোর্ট করে না");
+        setLoading(false);
+        return;
+      }
+
+      const hls = new Hls({
+        lowLatencyMode: true,
+        // Retry manifest aggressively — HLS files appear ~4s after RTMP connects.
+        manifestLoadingMaxRetry: 8,
+        manifestLoadingRetryDelay: 1000,
+        levelLoadingMaxRetry: 6,
+        levelLoadingRetryDelay: 1000,
+        fragLoadingMaxRetry: 6,
+      });
+      hlsRef.current = hls;
+      hls.loadSource(streamUrl);
+      hls.attachMedia(audio);
+
+      hls.once(Hls.Events.MANIFEST_PARSED, async () => {
+        try {
+          await audio.play();
+          setPlaying(true);
+        } catch {
+          setError("চালানো যায়নি — আবার চেষ্টা করুন");
+          teardownMedia();
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      hls.on(Hls.Events.ERROR, (_e, data) => {
+        if (!data.fatal) return;
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+          // Stream not ready yet (ffmpeg still starting) — retry in 3s.
+          setError("স্ট্রিম লোড হচ্ছে, একটু অপেক্ষা করুন…");
+          retryTimerRef.current = setTimeout(() => {
+            retryTimerRef.current = null;
+            play(rawUrl); // pass original url; play() will re-proxy it
+          }, 3000);
+        } else {
+          setError("স্ট্রিম লোড করা যায়নি");
+          teardownMedia();
+          setPlaying(false);
+          setLoading(false);
+        }
+      });
+    },
+    [status?.streamUrl, teardownMedia],
+  );
 
   const live = status?.isLive ?? false;
 
@@ -109,11 +167,18 @@ export function ListenClient() {
         onPlaying={() => {
           setPlaying(true);
           setLoading(false);
+          setError("");
         }}
         onWaiting={() => setLoading(true)}
         onPause={() => setPlaying(false)}
+        onError={() => {
+          setError("অডিও এরর — আবার চেষ্টা করুন");
+          setPlaying(false);
+          setLoading(false);
+        }}
       />
 
+      {/* Live / Offline badge */}
       <div
         className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${
           live
@@ -127,6 +192,7 @@ export function ListenClient() {
         {live ? "LIVE" : "অফলাইন"}
       </div>
 
+      {/* Title / speaker */}
       <div>
         <h1 className="text-2xl font-extrabold">
           {live && status?.title ? status.title : "লাইভ সম্প্রচার"}
@@ -136,13 +202,16 @@ export function ListenClient() {
         </p>
       </div>
 
+      {/* Play / Pause button */}
       <button
-        onClick={playing ? stop : play}
+        onClick={playing ? stop : () => play()}
         disabled={!live || loading}
         className={`flex h-20 w-20 items-center justify-center rounded-full text-white shadow-lg transition ${
           !live
             ? "cursor-not-allowed bg-gray-300 dark:bg-gray-700"
-            : "bg-gradient-to-br from-violet-500 to-sky-400 hover:scale-105"
+            : loading
+              ? "bg-gradient-to-br from-violet-400 to-sky-300"
+              : "bg-gradient-to-br from-violet-500 to-sky-400 hover:scale-105 active:scale-95"
         }`}
         aria-label={playing ? "থামান" : "শুনুন"}
       >
@@ -155,13 +224,14 @@ export function ListenClient() {
         )}
       </button>
 
+      {/* Listener count */}
       {live && (
         <p className="text-xs text-gray-400">{status?.listeners ?? 0} জন শুনছেন</p>
       )}
       {!live && (
         <p className="text-sm text-gray-400">এখন কোনো লাইভ সম্প্রচার চলছে না।</p>
       )}
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-amber-600 dark:text-amber-400">{error}</p>}
     </main>
   );
 }
