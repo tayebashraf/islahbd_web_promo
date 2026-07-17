@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useLang } from "@/components/providers/lang-provider";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Smartphone, Bell, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Bell, CheckCircle2, Smartphone } from "lucide-react";
+import React, { useState } from "react";
 
 const PERKS = [
   { bn: "সম্পূর্ণ বিনামূল্যে", en: "Completely free" },
