@@ -6,7 +6,7 @@ import Hls from "hls.js";
 const BACKEND = "https://islahbd-production.up.railway.app";
 const STATUS_URL = `${BACKEND}/api/live/status/`;
 const POLL_MS = 5000;
-const CDN_ORIGIN = "https://cdn.eslahbd.com/live";
+const CDN_ORIGIN = "https://cdn.islahbd.com/live";
 
 // Rewrite CDN HLS URLs to same-origin proxy to avoid browser CORS blocks.
 function toProxiedUrl(streamUrl: string): string {
