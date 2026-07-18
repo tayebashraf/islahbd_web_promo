@@ -263,8 +263,29 @@
 }
 
 @media (max-width: 768px) {
-    .wrapper :global(header) { padding: 60px 20px 30px; }
-    .wrapper :global(section) { padding: 25px 20px; border-radius: var(--radius-md); }
-    .wrapper :global(h1) { font-size: 1.8rem; }
-    .wrapper :global(h2) { font-size: 1.3rem; }
+    .wrapper :global(header) { padding: 60px 16px 30px; }
+    .wrapper :global(.container) { padding: 0 16px 60px; }
+    .wrapper :global(section) { padding: 24px 16px; border-radius: var(--radius-md); margin-bottom: 24px; }
+    .wrapper :global(h1) { font-size: 2rem; }
+    .wrapper :global(h2) { font-size: 1.3rem; gap: 12px; margin-bottom: 20px; }
+    .wrapper :global(.section-num) { width: 28px; height: 28px; font-size: 0.9rem; }
+    
+    .wrapper :global(p), 
+    .wrapper :global(ul), 
+    .wrapper :global(ol) { font-size: 0.95rem; margin-bottom: 16px; }
+    
+    .wrapper :global(.info-grid) { grid-template-columns: 1fr; gap: 12px; margin-bottom: 40px; }
+    .wrapper :global(.info-card) { padding: 16px; }
+    
+    .wrapper :global(.action-box) { padding: 20px; margin: 24px 0; }
+    .wrapper :global(.alert-box) { padding: 20px; margin: 24px 0; }
+    
+    .wrapper :global(.data-table-wrapper) { 
+        margin: 24px 0; 
+        -webkit-overflow-scrolling: touch; 
+    }
+    .wrapper :global(.data-matrix th), 
+    .wrapper :global(.data-matrix td) { padding: 14px 16px; }
+    
+    .wrapper :global(footer) { padding: 50px 16px; font-size: 0.85rem; }
 }
