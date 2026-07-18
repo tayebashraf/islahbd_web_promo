@@ -3,8 +3,7 @@ import { Inter, Playfair_Display, Amiri } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 
 const inter = Inter({
@@ -79,9 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            {children}
           </LangProvider>
         </ThemeProvider>
       </body>
