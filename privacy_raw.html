@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | IslahBD Mobile Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A1121;
+            --surface: #151E32;
+            --primary: #E5A93C;
+            --primary-soft: rgba(229, 169, 60, 0.08);
+            --accent: #F3C65F;
+            --success: #43A047;
+            --text-main: #FFFFFF;
+            --text-dim: #A0AEC0;
+            --text-ghost: #718096;
+            --border: #232E48;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.2);
+            --shadow-md: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(var(--primary-soft) 1.5px, transparent 1.5px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 24px 60px;
+            background: linear-gradient(180deg, #0D172E 0%, rgba(10,17,33,0) 100%);
+        }
+
+        .label-pill {
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-soft);
+            padding: 8px 20px;
+            border-radius: 100px;
+            border: 1px solid rgba(229, 169, 60, 0.2);
+        }
+
+        h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            margin: 0;
+            letter-spacing: -0.04em;
+            line-height: 1.2;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            color: var(--primary);
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px 100px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .info-card {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-card span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-ghost);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .info-card strong {
+            font-size: 1rem;
+            color: var(--text-main);
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        section {
+            background: var(--surface);
+            padding: 45px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-num {
+            background: var(--primary);
+            color: #0A1121;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 35px 0 15px;
+        }
+
+        p, ul, ol { color: var(--text-dim); margin-bottom: 22px; font-size: 1.02rem; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+
+        .data-table-wrapper {
+            margin: 30px 0;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        .data-matrix {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: var(--surface);
+        }
+
+        .data-matrix th, .data-matrix td {
+            padding: 18px 22px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-matrix th {
+            background: #0E172A;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .data-matrix td { color: var(--text-dim); font-size: 0.95rem; }
+        .data-matrix strong { color: var(--text-main); font-weight: 600; }
+
+        .alert-box {
+            background: rgba(229, 169, 60, 0.04);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            border-radius: 4px var(--radius-md) var(--radius-md) 4px;
+            margin: 30px 0;
+        }
+
+        .alert-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .action-box {
+            background: var(--primary-soft);
+            border: 1.5px dashed var(--primary);
+            padding: 32px;
+            border-radius: var(--radius-md);
+            margin: 32px 0;
+        }
+
+        .action-box strong.title {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+
+        footer {
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding: 80px 24px;
+            color: var(--text-ghost);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 60px 20px 30px; }
+            section { padding: 25px 20px; border-radius: var(--radius-md); }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <header>
+        <div class="label-pill">Google Play Developer Policy Compliance Document</div>
+        <h1>Privacy Policy</h1>
+        <div class="subtitle">IslahBD: Non-Tracking Spiritual Companion Application</div>
+    </header>
+
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <span>Developer / Entity</span>
+                <strong>Neuroxie Lab</strong>
+            </div>
+            <div class="info-card">
+                <span>Application Name</span>
+                <strong>IslahBD</strong>
+            </div>
+            <div class="info-card">
+                <span>Application Package</span>
+                <strong>com.islahbd.app</strong>
+            </div>
+            <div class="info-card">
+                <span>Effective Date</span>
+                <strong>June 1, 2026</strong>
+            </div>
+        </div>
+
+        <section>
+            <h2><div class="section-num">1</div>Introduction & Core Commitment</h2>
+            <p>This Privacy Policy outlines how <strong>Neuroxie Lab</strong> ("we", "our", or "us") manages personal information and system access inside the <strong>IslahBD</strong> mobile application (the "App"). We hold consumer privacy in the highest regard, especially within digital tools meant for prayer tracking and spiritual assistance.</p>
+            <p>To establish explicit transparency under the <strong>Google Play Developer Program Policies</strong> regarding user transparency, this document details how our app accesses device hardware features. IslahBD is fundamentally architected as a <strong>Zero-Data-Collection Application</strong>. We do not provision client server instances, and we do not compile behavioral profiling or metadata on our users.</p>
+        </section>
+
+        <section>
+            <h2><div class="section-num">2</div>Comprehensive Data & Permission Matrix</h2>
+            <p>Google Play User Data Policies require explicit declarations of sensitive device permissions. Below is an exhaustive breakdown of the hardware capabilities requested by IslahBD, detailing exactly why they are required and how they are isolated:</p>
+
+            <div class="data-table-wrapper">
+                <table class="data-matrix">
+                    <thead>
+                        <tr>
+                            <th>Android Permission / Data Category</th>
+                            <th>Collection Status</th>
+                            <th>Core Purpose & Functional Necessity</th>
+                            <th>Storage / Transfer Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ACCESS_FINE_LOCATION</strong><br>(Precise GPS Coordinates)</td>
+                            <td><strong style="color: #E53935;">NOT COLLECTED</strong></td>
+                            <td>Required directly to run immediate, local geometric math equations against global geographical grids to compute the precise angular direction of the Qibla (Kaaba compass orientation).</td>
+                            <td><strong>On-Device Transient Memory Only:</strong> Processed instantly in volatile runtime RAM. Never written to permanent disk storage; never transmitted over the internet to any remote cloud servers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ACCESS_COARSE_LOCATION</strong><br>(Approximate Network Location)</td>
+                            <td><strong style="color: #E53935;">NOT COLLECTED</strong></td>
+                            <td>Required to automatically parse regional time zones and city location clusters. This determines accurate astronomical calculations for daily localized Islamic Prayer Times (Salah timelines).</td>
+                            <td><strong>On-Device Isolation:</strong> Evaluated inside the client software layer sandbox environment. Completely isolated from external endpoints.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>POST_NOTIFICATIONS</strong><br>(Push Notification Handling)</td>
+                            <td><strong style="color: #E53935;">NOT COLLECTED</strong></td>
+                            <td>Required to fire prompt triggers regarding ongoing live bayans, regional islamic alerts, or custom operational schedule notices.</td>
+                            <td><strong>Local Device Triggers:</strong> Managed natively via the local system notification registry. No centralized tracking tags attached.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert-box">
+                <strong>Google Play Developer Policy Compliance Affirmation:</strong>
+                Pursuant to the <em>Google Play Personal and Sensitive User Data Policy</em>, we explicitly declare that IslahBD does NOT transmit, share, upload, or sell your precise or approximate location details, device identifier hashes, or internal device parameters to any developer system, ad network, analytics provider, or external third-party infrastructure.
+            </div>
+        </section>
+
+        <section>
+            <h2><div class="section-num">3</div>No Account Registration & Anonymous Accessibility</h2>
+            <p>To maximize security and eliminate compliance liabilities, IslahBD bypasses traditional cloud account generation systems entirely:</p>
+            <ul>
+                <li><strong>No Authentication Controls:</strong> Users access 100% of the internal application modules without logging in, providing email addresses, phone contacts, or authenticating profile metrics.</li>
+                <li><strong>No Session Logs:</strong> There are no developer backend logs detailing which interfaces are tapped, ensuring total anonymity.</li>
+                <li><strong>Absence of Third-Party Ad Networks:</strong> IslahBD does not use third-party programmatic advertisement banners or surveillance marketing software development kits (SDKs), preventing covert device profiling.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><div class="section-num">4</div>Data Storage, Retention, and Right to Deletion</h2>
+            <p>Because IslahBD does not store or process your personal data on any server, there is no personal data held in the cloud to delete. This architectural model provides users with ultimate data sovereignty.</p>
+            <p>Any local configurations or system variables chosen by the user are stored entirely within the device’s private sandbox storage space. To reset, wipe, or request absolute deletion of this local configuration cache, follow the manual clearing protocol below:</p>
+
+            <div class="action-box">
+                <strong class="title">Complete Local Data Deletion Steps:</strong>
+                <ol class="protocol-list" style="margin: 0; padding-left: 15px;">
+                    <li>Open your device's primary <strong>Settings</strong> interface.</li>
+                    <li>Navigate to the <strong>Apps</strong> or <strong>Application Manager</strong> category.</li>
+                    <li>Locate and select <strong>IslahBD</strong> from the device application registry.</li>
+                    <li>Tap on <strong>Storage</strong> and select <strong>"Clear Storage" / "Clear Data"</strong>. This instantly eliminates all locally cached preferences.</li>
+                    <li>Proceed to choose <strong>Uninstall</strong> to completely purge the underlying binary files and configurations from your mobile device.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2><div class="section-num">5</div>Children's Privacy Protection (COPPA Compliance)</h2>
+            <p>IslahBD is engineered as a spiritual and lifestyle utility tailored for general audiences. However, to stay fully aligned with the strict child protection guidelines of global frameworks and the <strong>Google Play Families Policy</strong>, we enforce clear boundaries:</p>
+            <p>The App is intentionally designated and targeted for use by individuals <strong>aged 16 and older</strong>. We do not knowingly solicit or collect data from children under the age of 13. In the event that a child under 13 activates the app, no personal data can be harvested due to our fundamental zero-data-collection infrastructure. If you suspect that local device configurations contain variables you wish to remove, simply execute the data erasure steps listed in Section 4.</p>
+        </section>
+
+        <section>
+            <h2><div class="section-num">6</div>Updates to This Privacy Policy</h2>
+            <p>We may update this legal document from time to time to accommodate evolving software optimizations, feature sets, or updates to the Google Play Developer Distribution Agreement. Any changes will be marked by an updated "Effective Date" at the top of this page. We highly recommend that our user community inspect this link periodically to stay continuously informed about our absolute data isolation models.</p>
+        </section>
+
+        <section>
+            <h2><div class="section-num">7</div>Regulatory Compliance Contact Information</h2>
+            <p>For any clarifying technical questions regarding the software sandboxing process, sensor computation logic, or to confirm policy validation details during Google Play store inspection cycles, please contact our core oversight desk:</p>
+            
+            <div class="info-card" style="margin-top: 20px; line-height: 1.9;">
+                <strong>Neuroxie Lab // Legal and Compliance Operations</strong><br>
+                Official Corporate Site: <a href="https://neuroxie.com" target="_blank">neuroxie.com</a><br>
+                Dedicated Legal Inquiries Email: <a href="mailto:support@neuroxie.com">support@neuroxie.com</a><br>
+                Primary Application Scope: Bangladesh Geographic Market Compliance
+            </div>
+        </section>
+
+        <footer>
+            &copy; 2026 Neuroxie Lab. All Rights Reserved.<br>
+            Protected Under End-to-End Local Client-Side Sandbox Execution Architecture.
+        </footer>
+    </div>
+</body>
+</html>
