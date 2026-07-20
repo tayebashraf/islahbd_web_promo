@@ -1,4 +1,4 @@
-const BACKEND = "https://islahbd-production.up.railway.app";
+const BACKEND = "https://api.islahbd.com";
 
 export interface LiveStatus {
   isLive: boolean;

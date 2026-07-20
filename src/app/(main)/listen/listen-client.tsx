@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Hls from "hls.js";
 
-const BACKEND = "https://islahbd-production.up.railway.app";
+const BACKEND = "https://api.islahbd.com";
 const STATUS_URL = `${BACKEND}/api/live/status/`;
 const POLL_MS = 5000;
 const CDN_ORIGIN = "https://cdn.islahbd.com/live";
