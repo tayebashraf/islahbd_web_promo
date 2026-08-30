@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Hls from "hls.js";
+import { Play, Pause, Radio, Users, Loader2, AlertCircle, Clock, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const BACKEND = "https://api.islahbd.com";
 const STATUS_URL = `${BACKEND}/api/live/status/`;
+const RECORDING_URL = `${BACKEND}/api/live/recording/`;
 const POLL_MS = 5000;
 const CDN_ORIGIN = "https://cdn.islahbd.com/live";
 
@@ -25,14 +28,45 @@ interface LiveStatus {
   streamUrl: string;
 }
 
+interface LastRecording {
+  title: string;
+  speaker: string;
+  location: string;
+  audioUrl: string;
+  duration: string;
+  endedAt: string | null;
+}
+
+function isRecording(raw: unknown): raw is LastRecording {
+  return !!raw && typeof raw === "object" && !!(raw as LastRecording).audioUrl;
+}
+
+function timeAgoBn(iso: string | null): string {
+  if (!iso) return "";
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return "এইমাত্র";
+  if (mins < 60) return `${mins} মিনিট আগে`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} ঘণ্টা আগে`;
+  const days = Math.floor(hours / 24);
+  return `${days} দিন আগে`;
+}
+
 export function ListenClient() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [status, setStatus] = useState<LiveStatus | null>(null);
+  const [recording, setRecording] = useState<LastRecording | null>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Separate player state for the recent-live recording, so it can play
+  // independently of (and be interrupted by) the live stream.
+  const recAudioRef = useRef<HTMLAudioElement>(null);
+  const [recPlaying, setRecPlaying] = useState(false);
 
   const teardownMedia = useCallback(() => {
     if (retryTimerRef.current) {
@@ -80,12 +114,36 @@ export function ListenClient() {
     };
   }, [stop, teardownMedia]);
 
+  // Fetch the most recent finished broadcast once, and again whenever the
+  // live stream ends (a fresh recording appears right after that).
+  useEffect(() => {
+    let active = true;
+    const fetchRecording = async () => {
+      try {
+        const res = await fetch(RECORDING_URL, { cache: "no-store" });
+        if (!res.ok) return;
+        const data: unknown = await res.json();
+        if (!active) return;
+        setRecording(isRecording(data) ? data : null);
+      } catch {
+        /* transient — keep last known recording */
+      }
+    };
+    fetchRecording();
+    return () => {
+      active = false;
+    };
+  }, [status?.isLive]);
+
   const play = useCallback(
     async (url?: string) => {
       const rawUrl = url ?? status?.streamUrl;
       const streamUrl = rawUrl ? toProxiedUrl(rawUrl) : undefined;
       const audio = audioRef.current;
       if (!streamUrl || !audio) return;
+
+      recAudioRef.current?.pause();
+      setRecPlaying(false);
 
       teardownMedia();
       setError("");
@@ -158,10 +216,23 @@ export function ListenClient() {
     [status?.streamUrl, teardownMedia],
   );
 
+  const toggleRecording = useCallback(() => {
+    const audio = recAudioRef.current;
+    if (!audio || !recording) return;
+    if (recPlaying) {
+      audio.pause();
+      return;
+    }
+    // Interrupt the live stream if it's playing — one audio source at a time.
+    stop();
+    if (!audio.src) audio.src = recording.audioUrl;
+    audio.play().catch(() => setError("রেকর্ডিং চালানো যায়নি"));
+  }, [recPlaying, recording, stop]);
+
   const live = status?.isLive ?? false;
 
   return (
-    <main className="mx-auto flex min-h-[70vh] max-w-md flex-col items-center justify-center gap-6 px-4 py-12 text-center">
+    <main className="mx-auto flex min-h-[75vh] max-w-md flex-col gap-6 px-4 py-12">
       <audio
         ref={audioRef}
         onPlaying={() => {
@@ -177,77 +248,141 @@ export function ListenClient() {
           setLoading(false);
         }}
       />
+      <audio
+        ref={recAudioRef}
+        onPlay={() => setRecPlaying(true)}
+        onPause={() => setRecPlaying(false)}
+        onEnded={() => setRecPlaying(false)}
+      />
 
-      {/* Live / Offline badge */}
-      <div
-        className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${
-          live
-            ? "bg-red-500/15 text-red-600 dark:text-red-400"
-            : "bg-gray-500/10 text-gray-500"
-        }`}
-      >
-        <span
-          className={`h-2 w-2 rounded-full ${live ? "animate-pulse bg-red-500" : "bg-gray-400"}`}
-        />
-        {live ? "LIVE" : "অফলাইন"}
-      </div>
-
-      {/* Title / speaker */}
-      <div>
-        <h1 className="text-2xl font-extrabold">
-          {live && status?.title ? status.title : "লাইভ সম্প্রচার"}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {live && status?.speaker ? status.speaker : "ইসলাহবিডি"}
-        </p>
-      </div>
-
-      {/* Play / Pause button */}
-      <button
-        onClick={playing ? stop : () => play()}
-        disabled={!live || loading}
-        className={`flex h-20 w-20 items-center justify-center rounded-full text-white shadow-lg transition ${
-          !live
-            ? "cursor-not-allowed bg-gray-300 dark:bg-gray-700"
-            : loading
-              ? "bg-gradient-to-br from-violet-400 to-sky-300"
-              : "bg-gradient-to-br from-violet-500 to-sky-400 hover:scale-105 active:scale-95"
-        }`}
-        aria-label={playing ? "থামান" : "শুনুন"}
-      >
-        {loading ? (
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
-        ) : playing ? (
-          <PauseIcon />
-        ) : (
-          <PlayIcon />
+      {/* ── Live player card ── */}
+      <section
+        className={cn(
+          "relative overflow-hidden rounded-3xl border border-border bg-card p-8 text-center shadow-sm",
+          live && "border-[#CBA135]/30",
         )}
-      </button>
+      >
+        {/* Ambient glow when live */}
+        {live && (
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#CBA135]/10 via-transparent to-transparent" />
+        )}
 
-      {/* Listener count */}
-      {live && (
-        <p className="text-xs text-gray-400">{status?.listeners ?? 0} জন শুনছেন</p>
+        <div className="relative flex flex-col items-center gap-6">
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold",
+              live
+                ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                : "bg-muted text-muted-foreground",
+            )}
+          >
+            <span
+              className={cn(
+                "h-2 w-2 rounded-full",
+                live ? "animate-pulse bg-red-500" : "bg-muted-foreground/50",
+              )}
+            />
+            {live ? "সরাসরি সম্প্রচার" : "অফলাইন"}
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-extrabold text-card-foreground">
+              {live && status?.title ? status.title : "লাইভ সম্প্রচার"}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {live && status?.speaker ? status.speaker : "ইসলাহবিডি"}
+            </p>
+          </div>
+
+          <button
+            onClick={playing ? stop : () => play()}
+            disabled={!live || loading}
+            aria-label={playing ? "থামান" : "শুনুন"}
+            className={cn(
+              "flex h-20 w-20 items-center justify-center rounded-full text-white shadow-lg transition",
+              !live
+                ? "cursor-not-allowed bg-muted text-muted-foreground shadow-none"
+                : loading
+                  ? "bg-[#CBA135]/70"
+                  : "bg-[#CBA135] hover:scale-105 hover:bg-[#b8912e] active:scale-95",
+            )}
+          >
+            {loading ? (
+              <Loader2 className="h-7 w-7 animate-spin" />
+            ) : playing ? (
+              <Pause className="h-8 w-8" fill="currentColor" />
+            ) : (
+              <Play className="ml-1 h-8 w-8" fill="currentColor" />
+            )}
+          </button>
+
+          {live ? (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Users className="h-3.5 w-3.5" />
+              {status?.listeners ?? 0} জন শুনছেন
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              এখন কোনো লাইভ সম্প্রচার চলছে না।
+            </p>
+          )}
+
+          {error && (
+            <div className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {error}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Recent live (last recording) card ── */}
+      {!live && recording && (
+        <section className="rounded-3xl border border-border bg-card p-5 shadow-sm">
+          <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#065F46] dark:text-[#10B981]">
+            <Radio className="h-3.5 w-3.5" />
+            সাম্প্রতিক লাইভ
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggleRecording}
+              aria-label={recPlaying ? "থামান" : "শুনুন"}
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#065F46] text-white shadow-md transition hover:scale-105 active:scale-95 dark:bg-[#059669]"
+            >
+              {recPlaying ? (
+                <Pause className="h-5 w-5" fill="currentColor" />
+              ) : (
+                <Play className="ml-0.5 h-5 w-5" fill="currentColor" />
+              )}
+            </button>
+
+            <div className="min-w-0 flex-1 text-left">
+              <p className="truncate font-bold text-card-foreground">
+                {recording.title || "সরাসরি সম্প্রচার"}
+              </p>
+              <p className="truncate text-sm text-muted-foreground">
+                {recording.speaker || "ইসলাহবিডি"}
+              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground/80">
+                {recording.duration && (
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {recording.duration}
+                  </span>
+                )}
+                {recording.location && (
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {recording.location}
+                  </span>
+                )}
+                {recording.endedAt && <span>{timeAgoBn(recording.endedAt)}</span>}
+              </div>
+            </div>
+          </div>
+        </section>
       )}
-      {!live && (
-        <p className="text-sm text-gray-400">এখন কোনো লাইভ সম্প্রচার চলছে না।</p>
-      )}
-      {error && <p className="text-sm text-amber-600 dark:text-amber-400">{error}</p>}
     </main>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-
-function PauseIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-    </svg>
   );
 }
