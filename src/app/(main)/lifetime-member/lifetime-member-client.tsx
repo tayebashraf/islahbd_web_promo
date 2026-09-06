@@ -104,7 +104,7 @@ function CountdownBox({ value, label }: { value: number; label: string }) {
   );
 }
 
-export function LifetimeMember() {
+export function LifetimeMemberClient() {
   const { t } = useLang();
   const [modalOpen, setModalOpen] = useState(false);
   const [iframeLoading, setIframeLoading] = useState(true);
@@ -128,8 +128,7 @@ export function LifetimeMember() {
 
   return (
     <section
-      id="lifetime-member"
-      className="py-24 lg:py-32 relative overflow-hidden"
+      className="py-16 sm:py-20 lg:py-28 relative overflow-hidden"
       aria-labelledby="lifetime-member-heading"
     >
       <div className="absolute inset-0 gradient-gold opacity-[0.05] pointer-events-none" />

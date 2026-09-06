@@ -41,6 +41,7 @@ export const NAV_ITEMS = [
       { href: "/qibla", label: "Qibla", labelBn: "কিবলা" },
       { href: "/calendar", label: "Islamic Calendar", labelBn: "ইসলামিক ক্যালেন্ডার" },
       { href: "/nasheed", label: "Hamd & Naat", labelBn: "হামদ ও নাত" },
+      { href: "/lifetime-member", label: "Lifetime Member", labelBn: "আজীবন সদস্য" },
       { href: "/blog", label: "Articles", labelBn: "নিবন্ধ" },
     ],
   },
