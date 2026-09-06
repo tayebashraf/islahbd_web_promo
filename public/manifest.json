@@ -1,13 +1,17 @@
 {
-  "name": "Tazkirah — ইসলামিক ডিজিটাল সঙ্গী",
-  "short_name": "Tazkirah",
+  "name": "islahBD — ইসলামিক ডিজিটাল সঙ্গী",
+  "short_name": "islahBD",
   "description": "প্রিমিয়াম ইসলামিক লাইফস্টাইল প্ল্যাটফর্ম",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F8F7F3",
   "theme_color": "#CBA135",
   "orientation": "portrait-primary",
-  "categories": ["lifestyle", "religion", "education"],
+  "categories": [
+    "lifestyle",
+    "religion",
+    "education"
+  ],
   "lang": "bn",
   "icons": [
     {
