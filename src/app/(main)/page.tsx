@@ -4,6 +4,7 @@ import { Features } from "@/components/home/features";
 import { PrayerWidget } from "@/components/home/prayer-widget";
 import { AyahSection } from "@/components/home/ayah-section";
 import { Testimonials } from "@/components/home/testimonials";
+import { LifetimeMember } from "@/components/home/lifetime-member";
 import { AppDownload } from "@/components/home/app-download";
 import { BlogPreview } from "@/components/home/blog-preview";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
@@ -25,6 +26,7 @@ export default async function HomePage() {
       <PrayerWidget />
       <AyahSection />
       <Testimonials />
+      <LifetimeMember />
       <BlogPreview />
       <AppDownload />
     </>
