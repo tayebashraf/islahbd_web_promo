@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "next-themes";
 import { useLang } from "@/components/providers/lang-provider";
 import {
   Crown,
@@ -26,17 +24,13 @@ import {
   UserPlus,
   UserCheck,
   PhoneCall,
-  Globe,
-  Sun,
-  Moon,
-  ArrowLeft,
   Calendar,
   Clock,
   Navigation,
   Check,
   Copy,
   ChevronRight,
-  Share2,
+  MessageCircle,
 } from "lucide-react";
 import { LIFETIME_FORM_URL } from "@/lib/constants";
 
@@ -242,18 +236,18 @@ function useCountdown(target: Date) {
 function CountdownBox({ value, label, isSeconds }: { value: number; label: string; isSeconds?: boolean }) {
   const formatted = value < 10 ? `0${value}` : `${value}`;
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex-1 min-w-0 flex flex-col items-center">
       <div
-        className={`w-14 h-14 sm:w-18 sm:h-18 flex items-center justify-center rounded-2xl bg-card border ${
-          isSeconds ? "border-gold/60 shadow-gold/10" : "border-border"
-        } shadow-lg relative overflow-hidden group`}
+        className={`w-full max-w-[70px] h-12 sm:h-16 flex items-center justify-center rounded-xl sm:rounded-2xl bg-card border ${
+          isSeconds ? "border-gold/60 shadow-sm" : "border-border"
+        } relative overflow-hidden`}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-gold/10 to-transparent opacity-50 pointer-events-none" />
-        <span className="text-xl sm:text-2xl font-extrabold text-foreground font-display tracking-tight">
+        <span className="text-base sm:text-2xl font-extrabold text-foreground font-display tracking-tight">
           {formatted}
         </span>
       </div>
-      <span className="mt-2 text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+      <span className="mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
         {label}
       </span>
     </div>
@@ -261,20 +255,13 @@ function CountdownBox({ value, label, isSeconds }: { value: number; label: strin
 }
 
 export function LifetimeMemberClient() {
-  const { t, lang, setLang } = useLang();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { t } = useLang();
   const [modalOpen, setModalOpen] = useState(false);
   const [iframeLoading, setIframeLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [copiedNumber, setCopiedNumber] = useState<string | null>(null);
-  const [shared, setShared] = useState(false);
 
   const { days, hours, minutes, seconds } = useCountdown(TARGET_DATE);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const openModal = (tierId?: string) => {
     if (tierId) setSelectedTier(tierId);
@@ -286,24 +273,6 @@ export function LifetimeMemberClient() {
     navigator.clipboard.writeText(text);
     setCopiedNumber(text);
     setTimeout(() => setCopiedNumber(null), 2500);
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "আজীবন সদস্য সম্মেলন ২০২৬ — জামেআ মারকাযুল ইহসান ঢাকা",
-          text: "জামেআ মারকাযুল ইহসান ঢাকার আজীবন সদস্য হয়ে দ্বীনি খেদমতে শরীক হোন এবং সদকায়ে জারিয়ার অংশীদার হোন।",
-          url: window.location.href,
-        });
-        return;
-      } catch {
-        // Fallback to copy
-      }
-    }
-    copyToClipboard(window.location.href);
-    setShared(true);
-    setTimeout(() => setShared(false), 2500);
   };
 
   useEffect(() => {
@@ -318,103 +287,35 @@ export function LifetimeMemberClient() {
   }, [modalOpen]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground relative selection:bg-gold/30 selection:text-foreground">
-      {/* ─── STANDALONE TOP FLOATING UTILITY BAR (No standard navbar) ─── */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border/60 transition-all">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Back to main site / brand */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 group focus-ring rounded-xl py-1 px-2 -ml-2 text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-all"
-            aria-label={t("মূল ওয়েবসাইটে ফিরে যান", "Back to Main Website")}
-          >
-            <div className="w-8 h-8 rounded-lg gradient-gold flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <span className="font-bold text-xs text-[#111827]">ই</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-bold text-sm tracking-tight text-foreground leading-none">
-                islahbd
-              </span>
-              <span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
-                {t("মূল সাইট", "Main Site")}
-              </span>
-            </div>
-          </Link>
-
-          {/* Quick Action Badges */}
-          <div className="flex items-center gap-2">
-            {/* Share button */}
-            <button
-              onClick={handleShare}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-secondary text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
-              aria-label={t("শেয়ার করুন", "Share")}
-            >
-              {shared ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
-              <span>{shared ? t("লিংক কপি হয়েছে", "Link Copied") : t("শেয়ার", "Share")}</span>
-            </button>
-
-            {/* Language Switcher */}
-            <button
-              onClick={() => setLang(lang === "bn" ? "en" : "bn")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-secondary text-xs font-semibold text-foreground transition-all focus-ring"
-              aria-label={t("ভাষা পরিবর্তন করুন", "Toggle Language")}
-            >
-              <Globe className="w-3.5 h-3.5 text-gold" />
-              <span>{lang === "bn" ? "EN" : "বাংলা"}</span>
-            </button>
-
-            {/* Theme Toggle */}
-            {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-9 h-9 rounded-xl border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all focus-ring"
-                aria-label={t("থিম পরিবর্তন", "Toggle Theme")}
-              >
-                {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
-              </button>
-            )}
-
-            {/* Primary Apply Button */}
-            <button
-              onClick={() => openModal()}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl gradient-gold text-[#111827] font-semibold text-xs shadow-md hover:shadow-lg hover:brightness-105 active:scale-95 transition-all"
-            >
-              <Crown className="w-3.5 h-3.5" />
-              <span>{t("সদস্য আবেদন", "Apply Now")}</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* ─── MAIN CONTENT ─── */}
-      <main className="flex-1 relative overflow-hidden py-10 sm:py-16 lg:py-20" id="main-content">
+    <div className="min-h-screen flex flex-col bg-background text-foreground relative selection:bg-gold/30 selection:text-foreground pb-20 sm:pb-12">
+      {/* ─── MAIN CONTENT (No header, No footer) ─── */}
+      <main className="flex-1 relative overflow-hidden py-6 sm:py-12 lg:py-16" id="main-content">
         {/* Ambient Decorative Background */}
         <div className="absolute inset-0 gradient-gold opacity-[0.04] pointer-events-none" />
         <div className="absolute inset-0 islamic-pattern-subtle opacity-40 pointer-events-none" />
-        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gold/10 blur-[120px] pointer-events-none" />
-        <div className="absolute top-1/2 -left-32 w-96 h-96 rounded-full bg-emerald-deep/10 blur-[140px] pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-gold/10 blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 -left-32 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-emerald-deep/10 blur-[140px] pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16">
+        <div className="max-w-5xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10 space-y-8 sm:space-y-12 lg:space-y-16">
           {/* 1. HERO BANNER */}
           <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-center pt-2 sm:pt-4"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
             {/* Calligraphy / Bismillah */}
-            <p className="font-arabic text-xl sm:text-2xl text-gold mb-3 opacity-90 select-none">
+            <p className="font-arabic text-lg sm:text-2xl text-gold mb-2.5 opacity-90 select-none">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
 
             {/* Organization Tag */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold-dark dark:text-gold text-xs sm:text-sm font-semibold mb-4">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold-dark dark:text-gold text-xs sm:text-sm font-semibold mb-3.5">
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
               <span>{t("জামেআ মারকাযুল ইহসান ঢাকা", "Jamea Markazul Ihsan Dhaka")}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold text-foreground tracking-tight mb-4 text-balance">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-foreground tracking-tight mb-3 text-balance leading-tight">
               {t(
                 <>
                   আজীবন সদস্য <span className="text-gold">সম্মেলন ২০২৬</span>
@@ -425,7 +326,7 @@ export function LifetimeMemberClient() {
               )}
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed text-pretty">
+            <p className="text-xs sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed text-pretty px-2">
               {t(
                 "পরম শ্রদ্ধেয় শায়েখ হযরত মাওলানা শাহ তৈয়্যেব আশরাফ সাহেব (দামাত বারাকাতুহুম) এর স্নেহধন্য দ্বীনি মারকাযের স্থায়ী সহযোগী ও সদকায়ে জারিয়ার অংশীদার হোন।",
                 "Join as a noble Lifetime Member of Jamea Markazul Ihsan Dhaka under the guidance of Hazrat Maulana Shah Tayyeb Ashraf Shaheb and earn perpetual rewards."
@@ -435,31 +336,31 @@ export function LifetimeMemberClient() {
 
           {/* 2. DATE, VENUE & COUNTDOWN CARD */}
           <motion.div
-            className="rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/5 p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden"
-            initial={{ opacity: 0, y: 24 }}
+            className="rounded-2xl sm:rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/5 p-4 sm:p-7 lg:p-10 shadow-xl relative overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="absolute top-0 right-0 translate-x-8 -translate-y-8 w-40 h-40 bg-gold/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 translate-x-8 -translate-y-8 w-32 sm:w-40 h-32 sm:h-40 bg-gold/10 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="grid lg:grid-cols-12 gap-8 items-center">
+            <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 items-center">
               {/* Event Details */}
-              <div className="lg:col-span-6 space-y-4 text-center lg:text-left">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+              <div className="lg:col-span-6 space-y-3.5 text-center lg:text-left">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
                   <Calendar className="w-3.5 h-3.5" />
-                  {t("সম্মেলন তারিখ ও সময়", "Conference Date & Time")}
+                  <span>{t("সম্মেলন তারিখ ও সময়", "Conference Date & Time")}</span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-dark dark:text-gold font-display">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gold-dark dark:text-gold font-display leading-snug">
                   {t("৫ই ডিসেম্বর ২০২৬ (শনিবার)", "5 December 2026 (Saturday)")}
                 </h2>
 
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center justify-center lg:justify-start gap-2">
+                <div className="space-y-1.5 text-xs sm:text-sm text-muted-foreground">
+                  <div className="flex items-center justify-center lg:justify-start gap-1.5">
                     <Clock className="w-4 h-4 text-gold shrink-0" />
                     <span>{t("সকাল ৯:০০ ঘটিকা হইতে আরম্ভ", "Starts at 09:00 AM")}</span>
                   </div>
-                  <div className="flex items-start justify-center lg:justify-start gap-2">
+                  <div className="flex items-start justify-center lg:justify-start gap-1.5">
                     <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
                     <span className="leading-snug">
                       {t(
@@ -470,16 +371,16 @@ export function LifetimeMemberClient() {
                   </div>
                 </div>
 
-                {/* Direct Google Maps Navigation button */}
-                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                {/* Direct Google Maps & WhatsApp Navigation */}
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <a
                     href="https://maps.google.com/?q=Demra,Dhaka,Bangladesh"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border bg-background hover:bg-secondary text-xs font-medium text-foreground transition-all"
+                    className="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl border border-border bg-background hover:bg-secondary text-xs font-semibold text-foreground transition-all"
                   >
                     <Navigation className="w-3.5 h-3.5 text-gold" />
-                    {t("গুগল ম্যাপে লোকেশন", "View on Google Maps")}
+                    <span>{t("গুগল ম্যাপে লোকেশন", "View Location")}</span>
                   </a>
                   <a
                     href={`https://wa.me/8801916387935?text=${encodeURIComponent(
@@ -490,26 +391,26 @@ export function LifetimeMemberClient() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 text-xs font-medium transition-all"
+                    className="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl bg-[#25D366]/15 text-[#25D366] hover:bg-[#25D366]/25 text-xs font-semibold transition-all"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5" />
-                    {t("হোয়াটসঅ্যাপে তথ্য নিন", "Ask on WhatsApp")}
+                    <span>{t("হোয়াটসঅ্যাপে তথ্য নিন", "Ask on WhatsApp")}</span>
                   </a>
                 </div>
               </div>
 
               {/* Countdown Clocks */}
-              <div className="lg:col-span-6 flex flex-col items-center justify-center bg-background/50 backdrop-blur-md rounded-2xl p-6 border border-border/80">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
+              <div className="lg:col-span-6 flex flex-col items-center justify-center bg-background/60 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-border/80">
+                <span className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   {t("সম্মেলন শুরু হতে বাকি", "Countdown to Conference")}
                 </span>
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-full flex items-center justify-between gap-1.5 sm:gap-2.5 max-w-sm mx-auto">
                   <CountdownBox value={days} label={t("দিন", "Days")} />
-                  <span className="text-gold text-lg font-bold pb-6">:</span>
+                  <span className="text-gold text-sm sm:text-lg font-bold pb-4 sm:pb-5">:</span>
                   <CountdownBox value={hours} label={t("ঘণ্টা", "Hours")} />
-                  <span className="text-gold text-lg font-bold pb-6">:</span>
+                  <span className="text-gold text-sm sm:text-lg font-bold pb-4 sm:pb-5">:</span>
                   <CountdownBox value={minutes} label={t("মিনিট", "Mins")} />
-                  <span className="text-gold text-lg font-bold pb-6">:</span>
+                  <span className="text-gold text-sm sm:text-lg font-bold pb-4 sm:pb-5">:</span>
                   <CountdownBox value={seconds} label={t("সেকেন্ড", "Secs")} isSeconds />
                 </div>
               </div>
@@ -518,21 +419,21 @@ export function LifetimeMemberClient() {
 
           {/* 3. ABOUT LIFETIME MEMBERSHIP */}
           <motion.div
-            className="rounded-3xl border border-border bg-card p-6 sm:p-8 lg:p-10 shadow-lg relative overflow-hidden"
-            initial={{ opacity: 0, y: 24 }}
+            className="rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-7 lg:p-10 shadow-md relative overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center text-gold-dark dark:text-gold shrink-0">
-                <BookMarked className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 mb-3.5">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gold/15 flex items-center justify-center text-gold-dark dark:text-gold shrink-0">
+                <BookMarked className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="font-display font-bold text-xl sm:text-2xl text-foreground">
+              <h3 className="font-display font-bold text-lg sm:text-2xl text-foreground">
                 {t("আজীবন সদস্য কী ও এর মহৎ উদ্দেশ্য?", "What is Lifetime Membership?")}
               </h3>
             </div>
-            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground whitespace-pre-line text-pretty">
+            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-line text-pretty">
               {t(
                 `আমাদের পরম শ্রদ্ধেয় শায়েখ হযরত মাওলানা শাহ তৈয়্যেব আশরাফ সাহেব (দামাত বারাকাতুহুম) এর প্রতিষ্ঠিত ও পরিচালিত দ্বীনি প্রতিষ্ঠান "জামেআ মারকাযুল ইহসান ঢাকা (গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স)"।
 
@@ -546,18 +447,18 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
 
           {/* 4. ANNUAL CONTRIBUTION TIERS */}
           <motion.div
-            className="space-y-6"
-            initial={{ opacity: 0, y: 24 }}
+            className="space-y-4 sm:space-y-6"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="text-center max-w-2xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto px-2">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 text-gold-dark dark:text-gold text-xs font-semibold mb-2">
                 <Gem className="w-3.5 h-3.5" />
                 <span>{t("সদস্যপদ ক্যাটাগরি", "Membership Categories")}</span>
               </div>
-              <h3 className="font-display font-bold text-2xl sm:text-3xl text-foreground mb-2">
+              <h3 className="font-display font-bold text-xl sm:text-3xl text-foreground mb-1.5">
                 {t("বাৎসরিক অনুদান ক্যাটাগরি ও স্তরসমূহ", "Annual Contribution Tiers")}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground">
@@ -568,23 +469,23 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
               {TIERS.map((tier) => {
                 const Icon = tier.icon;
                 return (
                   <div
                     key={tier.id}
-                    className={`relative flex flex-col justify-between p-5 sm:p-6 rounded-3xl border ${tier.border} bg-card hover:shadow-xl transition-all duration-300 group overflow-hidden`}
+                    className={`relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl sm:rounded-3xl border ${tier.border} bg-card hover:shadow-lg transition-all duration-300 group overflow-hidden`}
                   >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity`} />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity`} />
 
                     <div>
-                      <div className="flex items-center justify-between gap-3 mb-4">
+                      <div className="flex items-center justify-between gap-2 mb-3">
                         <div
-                          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm"
+                          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
                           style={{ backgroundColor: `${tier.color}20` }}
                         >
-                          <Icon className="w-6 h-6" style={{ color: tier.color }} />
+                          <Icon className="w-5 h-5" style={{ color: tier.color }} />
                         </div>
                         <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${tier.badgeBg}`}>
                           {t(tier.titleBn, tier.titleEn)}
@@ -592,7 +493,7 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
                       </div>
 
                       <div className="mb-2">
-                        <p className="text-2xl font-extrabold text-foreground font-display">
+                        <p className="text-xl sm:text-2xl font-extrabold text-foreground font-display">
                           {t(tier.amountBn, tier.amountEn)}
                         </p>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -600,7 +501,7 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
                         </p>
                       </div>
 
-                      <div className="pt-2 pb-4 border-t border-border/50 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                      <div className="pt-2 pb-3 border-t border-border/50 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                         {t(tier.monthlyBn, tier.monthlyEn)}
                       </div>
                     </div>
@@ -619,44 +520,44 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
           </motion.div>
 
           {/* 5. 8 BENEFITS GRID & ACTION PORTAL */}
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 items-start">
             {/* 8 Benefits */}
             <motion.div
-              className="lg:col-span-7 space-y-6"
-              initial={{ opacity: 0, y: 24 }}
+              className="lg:col-span-7 space-y-4 sm:space-y-6"
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5 }}
             >
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 text-gold-dark dark:text-gold text-xs font-semibold mb-2">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{t("ফায়দা ও বরকত", "Benefits & Virtues")}</span>
                 </div>
-                <h3 className="font-display font-bold text-2xl sm:text-3xl text-foreground">
+                <h3 className="font-display font-bold text-xl sm:text-3xl text-foreground">
                   {t("আজীবন সদস্য হওয়ার ৮টি বিশেষ ফায়দা", "8 Core Benefits of Membership")}
                 </h3>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {BENEFITS.map((b, i) => (
                   <motion.div
                     key={i}
-                    className="flex flex-col gap-2 p-4 rounded-2xl border border-border bg-card hover:border-gold/40 hover:shadow-md transition-all"
-                    initial={{ opacity: 0, y: 16 }}
+                    className="flex flex-col gap-1.5 p-3.5 sm:p-4 rounded-2xl border border-border bg-card hover:border-gold/40 transition-all"
+                    initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    transition={{ duration: 0.3, delay: i * 0.04 }}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-gold/15 flex items-center justify-center shrink-0">
-                        <b.icon className="w-4 h-4 text-gold-dark dark:text-gold" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gold/15 flex items-center justify-center shrink-0">
+                        <b.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-dark dark:text-gold" />
                       </div>
                       <h4 className="font-bold text-xs sm:text-[13px] text-foreground leading-snug">
                         {t(b.titleBn, b.titleEn)}
                       </h4>
                     </div>
-                    <p className="text-xs leading-relaxed text-muted-foreground pl-0.5">
+                    <p className="text-[11px] sm:text-xs leading-relaxed text-muted-foreground pl-0.5">
                       {t(b.bn, b.en)}
                     </p>
                   </motion.div>
@@ -666,33 +567,33 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
 
             {/* Action Card */}
             <motion.div
-              className="lg:col-span-5 rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/10 p-6 sm:p-8 shadow-2xl lg:sticky lg:top-24"
-              initial={{ opacity: 0, y: 24 }}
+              className="lg:col-span-5 rounded-2xl sm:rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/10 p-5 sm:p-7 shadow-xl lg:sticky lg:top-8"
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div className="w-14 h-14 rounded-2xl gradient-gold flex items-center justify-center mb-5 shadow-lg">
-                <Crown className="w-7 h-7 text-[#111827]" />
+              <div className="w-12 h-12 rounded-2xl gradient-gold flex items-center justify-center mb-4 shadow-md">
+                <Crown className="w-6 h-6 text-[#111827]" />
               </div>
 
-              <h3 className="font-display font-bold text-xl sm:text-2xl text-foreground mb-2">
+              <h3 className="font-display font-bold text-lg sm:text-xl text-foreground mb-1.5">
                 {t("সদস্য সেবা ও আবেদন কেন্দ্র", "Member Service & Application")}
               </h3>
 
-              <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
+              <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
                 {t(
                   "আপনি কি জামেআর নতুন আজীবন সদস্য হতে চান অথবা ইতোমধ্যেই একজন সম্মানিত সদস্য হিসেবে আপনার বাৎসরিক অনুদান হিসেব দেখতে ও পরিশোধ করতে চান?",
                   "Apply as a new lifetime member, or manage existing membership dues and annual contributions online."
                 )}
               </p>
 
-              <div className="space-y-2.5 mb-6 p-4 rounded-2xl bg-background/70 border border-border">
-                <div className="flex items-center gap-2.5 text-xs text-foreground font-medium">
+              <div className="space-y-2 mb-5 p-3 sm:p-3.5 rounded-xl bg-background/80 border border-border">
+                <div className="flex items-center gap-2 text-xs text-foreground font-medium">
                   <UserPlus className="w-4 h-4 text-gold shrink-0" />
                   <span>{t("নতুন সদস্য আবেদন", "New Member Application")}</span>
                 </div>
-                <div className="flex items-center gap-2.5 text-xs text-foreground font-medium">
+                <div className="flex items-center gap-2 text-xs text-foreground font-medium">
                   <UserCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                   <span>{t("পুরাতন সদস্য — হিসাব ও অনুদান পরিশোধ", "Existing Member Dues & Verification")}</span>
                 </div>
@@ -700,7 +601,7 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
 
               <button
                 onClick={() => openModal()}
-                className="w-full inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl gradient-gold text-[#111827] font-bold text-sm shadow-xl hover:shadow-2xl hover:brightness-110 active:scale-95 transition-all focus-ring"
+                className="w-full inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 rounded-xl gradient-gold text-[#111827] font-bold text-xs sm:text-sm shadow-lg hover:shadow-xl hover:brightness-105 active:scale-95 transition-all focus-ring"
               >
                 <Crown className="w-4 h-4" />
                 <span>{t("অনলাইন ফরম পূরণ করুন", "Open Online Form")}</span>
@@ -710,13 +611,13 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
                 href={LIFETIME_FORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 w-full inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-xl border border-border bg-card hover:bg-secondary text-foreground text-xs font-semibold transition-all"
+                className="mt-2.5 w-full inline-flex items-center justify-center gap-1.5 h-9 sm:h-10 px-4 rounded-xl border border-border bg-card hover:bg-secondary text-foreground text-xs font-semibold transition-all"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>{t("নতুন উইন্ডোতে খুলুন", "Open in New Tab")}</span>
               </a>
 
-              <p className="text-[11px] text-muted-foreground mt-4 text-center">
+              <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-3 text-center">
                 {t("ফরমটি Google Forms দ্বারা সুরক্ষিত ও সরাসরি নিবন্ধিত।", "Form is safely secured and processed by Google Forms.")}
               </p>
             </motion.div>
@@ -724,17 +625,17 @@ Those noble souls who pledge a fixed annual contribution to support the comprehe
 
           {/* 6. DUA & ASPIRATION CARD */}
           <motion.div
-            className="rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/5 p-6 sm:p-8 lg:p-10 shadow-lg text-center relative overflow-hidden"
-            initial={{ opacity: 0, y: 24 }}
+            className="rounded-2xl sm:rounded-3xl border border-gold/40 bg-gradient-to-br from-card via-card to-gold/5 p-4 sm:p-7 lg:p-10 shadow-md text-center relative overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <HeartHandshake className="w-10 h-10 text-gold-dark dark:text-gold mx-auto mb-3" />
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-gold-dark dark:text-gold mb-3">
+            <HeartHandshake className="w-8 h-8 sm:w-10 sm:h-10 text-gold-dark dark:text-gold mx-auto mb-2.5" />
+            <h3 className="font-display font-bold text-lg sm:text-2xl text-gold-dark dark:text-gold mb-2">
               {t("আমাদের ফিকির ও দোয়া", "Our Aspiration & Dua")}
             </h3>
-            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground max-w-2xl mx-auto whitespace-pre-line text-pretty">
+            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground max-w-2xl mx-auto whitespace-pre-line text-pretty">
               {t(
                 `দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
 
@@ -748,39 +649,37 @@ And let us pray that Allah, the Most Merciful, accepts this purely for His sake 
 
           {/* 7. DIRECT CONTACT & HELPLINE */}
           <motion.div
-            className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xl"
-            initial={{ opacity: 0, y: 24 }}
+            className="rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-7 shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 flex items-center justify-center shrink-0">
-                  <PhoneCall className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="font-display font-bold text-lg sm:text-xl text-foreground">
-                    {t("জরুরি হেল্পলাইন ও সরাসরি যোগাযোগ", "Helpline & Direct Support")}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {t(
-                      "সম্মেলন ও সদস্যপদ সংক্রান্ত যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন",
-                      "Reach out directly for membership or conference inquiries"
-                    )}
-                  </p>
-                </div>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0">
+                <PhoneCall className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-base sm:text-xl text-foreground leading-snug">
+                  {t("জরুরি হেল্পলাইন ও সরাসরি যোগাযোগ", "Helpline & Direct Support")}
+                </h3>
+                <p className="text-[11px] sm:text-xs text-muted-foreground">
+                  {t(
+                    "সম্মেলন ও সদস্যপদ সংক্রান্ত যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন",
+                    "Reach out directly for membership or conference inquiries"
+                  )}
+                </p>
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {CONTACTS.map((c) => (
                 <div
                   key={c.raw}
-                  className="flex flex-col justify-between gap-3 p-4 rounded-2xl border border-border bg-background hover:border-gold/40 transition-all"
+                  className="flex flex-col justify-between gap-2.5 p-3.5 rounded-2xl border border-border bg-background hover:border-gold/40 transition-all"
                 >
                   <div>
-                    <span className="inline-block text-[11px] font-semibold text-gold-dark dark:text-gold mb-1">
+                    <span className="inline-block text-[10px] sm:text-[11px] font-semibold text-gold-dark dark:text-gold mb-0.5">
                       {t(c.noteBn, c.noteEn)}
                     </span>
                     <p className="font-bold text-foreground text-sm sm:text-base font-mono tracking-tight">
@@ -788,11 +687,11 @@ And let us pray that Allah, the Most Merciful, accepts this purely for His sake 
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                  <div className="flex items-center gap-1.5 pt-2 border-t border-border/60">
                     {/* Copy Number */}
                     <button
                       onClick={() => copyToClipboard(c.display)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-lg border border-border hover:bg-secondary text-[11px] font-medium text-muted-foreground hover:text-foreground transition-all"
+                      className="flex-1 inline-flex items-center justify-center gap-1 h-8 px-2 rounded-lg border border-border hover:bg-secondary text-[11px] font-medium text-muted-foreground hover:text-foreground transition-all"
                       title={t("নাম্বার কপি করুন", "Copy Number")}
                     >
                       {copiedNumber === c.display ? (
@@ -840,27 +739,32 @@ And let us pray that Allah, the Most Merciful, accepts this purely for His sake 
         </div>
       </main>
 
-      {/* ─── STANDALONE MINIMAL FOOTER (No full website footer) ─── */}
-      <footer className="border-t border-border/80 bg-card py-6 px-4 sm:px-6 lg:px-8 text-center text-xs text-muted-foreground">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>
-            © ২০২৬ জামেআ মারকাযুল ইহসান ঢাকা • <Link href="/" className="text-foreground hover:text-gold transition-colors font-medium">islahbd</Link>. {t("সর্বস্বত্ব সংরক্ষিত।", "All rights reserved.")}
-          </p>
-          <div className="flex items-center gap-4 text-[11px]">
-            <Link href="/" className="hover:text-foreground transition-colors">
-              {t("হোমপেজ", "Home")}
-            </Link>
-            <span>•</span>
-            <Link href="/privacy-policy" className="hover:text-foreground transition-colors">
-              {t("প্রাইভেসি পলিসি", "Privacy Policy")}
-            </Link>
-            <span>•</span>
-            <a href="mailto:info@islahbd.com" className="hover:text-foreground transition-colors">
-              info@islahbd.com
-            </a>
-          </div>
+      {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Clean Mobile UX) ─── */}
+      <div className="sm:hidden fixed bottom-3 inset-x-3 z-40">
+        <div className="backdrop-blur-xl bg-card/95 border border-gold/40 rounded-2xl p-2 shadow-2xl flex items-center gap-2">
+          <button
+            onClick={() => openModal()}
+            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl gradient-gold text-[#111827] font-bold text-xs shadow-md active:scale-95 transition-all"
+          >
+            <Crown className="w-4 h-4" />
+            <span>{t("অনলাইন আবেদন ফরম", "Apply Online")}</span>
+          </button>
+          <a
+            href={`https://wa.me/8801916387935?text=${encodeURIComponent(
+              t(
+                "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন সম্পর্কে জানতে চাই।",
+                "Assalamu Alaikum, I would like to inquire about the Lifetime Member Conference."
+              )
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-11 h-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shrink-0 shadow-md"
+            aria-label="WhatsApp"
+          >
+            <WhatsAppIcon className="w-5 h-5" />
+          </a>
         </div>
-      </footer>
+      </div>
 
       {/* ─── MODAL GOOGLE FORM WEBVIEW ─── */}
       <AnimatePresence>
@@ -886,12 +790,12 @@ And let us pray that Allah, the Most Merciful, accepts this purely for His sake 
                     <Crown className="w-4 h-4 text-[#111827]" />
                   </div>
                   <div>
-                    <span className="text-sm font-bold text-foreground block truncate">
+                    <span className="text-xs sm:text-sm font-bold text-foreground block truncate">
                       {t("আজীবন সদস্য অনলাইন ফরম", "Lifetime Member Online Form")}
                     </span>
                     {selectedTier && (
-                      <span className="text-[10px] text-gold-dark dark:text-gold font-semibold">
-                        {t("নির্বাচিত ক্যাটাগরি: ", "Selected Category: ")}
+                      <span className="text-[10px] text-gold-dark dark:text-gold font-semibold block truncate">
+                        {t("নির্বাচিত ক্যাটাগরি: ", "Selected: ")}
                         {t(
                           TIERS.find((x) => x.id === selectedTier)?.titleBn || "",
                           TIERS.find((x) => x.id === selectedTier)?.titleEn || ""
