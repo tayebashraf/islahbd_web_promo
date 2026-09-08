@@ -11,6 +11,13 @@ export const metadata: Metadata = {
     title: `আজীবন সদস্য সম্মেলন ২০২৬ | ${SITE_NAME}`,
     description: "Become a Lifetime Member of Jamea Markazul Ihsan Dhaka. Learn the benefits and apply online.",
     url: `${SITE_URL}/lifetime-member`,
+    siteName: SITE_NAME,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `আজীবন সদস্য সম্মেলন ২০২৬ | ${SITE_NAME}`,
+    description: "Become a Lifetime Member of Jamea Markazul Ihsan Dhaka. Learn the benefits and apply online.",
   },
 };
 

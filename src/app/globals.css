@@ -73,7 +73,8 @@
   --color-emerald-deep: var(--emerald-deep);
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-subtle: var(--surface-subtle);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-bengali), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-bengali: var(--font-bengali);
   --font-arabic: var(--font-amiri);
   --font-display: var(--font-playfair);
   --radius-sm: 0.375rem;

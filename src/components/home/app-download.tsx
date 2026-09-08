@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Bell, CheckCircle2, Smartphone } from "lucide-react";
 import React, { useState } from "react";
+import { PLAY_STORE_URL, APP_STORE_URL } from "@/lib/constants";
 
 const PERKS = [
   { bn: "সম্পূর্ণ বিনামূল্যে", en: "Completely free" },
@@ -111,8 +112,10 @@ export function AppDownload() {
           {/* Store buttons */}
           <div className="flex items-center justify-center gap-4 mt-10">
             <a
-              href="#"
-              className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all group"
+              href={APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-border bg-card hover:bg-secondary hover:border-gold/50 transition-all group"
               aria-label="Download on App Store"
             >
               <svg viewBox="0 0 24 24" className="w-6 h-6 fill-foreground" aria-hidden="true">
@@ -124,8 +127,10 @@ export function AppDownload() {
               </div>
             </a>
             <a
-              href="#"
-              className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all group"
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-border bg-card hover:bg-secondary hover:border-gold/50 transition-all group"
               aria-label="Get it on Google Play"
             >
               <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden="true">

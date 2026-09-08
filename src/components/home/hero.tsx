@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Bell, Star, Radio, ChevronDown } from "lucide-react";
 import type { LiveStatus } from "@/lib/live-status";
+import { PLAY_STORE_URL, APP_STORE_URL } from "@/lib/constants";
 
 const STATS = [
   { value: "50K+", bn: "ডাউনলোড", en: "Downloads" },
@@ -247,8 +248,10 @@ export function Hero({ liveStatus }: { liveStatus: LiveStatus | null }) {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <a
-                href="#"
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-secondary transition-all group"
+                href={APP_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:border-gold/50 transition-all group"
                 aria-label="Download on App Store"
               >
                 <svg viewBox="0 0 24 24" className="w-6 h-6 fill-foreground" aria-hidden="true">
@@ -260,8 +263,10 @@ export function Hero({ liveStatus }: { liveStatus: LiveStatus | null }) {
                 </div>
               </a>
               <a
-                href="#"
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-secondary transition-all group"
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:border-gold/50 transition-all group"
                 aria-label="Get it on Google Play"
               >
                 <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden="true">

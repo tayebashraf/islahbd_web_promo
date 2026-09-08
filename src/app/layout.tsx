@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display, Amiri } from "next/font/google";
+import { Inter, Playfair_Display, Amiri, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
@@ -9,6 +9,13 @@ import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["bengali", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-bengali",
   display: "swap",
 });
 
@@ -74,7 +81,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${amiri.variable}`}>
+    <html lang="bn" suppressHydrationWarning className={`${inter.variable} ${hindSiliguri.variable} ${playfair.variable} ${amiri.variable}`}>
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>

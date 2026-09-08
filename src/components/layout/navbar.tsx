@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
   { href: "/", bn: "হোম", en: "Home" },
-  { href: "/blog", bn: "ব্লগ", en: "Blog" },
   { href: "/prayer-times", bn: "নামাজের সময়", en: "Prayer Times" },
+  { href: "/blog", bn: "ব্লগ", en: "Blog" },
+  { href: "/lifetime-member", bn: "আজীবন সদস্য", en: "Lifetime Member" },
   { href: "/#features", bn: "ফিচার", en: "Features" },
   { href: "/#about", bn: "আমাদের সম্পর্কে", en: "About" },
 ];
@@ -89,8 +90,10 @@ export function Navbar() {
             )}
 
             {/* CTA */}
-            <Button size="sm" className="hidden sm:flex">
-              <span>{t("অ্যাপ পান", "Get App")}</span>
+            <Button size="sm" asChild className="hidden sm:flex">
+              <Link href="/#download">
+                <span>{t("অ্যাপ পান", "Get App")}</span>
+              </Link>
             </Button>
 
             {/* Mobile menu toggle */}
@@ -121,8 +124,10 @@ export function Navbar() {
               ))}
             </div>
             <div className="mx-4 mt-3 flex items-center gap-2">
-              <Button size="sm" className="flex-1">
-                {t("অ্যাপ পান", "Get App")}
+              <Button size="sm" asChild className="flex-1">
+                <Link href="/#download" onClick={() => setOpen(false)}>
+                  {t("অ্যাপ পান", "Get App")}
+                </Link>
               </Button>
               <button
                 onClick={() => setLang(lang === "bn" ? "en" : "bn")}

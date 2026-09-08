@@ -19,31 +19,32 @@ function IconYoutube({ className }: { className?: string }) {
 
 const FOOTER_LINKS = {
   app: {
-    bn: "অ্যাপ",
-    en: "App",
+    bn: "অ্যাপ ও সেবা",
+    en: "App & Services",
     links: [
       { href: "/#features", bn: "ফিচারসমূহ", en: "Features" },
-      { href: "/#download", bn: "ডাউনলোড", en: "Download" },
-      { href: "/#waitlist", bn: "ওয়েটলিস্ট", en: "Waitlist" },
+      { href: "/#download", bn: "অ্যাপ ডাউনলোড", en: "Download App" },
+      { href: "/lifetime-member", bn: "আজীবন সদস্য সম্মেলন", en: "Lifetime Member" },
+      { href: "/prayer-times", bn: "নামাজের সময়", en: "Prayer Times" },
     ],
   },
   content: {
-    bn: "কন্টেন্ট",
-    en: "Content",
+    bn: "জ্ঞান ও বয়ান",
+    en: "Content & Blog",
     links: [
-      { href: "/blog", bn: "ব্লগ", en: "Blog" },
-      { href: "/prayer-times", bn: "নামাজের সময়", en: "Prayer Times" },
-      { href: "/blog/category/quran", bn: "কুরআন", en: "Quran" },
+      { href: "/blog", bn: "ইসলামিক ব্লগ", en: "Islamic Blog" },
+      { href: "/listen", bn: "সরাসরি লাইভ অডিও", en: "Live Audio" },
+      { href: "/#features", bn: "কুরআন ও হাদিস", en: "Quran & Hadith" },
+      { href: "/#features", bn: "হজ্জ ও উমরাহ গাইড", en: "Hajj & Umrah" },
     ],
   },
   company: {
-    bn: "কোম্পানি",
-    en: "Company",
+    bn: "মারকাযুল ইহসান",
+    en: "Markazul Ihsan",
     links: [
-      { href: "/#about", bn: "আমাদের সম্পর্কে", en: "About" },
-      { href: "/privacy", bn: "গোপনীয়তা নীতি", en: "Privacy Policy" },
-      { href: "/terms", bn: "শর্তাবলী", en: "Terms" },
-      { href: "/contact", bn: "যোগাযোগ", en: "Contact" },
+      { href: "/#about", bn: "আমাদের সম্পর্কে", en: "About Us" },
+      { href: "/lifetime-member", bn: "আজীবন সদস্য ফরম", en: "Member Form" },
+      { href: "/privacy-policy", bn: "গোপনীয়তা নীতি", en: "Privacy Policy" },
     ],
   },
 };

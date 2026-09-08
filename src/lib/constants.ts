@@ -4,6 +4,10 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://islahbd.com
 export const SITE_DESCRIPTION =
   "islahbd — মারকাজুল ইহসানের অফিসিয়াল ইসলামিক অ্যাপ। নামাজের সময়, কুরআন, আমল, হজ্জ গাইড, দোয়া, তাসবিহ, বয়ান, নাশিদ, ইসলামিক ক্যালেন্ডার এবং আরও অনেক কিছু।";
 
+export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.islahbd.app";
+export const APP_STORE_URL = "https://apps.apple.com/us/app/islahbd/id6762509692";
+export const LIFETIME_FORM_URL = "https://forms.gle/VyEPrekRV8ihGPpY8";
+
 export const PRAYERS = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
 export type Prayer = (typeof PRAYERS)[number];
 

@@ -26,9 +26,14 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("islahbd-lang") as Lang | null;
-    if (stored) { setLangState(stored); return; }
-    const browser = navigator.language.toLowerCase();
-    setLangState(browser.startsWith("en") ? "en" : "bn");
+    if (stored === "en" || stored === "bn") {
+      setLangState(stored);
+      document.documentElement.lang = stored;
+      return;
+    }
+    // Default to Bangla ('bn') unconditionally
+    setLangState("bn");
+    document.documentElement.lang = "bn";
   }, []);
 
   const setLang = (l: Lang) => {
