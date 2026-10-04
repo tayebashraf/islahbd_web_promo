@@ -307,16 +307,16 @@ function useCountdown(target: Date) {
 function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[62px] h-[46px] flex items-center justify-center rounded-xl bg-card border-[1.2px] border-gold/70 shadow-sm">
-        <span className="text-lg font-extrabold text-gold-dark dark:text-gold tracking-tight">{value}</span>
+      <div className="w-[62px] h-[46px] flex items-center justify-center rounded-[12px] bg-white dark:bg-[#0F172A] border-[1.2px] border-[#D4AF37]/70 shadow-[0_2px_6px_rgba(212,175,55,0.15)]">
+        <span className="text-[18px] font-extrabold text-[#B45309] leading-none">{value}</span>
       </div>
-      <span className="mt-1 text-[10.5px] font-semibold text-muted-foreground">{label}</span>
+      <span className="mt-1 text-[10.5px] font-semibold text-[#64748B] dark:text-white/60">{label}</span>
     </div>
   );
 }
 
 function CountdownSeparator() {
-  return <span className="text-lg font-bold text-gold/50 px-2 pb-4">:</span>;
+  return <div className="px-2 pb-4 text-[18px] font-bold text-[#B45309]/50 dark:text-white/38">:</div>;
 }
 
 // ─────────────────────────────────────────────
@@ -423,6 +423,16 @@ export function LifetimeMemberClient() {
   const [portalOpen, setPortalOpen] = useState(false);
   const [portalTab, setPortalTab] = useState<0 | 1>(0);
   const [copiedNumber, setCopiedNumber] = useState<string | null>(null);
+  const [isApp, setIsApp] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const isAppParam = params.get("app") === "true" || params.get("isApp") === "true";
+      const isAppUA = /wv|IslahApp/i.test(navigator.userAgent);
+      setIsApp(isAppParam || isAppUA);
+    }
+  }, []);
 
   const { days, hours, minutes } = useCountdown(TARGET_DATE);
 
@@ -672,211 +682,156 @@ export function LifetimeMemberClient() {
   }, [foundMember]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground relative selection:bg-gold/30 selection:text-foreground pb-20 sm:pb-12">
-      {/* ─── MAIN CONTENT (No header, No footer) ─── */}
-      <main className="flex-1 relative overflow-hidden py-6 sm:py-12 lg:py-16" id="main-content">
-        {/* Ambient Decorative Background */}
-        <div className="absolute inset-0 gradient-gold opacity-[0.04] pointer-events-none" />
-        <div className="absolute inset-0 islamic-pattern-subtle opacity-40 pointer-events-none" />
-        <div className="absolute -top-32 -right-32 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-gold/10 blur-[120px] pointer-events-none" />
-        <div className="absolute top-1/2 -left-32 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-emerald-deep/10 blur-[140px] pointer-events-none" />
-
-        <div className="max-w-2xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10 space-y-4">
-          {/* 1. MERGED ANNOUNCEMENT & COUNTDOWN CARD */}
-          <motion.div
-            className="rounded-[22px] border-[1.5px] border-gold/70 bg-gradient-to-br from-card via-card to-gold/10 p-4 sm:p-6 shadow-xl relative overflow-hidden"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex flex-col items-center text-center">
-              {/* Announcement Badge */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#B45309] via-[#D97706] to-[#F59E0B] shadow-md mb-3">
-                <Megaphone className="w-3.5 h-3.5 text-white" />
-                <span className="text-white text-xs font-bold tracking-wide">
-                  {t("★ বিশেষ এলান ও দাওয়াত ★", "★ Special Announcement ★")}
-                </span>
-              </div>
-
-              <h1 className="text-xl sm:text-2xl font-extrabold text-gold-dark dark:text-gold tracking-tight">
-                {t("৫ই ডিসেম্বর ২০২৬ (শনিবার)", "5 December 2026 (Saturday)")}
-              </h1>
-              <p className="mt-1 text-base sm:text-lg font-bold text-amber-800 dark:text-amber-400">
-                {t("চলতি বছর আজীবন সদস্য সম্মেলন", "This Year's Lifetime Member Conference")}
-              </p>
-              <p className="mt-0.5 text-[13.5px] font-semibold text-sky-700 dark:text-sky-400">
-                {t("অনুষ্ঠিত হবে ইনশাআল্লাহ", "Will be held, InshaAllah")}
-              </p>
-
-              {/* Venue Pill */}
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-background/90 border border-gold/35">
-                <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span className="text-[11.5px] font-semibold text-foreground/80 text-center">
-                  {t(
-                    "স্থান: গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স, পাইটি, ডেমরা, ঢাকা।",
-                    "Venue: Gulshane Allama Shah Abdul Matin Complex, Paiti, Demra, Dhaka."
-                  )}
-                </span>
-              </div>
-
-              {/* Countdown */}
-              <div className="mt-4 flex items-center justify-center">
-                <CountdownBox value={days} label={t("দিন বাকি", "Days Left")} />
-                <CountdownSeparator />
-                <CountdownBox value={hours} label={t("ঘণ্টা", "Hours")} />
-                <CountdownSeparator />
-                <CountdownBox value={minutes} label={t("মিনিট", "Mins")} />
-              </div>
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#0A0F1D] text-foreground font-kalpurush relative overflow-x-hidden selection:bg-gold/30 selection:text-foreground">
+      {/* ─── MAIN CONTENT ─── */}
+      <main className={`flex-1 relative overflow-x-hidden py-4 sm:py-6 px-3.5 sm:px-4 ${isApp ? "pb-10" : "pb-24 sm:pb-12"}`} id="main-content">
+        <div className="w-full max-w-[480px] mx-auto relative z-10 space-y-4">
+          {/* 1. COMPACT ISLAMIC ELAN & COUNTDOWN CARD */}
+          <div className="rounded-[22px] border-[1.5px] border-[#D4AF37]/80 dark:border-[#D4AF37]/60 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-4 sm:p-5 shadow-[0_4px_16px_rgba(212,175,55,0.18)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.15)] relative overflow-hidden text-center">
+            {/* Announcement Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#B45309] via-[#D97706] to-[#F59E0B] shadow-[0_2px_6px_rgba(180,83,9,0.35)] mb-3">
+              <Megaphone className="w-3.5 h-3.5 text-white" />
+              <span className="text-white text-xs font-bold tracking-[0.3px]">
+                ★ বিশেষ এলান ও দাওয়াত ★
+              </span>
             </div>
-          </motion.div>
+
+            {/* Event Heading */}
+            <h1 className="text-[20px] sm:text-[22px] font-extrabold text-[#B45309] tracking-[0.2px] leading-tight">
+              ৫ই ডিসেম্বর ২০২৬ (শনিবার)
+            </h1>
+            <p className="mt-1 text-[16px] font-bold text-[#92400E] dark:text-[#FBBF24]">
+              চলতি বছর আজীবন সদস্য সম্মেলন
+            </p>
+            <p className="mt-0.5 text-[13.5px] font-semibold text-[#0369A1] dark:text-[#38BDF8]">
+              অনুষ্ঠিত হবে ইনশাআল্লাহ
+            </p>
+
+            {/* Venue Pill */}
+            <div className="mt-3 inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-[12px] bg-white/90 dark:bg-[#0F172A]/60 border border-[#D4AF37]/35 max-w-full">
+              <MapPin className="w-3.5 h-3.5 text-[#FA5A1E] shrink-0" />
+              <span className="text-[11.5px] font-semibold text-[#334155] dark:text-white/70 text-center leading-snug">
+                স্থান: গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স, পাইটি, ডেমরা, ঢাকা।
+              </span>
+            </div>
+
+            {/* Countdown */}
+            <div className="mt-3.5 flex items-center justify-center">
+              <CountdownBox value={days} label="দিন বাকি" />
+              <CountdownSeparator />
+              <CountdownBox value={hours} label="ঘণ্টা" />
+              <CountdownSeparator />
+              <CountdownBox value={minutes} label="মিনিট" />
+            </div>
+          </div>
 
           {/* 2. ABOUT LIFETIME MEMBERSHIP */}
-          <motion.div
-            className="rounded-[20px] border-[1.2px] border-gold/40 bg-card p-5 shadow-sm"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
-            <p className="text-[14.5px] font-semibold leading-[1.65] text-foreground/90 whitespace-pre-line text-pretty">
-              {t(
-                `আমাদের পরম শ্রদ্ধেয় শায়েখ হযরত মাওলানা শাহ তৈয়্যেব আশরাফ সাহেব (দামাত বারাকাতুহুম) এর প্রতিষ্ঠিত ও পরিচালিত দ্বীনি প্রতিষ্ঠান "জামেআ মারকাযুল ইহসান ঢাকা (গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স)"।
+          <div className="rounded-[20px] border-[1.2px] border-[#D4AF37]/45 dark:border-[#D4AF37]/35 bg-white dark:bg-[#1E293B] p-5 shadow-[0_3px_12px_rgba(212,175,55,0.05)] dark:shadow-[0_3px_12px_rgba(212,175,55,0.08)]">
+            <p className="text-[14.5px] font-semibold leading-[1.65] text-[#1E293B] dark:text-[#F1F5F9] whitespace-pre-line text-left">
+              {`আমাদের পরম শ্রদ্ধেয় শায়েখ হযরত মাওলানা শাহ তৈয়্যেব আশরাফ সাহেব (দামাত বারাকাতুহুম) এর প্রতিষ্ঠিত ও পরিচালিত দ্বীনি প্রতিষ্ঠান "জামেআ মারকাযুল ইহসান ঢাকা (গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স)"।
 
-প্রতিষ্ঠানটির সামগ্রিক উন্নতি-অগ্রগতি এবং শত শত তালিবুল ইলম ও কুরআনের হাফেজদের আর্থিক খেদমতের সহযোগিতাকে বেগবান করার লক্ষ্যে যাঁরা বাৎসরিক নির্দিষ্ট অনুদান প্রদানের অঙ্গীকার করেন, তাঁরাই হলেন এই জামেআর সম্মানিত আজীবন সদস্য। এটি দুনিয়া ও আখেরাতের এক চিরন্তন সদকায়ে জারিয়া।`,
-                `Jamea Markazul Ihsan Dhaka (Gulshane Allama Shah Abdul Matin Complex) is an esteemed Islamic institution founded and led by our respected mentor, Hazrat Maulana Shah Tayyeb Ashraf Shaheb (may Allah preserve him).
-
-Those noble souls who pledge a fixed annual contribution to support the comprehensive growth of the institution and the ongoing care of hundreds of Quranic students and scholars become its honoured Lifetime Members — establishing a lasting Sadaqah Jariyah for both this world and the Hereafter.`
-              )}
+প্রতিষ্ঠানটির সামগ্রিক উন্নতি-অগ্রগতি এবং শত শত তালিবুল ইলম ও কুরআনের হাফেজদের আর্থিক খেদমতের সহযোগিতাকে বেগবান করার লক্ষ্যে যাঁরা বাৎসরিক নির্দিষ্ট অনুদান প্রদানের অঙ্গীকার করেন, তাঁরাই হলেন এই জামেআর সম্মানিত আজীবন সদস্য। এটি দুনিয়া ও আখেরাতের এক চিরন্তন সদকায়ে জারিয়া।`}
             </p>
-          </motion.div>
+          </div>
 
           {/* 3. MEMBER PORTAL ACTION CARD */}
-          <motion.div
-            className="rounded-[24px] border-[1.5px] border-gold/65 bg-gradient-to-br from-card via-card to-gold/10 p-5 shadow-lg"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
+          <div className="rounded-[24px] border-[1.5px] border-[#D4AF37]/65 dark:border-[#D4AF37]/45 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-5 shadow-[0_4px_16px_rgba(212,175,55,0.15)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.12)]">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-full bg-[#B45309]/15 shrink-0">
+              <div className="w-11 h-11 rounded-full bg-[#B45309]/15 flex items-center justify-center shrink-0">
                 <HeartHandshake className="w-6 h-6 text-[#B45309]" />
               </div>
-              <div className="min-w-0">
-                <h3 className="font-bold text-base text-foreground">
-                  {t("আজীবন সদস্য সেবা ও অনুদান পোর্টাল", "Lifetime Member Service & Contribution Portal")}
+              <div className="min-w-0 text-left">
+                <h3 className="font-bold text-base text-[#1E293B] dark:text-white leading-tight">
+                  আজীবন সদস্য সেবা ও অনুদান পোর্টাল
                 </h3>
-                <p className="text-[11.5px] text-amber-800 dark:text-muted-foreground">
-                  {t("নতুন আবেদন অথবা বিদ্যমান সদস্যের অনুদান ও রসিদ", "New application, or existing member dues & receipts")}
+                <p className="text-[11.5px] text-[#78350F] dark:text-white/60 mt-0.5">
+                  নতুন আবেদন অথবা বিদ্যমান সদস্যের অনুদান ও রসিদ
                 </p>
               </div>
             </div>
 
-            <p className="mt-3.5 text-[13px] leading-relaxed text-foreground/80">
-              {t(
-                "আপনি কি জামেআর নতুন আজীবন সদস্য হতে চান অথবা ইতোমধ্যেই একজন সম্মানিত সদস্য হিসেবে আপনার বাৎসরিক অনুদান হিসেব দেখতে ও পরিশোধ করতে চান?",
-                "Would you like to become a new lifetime member of the Jamea, or, as an existing honoured member, view and pay your annual contribution?"
-              )}
+            <p className="mt-3.5 text-[13px] leading-[1.5] text-[#334155] dark:text-white/70 text-left">
+              আপনি কি জামেআর নতুন আজীবন সদস্য হতে চান অথবা ইতোমধ্যেই একজন সম্মানিত সদস্য হিসেবে আপনার বাৎসরিক অনুদান হিসেব দেখতে ও পরিশোধ করতে চান?
             </p>
 
-            <div className="mt-4 space-y-2.5">
+            <div className="mt-4.5 space-y-2.5">
               <button
+                type="button"
                 onClick={() => openPortal(0)}
-                className="w-full inline-flex items-center justify-center gap-2 h-[46px] rounded-2xl bg-primary text-primary-foreground font-bold text-sm shadow active:scale-[0.98] transition-all"
+                className="w-full flex items-center justify-center gap-2 h-[46px] rounded-[14px] bg-[#FA5A1E] hover:bg-[#E04810] text-white font-bold text-sm shadow-[0_2px_8px_rgba(250,90,30,0.25)] active:scale-[0.99] transition-all cursor-pointer"
               >
-                <UserPlus className="w-[18px] h-[18px]" />
-                <span>{t("নতুন আজীবন সদস্য হতে আবেদন করুন", "Apply to Become a New Lifetime Member")}</span>
+                <UserPlus className="w-[19px] h-[19px]" />
+                <span>নতুন আজীবন সদস্য হতে আবেদন করুন</span>
               </button>
               <button
+                type="button"
                 onClick={() => openPortal(1)}
-                className="w-full inline-flex items-center justify-center gap-2 h-[46px] rounded-2xl border-[1.4px] border-gold bg-background text-[#B45309] font-bold text-[13.5px] active:scale-[0.98] transition-all"
+                className="w-full flex items-center justify-center gap-2 h-[46px] rounded-[14px] border-[1.4px] border-[#D4AF37] bg-white dark:bg-[#0F172A]/50 text-[#B45309] font-bold text-[13.5px] shadow-sm hover:bg-[#D4AF37]/5 active:scale-[0.99] transition-all cursor-pointer"
               >
-                <UserCheck className="w-[18px] h-[18px]" />
-                <span>{t("পুরাতন সদস্য (হিসাব ও অনুদান প্রদান)", "Existing Member (Ledger & Contribution)")}</span>
+                <UserCheck className="w-[19px] h-[19px] text-[#B45309]" />
+                <span>পুরাতন সদস্য (হিসাব ও অনুদান প্রদান)</span>
               </button>
             </div>
-          </motion.div>
+          </div>
 
-          {/* 4. BENEFITS LIST */}
-          <motion.div
-            className="rounded-[20px] border border-border bg-card p-[18px] shadow-sm"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
+          {/* 4. 8 DIVINE BENEFITS */}
+          <div className="rounded-[20px] border border-black/6 dark:border-white/10 bg-white dark:bg-[#1E293B] p-[18px] shadow-[0_3px_12px_rgba(0,0,0,0.04)]">
             <div className="flex items-center gap-2 mb-3.5">
-              <Sparkles className="w-[22px] h-[22px] text-gold" />
-              <h3 className="font-bold text-base text-foreground">
-                {t("আজীবন সদস্য হওয়ার ফায়দা ও উপকারিতা", "Benefits & Virtues of Lifetime Membership")}
+              <Sparkles className="w-[22px] h-[22px] text-[#D4AF37]" />
+              <h3 className="font-bold text-base text-[#1E293B] dark:text-white">
+                আজীবন সদস্য হওয়ার ফায়দা ও উপকারিতা
               </h3>
             </div>
 
             <div className="space-y-3">
               {BENEFITS.map((b, i) => (
-                <motion.div
+                <div
                   key={i}
-                  className="flex items-center gap-3.5 px-3.5 py-3.5 rounded-2xl"
-                  style={{ backgroundColor: `${b.color}0f`, border: `1px solid ${b.color}40` }}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.03 }}
+                  className="flex items-center gap-3.5 px-3.5 py-3.5 rounded-[16px] transition-colors"
+                  style={{
+                    backgroundColor: `${b.color}0f`,
+                    border: `1px solid ${b.color}40`,
+                  }}
                 >
                   <div
-                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0 shadow-sm"
+                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
                     style={{ backgroundColor: b.color }}
                   >
                     <b.icon className="w-[18px] h-[18px] text-white" />
                   </div>
-                  <p className="text-[13.5px] font-semibold leading-[1.45] text-foreground">{t(b.bn, b.en)}</p>
-                </motion.div>
+                  <p className="text-[13.5px] font-semibold leading-[1.45] text-[#1E293B] dark:text-white text-left">
+                    {b.bn}
+                  </p>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* 5. DUA & ASPIRATION CARD */}
-          <motion.div
-            className="rounded-[20px] border border-gold/50 bg-gradient-to-br from-card via-card to-gold/5 p-5 shadow-sm text-center"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
+          {/* 5. OUR ASPIRATION & DUA */}
+          <div className="rounded-[20px] border border-[#D4AF37]/50 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#162033] p-[18px] text-center shadow-sm">
             <HeartHandshake className="w-7 h-7 text-[#B45309] mx-auto mb-2.5" />
             <h3 className="font-bold text-base text-[#B45309] mb-2">
-              {t("আমাদের ফিকির ও দোয়া", "Our Aspiration & Dua")}
+              আমাদের ফিকির ও দোয়া
             </h3>
-            <p className="text-[13.5px] leading-[1.6] text-foreground/80 max-w-2xl mx-auto whitespace-pre-line text-pretty">
-              {t(
-                `দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
+            <p className="text-[13.5px] leading-[1.6] text-[#334155] dark:text-white/70 max-w-2xl mx-auto whitespace-pre-line text-center">
+              {`দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
 
-সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`,
-                `To take part in this noble religious endeavor, let us strive to become members ourselves and encourage our beloved family and friends to join.
-
-And let us pray that Allah, the Most Merciful, accepts this purely for His sake and crowns it with immense success and eternal rewards. Ameen.`
-              )}
+সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`}
             </p>
-          </motion.div>
+          </div>
 
-          {/* 6. DIRECT CONTACT & HELPLINE */}
-          <motion.div
-            className="rounded-[20px] border border-border bg-card p-[18px] shadow-sm"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-          >
+          {/* 6. HELPLINE & DIRECT SUPPORT */}
+          <div className="rounded-[20px] border border-black/6 dark:border-white/10 bg-white dark:bg-[#1E293B] p-[18px] shadow-[0_3px_12px_rgba(0,0,0,0.04)]">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="p-2 rounded-full bg-emerald-500/15 shrink-0">
-                <PhoneCall className="w-[22px] h-[22px] text-emerald-600 dark:text-emerald-400" />
+              <div className="w-8 h-8 rounded-full bg-[#25D366]/15 flex items-center justify-center shrink-0">
+                <PhoneCall className="w-[18px] h-[18px] text-[#16A34A]" />
               </div>
-              <div>
-                <h3 className="font-bold text-base text-foreground leading-snug">
-                  {t("জরুরি হেল্পলাইন ও যোগাযোগ", "Helpline & Direct Support")}
+              <div className="text-left">
+                <h3 className="font-bold text-base text-[#1E293B] dark:text-white leading-snug">
+                  জরুরি হেল্পলাইন ও যোগাযোগ
                 </h3>
-                <p className="text-[11.5px] text-muted-foreground">
-                  {t("যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন (WhatsApp রিকমেন্ডেড)", "Reach out directly for any information (WhatsApp recommended)")}
+                <p className="text-[11.5px] text-[#64748B] dark:text-white/60">
+                  যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন (WhatsApp রিকমেন্ডেড)
                 </p>
               </div>
             </div>
@@ -885,76 +840,82 @@ And let us pray that Allah, the Most Merciful, accepts this purely for His sake 
               {CONTACTS.map((c) => (
                 <div
                   key={c.raw}
-                  className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border border-border bg-background"
+                  className="flex items-center gap-3 px-3.5 py-3 rounded-[16px] border border-black/6 dark:border-white/10 bg-[#F8FAFC] dark:bg-[#0F172A]"
                 >
-                  <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-                    <PhoneCall className="w-5 h-5 text-primary" />
+                  <div className="w-9 h-9 rounded-[10px] bg-[#FA5A1E]/10 flex items-center justify-center shrink-0">
+                    <PhoneCall className="w-5 h-5 text-[#FA5A1E]" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-foreground text-[15px] tracking-tight">{c.display}</p>
-                    <p className="text-[11px] text-muted-foreground">{t(c.noteBn, c.noteEn)}</p>
-                  </div>
-                  <button
+                  <div
                     onClick={() => copyToClipboard(c.display)}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors shrink-0"
-                    title={t("নাম্বার কপি করুন", "Copy Number")}
+                    className="flex-1 min-w-0 text-left cursor-pointer group"
+                    title="ক্লিক করে কপি করুন"
                   >
-                    {copiedNumber === c.display ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                  <a
-                    href={`https://wa.me/${c.raw}?text=${encodeURIComponent(
-                      t(
-                        "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন ২০২৬ সম্পর্কে জানতে আগ্রহী।",
-                        "Assalamu Alaikum, I am interested in learning about the Lifetime Member Conference 2026 of Jamea Markazul Ihsan."
-                      )
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow shrink-0"
-                    aria-label={t("হোয়াটসঅ্যাপে বার্তা পাঠান", "Chat on WhatsApp")}
-                  >
-                    <WhatsAppIcon className="w-5 h-5" />
-                  </a>
-                  <a
-                    href={`tel:+${c.raw}`}
-                    className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"
-                    aria-label={t("কল করুন", "Call")}
-                  >
-                    <PhoneCall className="w-[18px] h-[18px]" />
-                  </a>
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-bold text-[#1E293B] dark:text-white text-[15px] tracking-[0.3px] group-hover:text-primary transition-colors">
+                        {c.display}
+                      </p>
+                      {copiedNumber === c.display && (
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded">
+                          কপি হয়েছে!
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-[#64748B] dark:text-white/50">{c.noteBn}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <a
+                      href={`https://wa.me/${c.raw}?text=${encodeURIComponent(
+                        "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন ২০২৬ সম্পর্কে জানতে আগ্রহী।"
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-[0_2px_8px_rgba(37,211,102,0.35)] active:scale-95 transition-all shrink-0"
+                      aria-label="হোয়াটসঅ্যাপে বার্তা পাঠান"
+                    >
+                      <WhatsAppIcon className="w-5 h-5" />
+                    </a>
+                    <a
+                      href={`tel:+${c.raw}`}
+                      style={{ backgroundColor: "rgba(250, 90, 30, 0.12)", color: "#FA5A1E" }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all shrink-0"
+                      aria-label="কল করুন"
+                    >
+                      <PhoneCall className="w-[18px] h-[18px]" />
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </main>
 
-      {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Clean Mobile UX) ─── */}
-      <div className="sm:hidden fixed bottom-3 inset-x-3 z-40">
-        <div className="backdrop-blur-xl bg-card/95 border border-gold/40 rounded-2xl p-2 shadow-2xl flex items-center gap-2">
-          <button
-            onClick={() => openPortal(0)}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl gradient-gold text-[#111827] font-bold text-xs shadow-md active:scale-95 transition-all"
-          >
-            <Crown className="w-4 h-4" />
-            <span>{t("সদস্য পোর্টাল খুলুন", "Open Member Portal")}</span>
-          </button>
-          <a
-            href={`https://wa.me/8801916387935?text=${encodeURIComponent(
-              t(
-                "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন সম্পর্কে জানতে চাই।",
-                "Assalamu Alaikum, I would like to inquire about the Lifetime Member Conference."
-              )
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-11 h-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shrink-0 shadow-md"
-            aria-label="WhatsApp"
-          >
-            <WhatsAppIcon className="w-5 h-5" />
-          </a>
+      {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Only on standalone mobile web) ─── */}
+      {!isApp && (
+        <div className="sm:hidden fixed bottom-3 inset-x-3 z-40">
+          <div className="backdrop-blur-xl bg-white/95 dark:bg-[#1E293B]/95 border border-[#D4AF37]/40 rounded-2xl p-2 shadow-2xl flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => openPortal(0)}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#FA5A1E] text-white font-bold text-xs shadow-md active:scale-95 transition-all"
+            >
+              <Crown className="w-4 h-4" />
+              <span>সদস্য পোর্টাল খুলুন</span>
+            </button>
+            <a
+              href={`https://wa.me/8801916387935?text=${encodeURIComponent(
+                "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন সম্পর্কে জানতে চাই।"
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-11 h-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shrink-0 shadow-md"
+              aria-label="WhatsApp"
+            >
+              <WhatsAppIcon className="w-5 h-5" />
+            </a>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ─── MEMBER SERVICE PORTAL MODAL (New / Existing Member Tabs) ─── */}
       <AnimatePresence>
