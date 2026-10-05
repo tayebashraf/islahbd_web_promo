@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 import { useLang } from "@/components/providers/lang-provider";
+import { Navbar } from "@/components/layout/navbar";
 import {
   Crown,
   Users,
@@ -39,6 +41,7 @@ import {
   CircleAlert,
   CircleCheck,
   ArrowRight,
+  ArrowLeft,
   Sparkle,
   Megaphone,
   Award,
@@ -419,6 +422,7 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ clas
 
 export function LifetimeMemberClient() {
   const { t } = useLang();
+  const { setTheme } = useTheme();
 
   const [portalOpen, setPortalOpen] = useState(false);
   const [portalTab, setPortalTab] = useState<0 | 1>(0);
@@ -434,6 +438,15 @@ export function LifetimeMemberClient() {
     }
   }, []);
 
+  // Light by default on first visit; afterwards the header toggle (saved by next-themes) decides.
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem("theme")) setTheme("light");
+    } catch {
+      setTheme("light");
+    }
+  }, [setTheme]);
+
   const { days, hours, minutes } = useCountdown(TARGET_DATE);
 
   // ── New Member form state ──
@@ -447,6 +460,10 @@ export function LifetimeMemberClient() {
   const [mediumPhone, setMediumPhone] = useState("");
   const [newErrors, setNewErrors] = useState<Record<string, string | null>>({});
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const currentTier = useMemo(() => TIERS.find((x) => x.id === selectedTierId) ?? TIERS[2], [selectedTierId]);
 
@@ -517,12 +534,82 @@ export function LifetimeMemberClient() {
     return Object.values(errs).every((e) => !e);
   };
 
+  const goToStep = (next: 0 | 1 | 2) => {
+    setStep(next);
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goNextStep = () => {
+    if (step === 1) {
+      const errs: Record<string, string | null> = {
+        name: newName.trim() ? null : "নাম প্রদান করুন",
+        phone: validateBdPhone(newPhone, true),
+        profession: newProfession.trim() ? null : "পেশা / পদবী প্রদান করুন",
+        address: newAddress.trim() ? null : "বর্তমান ঠিকানা প্রদান করুন",
+        whatsapp: validateBdPhone(newWhatsapp, false),
+      };
+      setNewErrors((prev) => ({ ...prev, ...errs }));
+      if (Object.values(errs).some((e) => e)) return;
+    }
+    goToStep((step + 1) as 0 | 1 | 2);
+  };
+
   const submitNewMemberForm = () => {
     if (!validateNewMemberForm()) return;
+    setSubmitError(null);
     setReviewOpen(true);
   };
 
-  const completeNewMemberSubmissionWithoutPay = () => {
+  // Stores the application in the Google Sheet via /api/lifetime-member.
+  const saveNewMemberApplication = async (
+    status: "later" | "payment_sent",
+    payment?: { method: string; senderNumber: string; trxId: string }
+  ): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/lifetime-member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status,
+          tierId: currentTier.id,
+          tierTitle: currentTier.titleBn,
+          amount: currentTier.amountBn,
+          name: newName.trim(),
+          phone: normalizePhone(newPhone),
+          whatsapp: newWhatsapp.trim() ? normalizePhone(newWhatsapp) : "",
+          profession: newProfession.trim(),
+          address: newAddress.trim(),
+          mediumName: mediumName.trim(),
+          mediumPhone: mediumPhone.trim() ? normalizePhone(mediumPhone) : "",
+          paymentMethod: payment?.method ?? "",
+          senderNumber: payment?.senderNumber ?? "",
+          trxId: payment?.trxId ?? "",
+        }),
+      });
+      const result = await res.json().catch(() => null);
+      return res.ok && !!result?.ok;
+    } catch {
+      return false;
+    }
+  };
+
+  const saveFailedMessage = () =>
+    t(
+      "আবেদন জমা হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+      "Could not submit the application. Check your connection and try again."
+    );
+
+  const completeNewMemberSubmissionWithoutPay = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    const saved = await saveNewMemberApplication("later");
+    setSubmitting(false);
+    if (!saved) {
+      setSubmitError(saveFailedMessage());
+      return;
+    }
+
     const name = newName.trim();
     const phone = normalizePhone(newPhone);
     const wa = newWhatsapp.trim() ? normalizePhone(newWhatsapp) : phone;
@@ -632,13 +719,30 @@ export function LifetimeMemberClient() {
     });
   };
 
-  const submitPayment = () => {
-    if (!payModal) return;
+  const submitPayment = async () => {
+    if (!payModal || submitting) return;
     const num = senderNumber.trim();
     if (!num) {
       setSenderError(t("দয়া করে প্রেরকের মোবাইল নম্বর লিখুন", "Please enter the sender's mobile number"));
       return;
     }
+
+    // New-member payments also store the application; existing members have no application row.
+    if (!payModal.memberId) {
+      setSubmitting(true);
+      setSenderError(null);
+      const saved = await saveNewMemberApplication("payment_sent", {
+        method: paymentMethod,
+        senderNumber: normalizePhone(num),
+        trxId: trxId.trim(),
+      });
+      setSubmitting(false);
+      if (!saved) {
+        setSenderError(saveFailedMessage());
+        return;
+      }
+    }
+
     const yearsStr = payModal.yearsToPay && payModal.yearsToPay.length > 0 ? payModal.yearsToPay.join(", ") : t("চলতি বছর", "Current year");
     const methodBn = paymentMethod;
 
@@ -683,8 +787,11 @@ export function LifetimeMemberClient() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#0A0F1D] text-foreground font-kalpurush relative overflow-x-hidden selection:bg-gold/30 selection:text-foreground">
+      {/* ─── TOP HEADER (site navbar with theme + language toggle; the app webview has its own bar) ─── */}
+      {!isApp && <Navbar />}
+
       {/* ─── MAIN CONTENT ─── */}
-      <main className={`flex-1 relative overflow-x-hidden py-4 sm:py-6 px-3.5 sm:px-4 ${isApp ? "pb-10" : "pb-24 sm:pb-12"}`} id="main-content">
+      <main className={`flex-1 relative overflow-x-hidden py-4 sm:py-6 px-3.5 sm:px-4 ${isApp ? "pb-10" : "pt-20 sm:pt-22 pb-24 sm:pb-12"}`} id="main-content">
         <div className="w-full max-w-[480px] mx-auto relative z-10 space-y-4">
           {/* 1. COMPACT ISLAMIC ELAN & COUNTDOWN CARD */}
           <div className="rounded-[22px] border-[1.5px] border-[#D4AF37]/80 dark:border-[#D4AF37]/60 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-4 sm:p-5 shadow-[0_4px_16px_rgba(212,175,55,0.18)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.15)] relative overflow-hidden text-center">
@@ -987,10 +1094,21 @@ export function LifetimeMemberClient() {
               </div>
 
               {/* Tab Content (scrollable) */}
-              <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5">
+              <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5">
                 {portalTab === 0 ? (
                   <div className="space-y-5">
+                    {/* Step indicator */}
+                    <div className="flex items-center gap-1.5" aria-label={t(`ধাপ ${step + 1} / ৩`, `Step ${step + 1} of 3`)}>
+                      {[0, 1, 2].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? "bg-gold" : "bg-border"}`}
+                        />
+                      ))}
+                    </div>
+
                     {/* 1. Tier Selection */}
+                    {step === 0 && (
                     <div>
                       <SectionHeader icon={Crown} title={t("১. বাৎসরিক অনুদান ক্যাটাগরি", "1. Annual Contribution Category")} />
                       <div className="space-y-2">
@@ -1036,8 +1154,10 @@ export function LifetimeMemberClient() {
                         })}
                       </div>
                     </div>
+                    )}
 
                     {/* 2. Personal Info */}
+                    {step === 1 && (
                     <div>
                       <SectionHeader icon={User} title={t("২. আবেদনকারীর ব্যক্তিগত বিবরণ", "2. Applicant's Personal Details")} />
                       <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
@@ -1083,7 +1203,10 @@ export function LifetimeMemberClient() {
                       </div>
                     </div>
 
+                    )}
+
                     {/* 3. Medium / Reference */}
+                    {step === 2 && (
                     <div>
                       <SectionHeader icon={Handshake} title={t("৩. রেফারেন্স / মাধ্যম", "3. Reference / Medium")} />
                       <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
@@ -1104,14 +1227,31 @@ export function LifetimeMemberClient() {
                       </div>
                     </div>
 
-                    {/* Submit */}
-                    <button
-                      onClick={submitNewMemberForm}
-                      className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl gradient-gold text-[#111827] font-bold text-[15px] shadow-lg hover:shadow-xl hover:brightness-105 active:scale-[0.98] transition-all"
-                    >
-                      <span>{t("আবেদন পর্যালোচনা ও পরবর্তী ধাপ", "Review Application & Next Step")}</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </button>
+                    )}
+
+                    {/* Navigation */}
+                    <div className="flex items-center gap-2.5">
+                      {step > 0 && (
+                        <button
+                          onClick={() => goToStep((step - 1) as 0 | 1 | 2)}
+                          className="h-[52px] px-5 inline-flex items-center justify-center gap-1.5 rounded-2xl border border-border text-foreground font-bold text-sm active:scale-[0.98] transition-all"
+                        >
+                          <ArrowLeft className="w-[18px] h-[18px]" />
+                          <span>{t("পেছনে", "Back")}</span>
+                        </button>
+                      )}
+                      <button
+                        onClick={step === 2 ? submitNewMemberForm : goNextStep}
+                        className="flex-1 h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl gradient-gold text-[#111827] font-bold text-[15px] shadow-lg hover:shadow-xl hover:brightness-105 active:scale-[0.98] transition-all"
+                      >
+                        <span>
+                          {step === 2
+                            ? t("আবেদন পর্যালোচনা ও জমা", "Review & Submit")
+                            : t("পরবর্তী ধাপ", "Next Step")}
+                        </span>
+                        <ArrowRight className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -1354,9 +1494,17 @@ export function LifetimeMemberClient() {
                 {t("আপনি কি এখনই প্রথম অনুদান পরিশোধ করতে চান?", "Would you like to pay your first contribution now?")}
               </p>
 
+              {submitError && (
+                <div className="flex items-start gap-2.5 p-3 mb-3 rounded-2xl border border-red-500/30 bg-red-500/10">
+                  <CircleAlert className="w-[18px] h-[18px] text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-[12.5px] leading-relaxed text-red-700 dark:text-red-300">{submitError}</p>
+                </div>
+              )}
+
               <button
                 onClick={openPayForNewMember}
-                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold text-sm shadow active:scale-[0.98] transition-all mb-2.5"
+                disabled={submitting}
+                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold text-sm shadow disabled:opacity-70 active:scale-[0.98] transition-all mb-2.5"
               >
                 <Wallet className="w-5 h-5" />
                 <span>{t("হ্যাঁ, এখনই অনুদান পাঠাবো (বিকাশ/নগদ/ব্যাংক)", "Yes, I'll pay now (bKash/Nagad/Bank)")}</span>
@@ -1364,10 +1512,15 @@ export function LifetimeMemberClient() {
 
               <button
                 onClick={completeNewMemberSubmissionWithoutPay}
-                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl border border-border text-foreground font-bold text-sm active:scale-[0.98] transition-all"
+                disabled={submitting}
+                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl border border-border text-foreground font-bold text-sm disabled:opacity-70 active:scale-[0.98] transition-all"
               >
-                <Send className="w-[18px] h-[18px]" />
-                <span>{t("পরবর্তীতে অনুদান প্রদান করবো (ফরম জমা দিন)", "I'll contribute later (Submit form)")}</span>
+                {submitting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : <Send className="w-[18px] h-[18px]" />}
+                <span>
+                  {submitting
+                    ? t("জমা হচ্ছে...", "Submitting...")
+                    : t("পরবর্তীতে অনুদান প্রদান করবো (ফরম জমা দিন)", "I'll contribute later (Submit form)")}
+                </span>
               </button>
             </motion.div>
           </div>
@@ -1470,10 +1623,13 @@ export function LifetimeMemberClient() {
 
               <button
                 onClick={submitPayment}
-                className="w-full h-[54px] inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white font-bold text-[14.5px] shadow active:scale-[0.98] transition-all"
+                disabled={submitting}
+                className="w-full h-[54px] inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white font-bold text-[14.5px] shadow disabled:opacity-70 active:scale-[0.98] transition-all"
               >
-                <CircleCheck className="w-5 h-5" />
-                <span>{t("পেমেন্ট নিশ্চিত করুন ও রসিদ পাঠান", "Confirm Payment & Send Receipt")}</span>
+                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CircleCheck className="w-5 h-5" />}
+                <span>
+                  {submitting ? t("জমা হচ্ছে...", "Submitting...") : t("পেমেন্ট নিশ্চিত করুন ও রসিদ পাঠান", "Confirm Payment & Send Receipt")}
+                </span>
               </button>
             </motion.div>
           </div>
