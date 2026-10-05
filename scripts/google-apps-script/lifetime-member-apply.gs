@@ -3,13 +3,14 @@
  * Google Sheet below. Called by the Django backend
  * (eslahbd_backend/api/sheets_service.py) after it saves each application.
  *
- * Setup:
- *  1. Open the Google Sheet > Extensions > Apps Script, paste this file.
- *  2. Project Settings > Script properties > add SECRET = <long random string>.
- *  3. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
- *  4. Put the /exec URL in LIFETIME_SHEET_WEBHOOK_URL and the same secret
- *     in LIFETIME_SHEET_SECRET in the backend (Railway) environment.
- *  After editing this file, use Deploy > Manage deployments > Edit > New version.
+ * Setup (3 steps):
+ *  1. Open the Google Sheet > Extensions > Apps Script, paste this file, Save.
+ *  2. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
+ *     Allow the permission prompt, then copy the /exec URL.
+ *  3. Put that URL in LIFETIME_SHEET_WEBHOOK_URL in the backend (Railway) environment.
+ *
+ * The long unguessable /exec URL is the only credential, so keep it private.
+ * After editing this file, use Deploy > Manage deployments > Edit > New version.
  */
 
 var SPREADSHEET_ID = "1PPWSig00RCgVfxjUe72E18gZYc6Q7kRijxS4mIUSmPs";
@@ -21,7 +22,7 @@ var HEADERS = [
   "ক্যাটাগরি",
   "বাৎসরিক অনুদান",
   "নাম",
-  "মোবাইল",
+  "মোবাইল", 
   "হোয়াটসঅ্যাপ",
   "পেশা",
   "ঠিকানা",
@@ -32,6 +33,10 @@ var HEADERS = [
   "TrxID",
 ];
 
+// Column widths in pixels, in HEADERS order.
+var COLUMN_WIDTHS = [50, 150, 150, 190, 130, 180, 120, 120, 150, 260, 160, 130, 130, 130, 150];
+var WRAP_COLUMNS = [10]; // ঠিকানা (1-based) wraps onto several lines.
+
 var STATUS_LABELS = {
   later: "পরে অনুদান দিবেন",
   payment_sent: "অনুদান তথ্য পাঠিয়েছেন",
@@ -41,19 +46,12 @@ function doPost(e) {
   var lock = LockService.getScriptLock();
   try {
     var data = JSON.parse(e.postData.contents);
-    var secret = PropertiesService.getScriptProperties().getProperty("SECRET");
-    if (!secret || data.secret !== secret) return json_({ ok: false, error: "unauthorized" });
-
     lock.waitLock(20000);
 
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow(HEADERS);
-      sheet.setFrozenRows(1);
-      sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
-    }
+    if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+    if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
 
     var row = [
       data.id,
@@ -77,6 +75,7 @@ function doPost(e) {
     var range = sheet.getRange(sheet.getLastRow() + 1, 1, 1, row.length);
     range.setNumberFormat("@");
     range.setValues([row]);
+    formatSheet_(sheet);
 
     return json_({ ok: true });
   } catch (err) {
@@ -86,6 +85,61 @@ function doPost(e) {
       lock.releaseLock();
     } catch (ignored) {}
   }
+}
+
+/** Run this by hand to tidy the tab at any time (also runs after every new row). */
+function formatSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
+  formatSheet_(sheet);
+}
+
+function formatSheet_(sheet) {
+  var cols = HEADERS.length;
+  var rows = Math.max(sheet.getLastRow(), 2);
+
+  var header = sheet.getRange(1, 1, 1, cols);
+  header
+    .setValues([HEADERS])
+    .setBackground("#065F46")
+    .setFontColor("#FFFFFF")
+    .setFontWeight("bold")
+    .setFontSize(11)
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle");
+  sheet.setRowHeight(1, 36);
+  sheet.setFrozenRows(1);
+  sheet.setFrozenColumns(6); // keep আইডি ... নাম visible while scrolling sideways
+
+  for (var i = 0; i < COLUMN_WIDTHS.length; i++) sheet.setColumnWidth(i + 1, COLUMN_WIDTHS[i]);
+
+  var body = sheet.getRange(2, 1, rows - 1, cols);
+  body.setVerticalAlignment("middle").setFontSize(10).setWrap(false);
+  for (var w = 0; w < WRAP_COLUMNS.length; w++) {
+    sheet.getRange(2, WRAP_COLUMNS[w], rows - 1, 1).setWrap(true);
+  }
+  sheet.getRange(2, 1, rows - 1, 1).setHorizontalAlignment("center");
+
+  // Soft borders and zebra stripes, applied once.
+  body.setBorder(true, true, true, true, true, true, "#D1D5DB", SpreadsheetApp.BorderStyle.SOLID);
+  if (sheet.getBandings().length === 0) {
+    sheet.getRange(1, 1, rows, cols).applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, true, false);
+    sheet.getBandings()[0].setHeaderRowColor("#065F46").setFirstRowColor("#FFFFFF").setSecondRowColor("#F0FDF4");
+  }
+
+  // Filter dropdowns on the header row for sorting and searching.
+  if (!sheet.getFilter()) sheet.getRange(1, 1, rows, cols).createFilter();
+
+  // Colour the অবস্থা column so unpaid / paid applications stand out.
+  var statusRange = sheet.getRange(2, 3, rows - 1, 1);
+  var rules = [
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextContains("পাঠিয়েছেন").setBackground("#D1FAE5").setFontColor("#065F46").setRanges([statusRange]).build(),
+    SpreadsheetApp.newConditionalFormatRule()
+      .whenTextContains("পরে").setBackground("#FEF3C7").setFontColor("#92400E").setRanges([statusRange]).build(),
+  ];
+  sheet.setConditionalFormatRules(rules);
 }
 
 function json_(obj) {

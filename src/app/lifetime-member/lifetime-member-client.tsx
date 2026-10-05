@@ -115,7 +115,6 @@ const CONTACTS = [
   { display: "+880 1314-803334", raw: "8801314803334", noteBn: "সম্মেলন তথ্যকেন্দ্র", noteEn: "Conference Info Desk" },
 ];
 
-const OFFICE_WHATSAPP = "8801718763978";
 
 const PAYMENT_NUMBERS = [
   { labelBn: "বিকাশ (মার্চেন্ট/ব্যক্তিগত):", labelEn: "bKash (Merchant/Personal):", number: "01718-763978" },
@@ -491,7 +490,7 @@ export function LifetimeMemberClient() {
   const [senderError, setSenderError] = useState<string | null>(null);
 
   // ── Success dialog ──
-  const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string; waMessage: string }>(null);
+  const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string }>(null);
 
   const openPortal = (tab: 0 | 1 = 0) => {
     setPortalTab(tab);
@@ -610,37 +609,13 @@ export function LifetimeMemberClient() {
       return;
     }
 
-    const name = newName.trim();
-    const phone = normalizePhone(newPhone);
-    const wa = newWhatsapp.trim() ? normalizePhone(newWhatsapp) : phone;
-    const profession = newProfession.trim();
-    const address = newAddress.trim();
-    const mName = mediumName.trim();
-    const mPhone = mediumPhone.trim() ? normalizePhone(mediumPhone) : "";
-    const tier = currentTier;
-
-    const waMessage = encodeURIComponent(
-      "আসসালামু আলাইকুম,\n" +
-        "আমি জামেআ মারকাযুল ইহসানের নতুন আজীবন সদস্য হওয়ার জন্য আবেদন করছি:\n\n" +
-        `👤 নাম: ${name}\n` +
-        `📞 মোবাইল: ${phone}\n` +
-        `💬 হোয়াটসঅ্যাপ: ${wa}\n` +
-        `💼 পেশা: ${profession || "উল্লেখ নেই"}\n` +
-        `🏠 ঠিকানা: ${address || "উল্লেখ নেই"}\n` +
-        `💰 বাৎসরিক অনুদান ক্যাটাগরি: ${t(tier.amountBn, tier.amountEn)} (${t(tier.titleBn, tier.titleEn)})\n` +
-        `🤝 মাধ্যম: ${mName || "নেই"}\n` +
-        `📱 মাধ্যমের মোবাইল: ${mPhone || "নেই"}\n\n` +
-        "দয়া করে আমার আবেদনটি রেকর্ড করে সদস্য কার্ড ইস্যু করার ব্যবস্থা করবেন। জাযাকাল্লাহু খাইরান।"
-    );
-
     setReviewOpen(false);
     setSuccessDialog({
       title: t("আবেদন সফলভাবে গৃহীত হয়েছে!", "Application Submitted Successfully!"),
       description: t(
-        "আপনার তথ্য মারকাযুল ইহসান দপ্তরে জমা দেওয়া হয়েছে। কনফার্মেশনের জন্য অফিস হোয়াটসঅ্যাপে বার্তা পাঠাতে পারেন।",
-        "Your information has been submitted to the Markazul Ihsan office. Message the office WhatsApp for confirmation."
+        "আপনার তথ্য মারকাযুল ইহসান দপ্তরে জমা দেওয়া হয়েছে। শীঘ্রই অফিস থেকে আপনার সাথে যোগাযোগ করা হবে, ইনশাআল্লাহ।",
+        "Your information has been submitted to the Markazul Ihsan office. The office will contact you soon, in shaa Allah."
       ),
-      waMessage,
     });
   };
 
@@ -743,31 +718,13 @@ export function LifetimeMemberClient() {
       }
     }
 
-    const yearsStr = payModal.yearsToPay && payModal.yearsToPay.length > 0 ? payModal.yearsToPay.join(", ") : t("চলতি বছর", "Current year");
-    const methodBn = paymentMethod;
-
-    const waMsg = encodeURIComponent(
-      "আসসালামু আলাইকুম,\n" +
-        "আমি আজীবন সদস্য অনুদান পরিশোধের রসিদ ও বিবরণ পাঠাচ্ছি:\n\n" +
-        (payModal.memberId ? `🆔 সদস্য নং: ${payModal.memberId}\n` : "") +
-        `👤 নাম: ${payModal.applicantName}\n` +
-        `📞 মোবাইল: ${payModal.applicantPhone}\n` +
-        `💰 অনুদানের পরিমাণ: ${payModal.amountText}\n` +
-        `🗓️ পরিশোধিত বছর: ${yearsStr}\n` +
-        `💳 পেমেন্ট মাধ্যম: ${methodBn}\n` +
-        `📱 প্রেরক নম্বর: ${num}\n` +
-        `🔖 TrxID: ${trxId.trim() || "নগদ/প্রযোজ্য নয়"}\n\n` +
-        "দয়া করে যাচাই করে অফিসিয়াল রসিদ নিশ্চিত করুন। জাযাকাল্লাহু খাইরান।"
-    );
-
     setPayModal(null);
     setSuccessDialog({
       title: t("পেমেন্ট তথ্য সফলভাবে দাখিল হয়েছে!", "Payment Details Submitted Successfully!"),
       description: t(
-        "আপনার পেমেন্টের বিবরণী মারকাযুল ইহসানের একাউন্ট শাখায় পাঠানো হয়েছে। অফিস হোয়াটসঅ্যাপে স্লিপ পাঠিয়ে রসিদ কনফার্ম করুন।",
-        "Your payment details have been sent to the Markazul Ihsan accounts office. Send the slip on office WhatsApp to confirm your receipt."
+        "আপনার পেমেন্টের বিবরণী মারকাযুল ইহসানের একাউন্ট শাখায় পাঠানো হয়েছে। যাচাই শেষে আপনার রসিদ নিশ্চিত করা হবে, ইনশাআল্লাহ।",
+        "Your payment details have been sent to the Markazul Ihsan accounts office. Your receipt will be confirmed after verification, in shaa Allah."
       ),
-      waMessage: waMsg,
     });
   };
 
@@ -1639,45 +1596,52 @@ export function LifetimeMemberClient() {
       {/* ─── SUCCESS DIALOG ─── */}
       <AnimatePresence>
         {successDialog && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.target === e.currentTarget && setSuccessDialog(null)}
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-sm bg-background rounded-3xl border border-border shadow-2xl p-5 sm:p-6"
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 8 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              className="relative w-full max-w-sm overflow-hidden bg-background rounded-3xl border border-border shadow-2xl px-6 pt-9 pb-6 text-center"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <BadgeCheck className="w-[26px] h-[26px] text-emerald-500 shrink-0" />
-                <h3 className="text-base font-bold text-foreground">{successDialog.title}</h3>
-              </div>
-              <p className="text-[13.5px] leading-relaxed text-muted-foreground mb-5">{successDialog.description}</p>
-              <div className="flex items-center gap-2.5">
-                <button
-                  onClick={() => setSuccessDialog(null)}
-                  className="flex-1 h-11 rounded-xl border border-border text-foreground text-sm font-semibold"
+              <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-48 rounded-full bg-emerald-500/15 blur-3xl" />
+              <div className="relative mx-auto mb-5 w-[76px] h-[76px]">
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-emerald-500/20"
+                  initial={{ scale: 0.6, opacity: 0.8 }}
+                  animate={{ scale: 1.5, opacity: 0 }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "easeOut" }}
+                />
+                <motion.div
+                  initial={{ scale: 0, rotate: -30 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.1 }}
+                  className="relative w-full h-full rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
                 >
-                  {t("বন্ধ করুন", "Close")}
-                </button>
-                <a
-                  href={`https://wa.me/${OFFICE_WHATSAPP}?text=${successDialog.waMessage}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setSuccessDialog(null)}
-                  className="flex-1 h-11 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#25D366] text-white text-sm font-semibold"
-                >
-                  <MessageCircleIcon />
-                  <span>{t("অফিস হোয়াটসঅ্যাপে পাঠান", "Send on Office WhatsApp")}</span>
-                </a>
+                  <BadgeCheck className="w-10 h-10 text-white" strokeWidth={2.2} />
+                </motion.div>
               </div>
+              <h3 className="relative text-lg font-bold text-foreground mb-2">{successDialog.title}</h3>
+              <p className="relative text-[13.5px] leading-relaxed text-muted-foreground mb-6">{successDialog.description}</p>
+              <button
+                onClick={() => setSuccessDialog(null)}
+                className="relative w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition-colors text-white text-sm font-semibold"
+              >
+                {t("ঠিক আছে", "Done")}
+              </button>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
-}
-
-function MessageCircleIcon() {
-  return <WhatsAppIcon className="w-4 h-4" />;
 }
