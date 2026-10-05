@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useLang } from "@/components/providers/lang-provider";
 import { Navbar } from "@/components/layout/navbar";
@@ -424,6 +425,7 @@ export function LifetimeMemberClient() {
   const { t } = useLang();
   const { setTheme } = useTheme();
 
+  const router = useRouter();
   const [portalOpen, setPortalOpen] = useState(false);
   const [portalTab, setPortalTab] = useState<0 | 1>(0);
   const [copiedNumber, setCopiedNumber] = useState<string | null>(null);
@@ -493,8 +495,8 @@ export function LifetimeMemberClient() {
   // ── Success dialog ──
   const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string }>(null);
 
-  // Dismiss the success dialog, close the portal and clear every form so the user lands on the clean main screen.
-  const closeSuccessAndReturn = () => {
+  // Dismiss the success dialog, clear every form and send the user to the home page.
+  const closeSuccessAndReturn = useCallback(() => {
     setSuccessDialog(null);
     setPayModal(null);
     setReviewOpen(false);
@@ -518,8 +520,8 @@ export function LifetimeMemberClient() {
     setSenderNumber("");
     setTrxId("");
     setSenderError(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+    router.push("/");
+  }, [router]);
 
   const openPortal = (tab: 0 | 1 = 0) => {
     setPortalTab(tab);
@@ -546,7 +548,7 @@ export function LifetimeMemberClient() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [portalOpen, payModal, successDialog]);
+  }, [portalOpen, payModal, successDialog, closeSuccessAndReturn]);
 
   // ── New member submit ──
   const validateNewMemberForm = () => {
