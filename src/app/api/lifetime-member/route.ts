@@ -1,7 +1,7 @@
 // Validates new lifetime-member applications and forwards them to the Django backend, which
 // stores them (admin panel / live admin app) and appends them to the Google Sheet.
 
-const BACKEND = "https://api.islahbd.com";
+const BACKEND = process.env.LIFETIME_MEMBER_API_URL ?? "https://api.islahbd.com";
 const MAX_LEN = 300;
 
 const TIER_IDS = new Set(["platinum", "diamond", "gold", "silver", "vip", "well_wisher"]);
