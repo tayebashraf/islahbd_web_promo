@@ -1,18 +1,21 @@
 /**
  * Appends new lifetime-member applications to the "NewMembers" tab of the
- * member Google Sheet. Called by src/app/api/lifetime-member/route.ts.
+ * Google Sheet below. Called by the Django backend
+ * (eslahbd_backend/api/sheets_service.py) after it saves each application.
  *
  * Setup:
- *  1. Open the member Google Sheet > Extensions > Apps Script, paste this file.
+ *  1. Open the Google Sheet > Extensions > Apps Script, paste this file.
  *  2. Project Settings > Script properties > add SECRET = <long random string>.
  *  3. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
- *  4. Put the /exec URL in LIFETIME_MEMBER_SHEET_WEBHOOK_URL and the same secret
- *     in LIFETIME_MEMBER_SHEET_SECRET for the Next.js app.
+ *  4. Put the /exec URL in LIFETIME_SHEET_WEBHOOK_URL and the same secret
+ *     in LIFETIME_SHEET_SECRET in the backend (Railway) environment.
  *  After editing this file, use Deploy > Manage deployments > Edit > New version.
  */
 
+var SPREADSHEET_ID = "1PPWSig00RCgVfxjUe72E18gZYc6Q7kRijxS4mIUSmPs";
 var SHEET_NAME = "NewMembers";
 var HEADERS = [
+  "আইডি",
   "আবেদনের সময়",
   "অবস্থা",
   "ক্যাটাগরি",
@@ -43,7 +46,7 @@ function doPost(e) {
 
     lock.waitLock(20000);
 
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
@@ -53,6 +56,7 @@ function doPost(e) {
     }
 
     var row = [
+      data.id,
       Utilities.formatDate(new Date(), "Asia/Dhaka", "yyyy-MM-dd HH:mm:ss"),
       STATUS_LABELS[data.status] || data.status,
       data.tierTitle,

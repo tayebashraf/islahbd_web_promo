@@ -1,6 +1,7 @@
-// Receives new lifetime-member applications and appends them to the Google Sheet
-// through the Apps Script web app (see scripts/google-apps-script/lifetime-member-apply.gs).
+// Validates new lifetime-member applications and forwards them to the Django backend, which
+// stores them (admin panel / live admin app) and appends them to the Google Sheet.
 
+const BACKEND = "https://api.islahbd.com";
 const MAX_LEN = 300;
 
 const TIER_IDS = new Set(["platinum", "diamond", "gold", "silver", "vip", "well_wisher"]);
@@ -15,13 +16,6 @@ function isBdPhone(value: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const webhookUrl = process.env.LIFETIME_MEMBER_SHEET_WEBHOOK_URL;
-  const secret = process.env.LIFETIME_MEMBER_SHEET_SECRET;
-  if (!webhookUrl || !secret) {
-    console.error("lifetime-member: LIFETIME_MEMBER_SHEET_WEBHOOK_URL / LIFETIME_MEMBER_SHEET_SECRET not set");
-    return Response.json({ ok: false, error: "server_not_configured" }, { status: 500 });
-  }
-
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -58,22 +52,19 @@ export async function POST(request: Request) {
   }
 
   try {
-    const res = await fetch(webhookUrl, {
+    const res = await fetch(`${BACKEND}/api/lifetime-member/apply/`, {
       method: "POST",
-      // text/plain avoids a CORS preflight, which Apps Script cannot answer.
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ secret, ...record }),
-      redirect: "follow",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(record),
       cache: "no-store",
     });
-    const result = await res.json().catch(() => null);
-    if (!res.ok || !result?.ok) {
-      console.error("lifetime-member: sheet write failed", res.status, result);
-      return Response.json({ ok: false, error: "sheet_write_failed" }, { status: 502 });
+    if (!res.ok) {
+      console.error("lifetime-member: backend rejected application", res.status, await res.text().catch(() => ""));
+      return Response.json({ ok: false, error: "backend_error" }, { status: 502 });
     }
     return Response.json({ ok: true });
   } catch (err) {
-    console.error("lifetime-member: sheet request error", err);
-    return Response.json({ ok: false, error: "sheet_unreachable" }, { status: 502 });
+    console.error("lifetime-member: backend request error", err);
+    return Response.json({ ok: false, error: "backend_unreachable" }, { status: 502 });
   }
 }
