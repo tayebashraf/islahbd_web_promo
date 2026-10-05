@@ -4,7 +4,7 @@
 const BACKEND = process.env.LIFETIME_MEMBER_API_URL ?? "https://api.islahbd.com";
 const MAX_LEN = 300;
 
-const TIER_IDS = new Set(["platinum", "diamond", "gold", "silver", "vip", "well_wisher"]);
+const TIER_IDS = new Set(["platinum", "diamond", "gold", "silver", "vip", "well_wisher", "supporter"]);
 const STATUSES = new Set(["later", "payment_sent"]);
 
 function clean(value: unknown, max = MAX_LEN): string {

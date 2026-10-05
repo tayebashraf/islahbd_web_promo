@@ -137,6 +137,7 @@ const TIERS = [
   { id: "silver", icon: Shield, color: "#64748B", amountBn: "২৫,০০০ টাকা", amountEn: "৳25,000", titleBn: "সিলভার সদস্য (Silver Member)", titleEn: "Silver Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ২৫,০০০ টাকা", subEn: "Fixed annual contribution ৳25,000" },
   { id: "vip", icon: Medal, color: "#059669", amountBn: "১০,০০০ টাকা", amountEn: "৳10,000", titleBn: "ভিআইপি সদস্য (VIP Member)", titleEn: "VIP Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১০,০০০ টাকা", subEn: "Fixed annual contribution ৳10,000" },
   { id: "well_wisher", icon: Heart, color: "#7C3AED", amountBn: "৫,০০০ টাকা", amountEn: "৳5,000", titleBn: "শুভাকাঙ্ক্ষী সদস্য (Well-Wisher Member)", titleEn: "Well-Wisher Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫,০০০ টাকা", subEn: "Fixed annual contribution ৳5,000" },
+  { id: "supporter", icon: Handshake, color: "#0D9488", amountBn: "৩,০০০ টাকা", amountEn: "৳3,000", titleBn: "সহযোগী সদস্য (Supporter Member)", titleEn: "Supporter Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৩,০০০ টাকা", subEn: "Fixed annual contribution ৳3,000" },
 ];
 
 const MEMBER_CSV_URL =
@@ -492,6 +493,34 @@ export function LifetimeMemberClient() {
   // ── Success dialog ──
   const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string }>(null);
 
+  // Dismiss the success dialog, close the portal and clear every form so the user lands on the clean main screen.
+  const closeSuccessAndReturn = () => {
+    setSuccessDialog(null);
+    setPayModal(null);
+    setReviewOpen(false);
+    setPortalOpen(false);
+    setStep(0);
+    setSelectedTierId("gold");
+    setNewName("");
+    setNewPhone("");
+    setNewWhatsapp("");
+    setNewProfession("");
+    setNewAddress("");
+    setMediumName("");
+    setMediumPhone("");
+    setNewErrors({});
+    setSubmitError(null);
+    setExistingId("");
+    setExistingMobile("");
+    setSearchError(null);
+    setFoundMember(null);
+    setSelectedDueYears(new Set());
+    setSenderNumber("");
+    setTrxId("");
+    setSenderError(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const openPortal = (tab: 0 | 1 = 0) => {
     setPortalTab(tab);
     setPortalOpen(true);
@@ -507,7 +536,7 @@ export function LifetimeMemberClient() {
     if (!portalOpen && !payModal && !successDialog) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (successDialog) setSuccessDialog(null);
+      if (successDialog) closeSuccessAndReturn();
       else if (payModal) setPayModal(null);
       else if (portalOpen) setPortalOpen(false);
     };
@@ -1604,7 +1633,7 @@ export function LifetimeMemberClient() {
             className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
             role="dialog"
             aria-modal="true"
-            onClick={(e) => e.target === e.currentTarget && setSuccessDialog(null)}
+            onClick={(e) => e.target === e.currentTarget && closeSuccessAndReturn()}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 16 }}
@@ -1633,7 +1662,7 @@ export function LifetimeMemberClient() {
               <h3 className="relative text-lg font-bold text-foreground mb-2">{successDialog.title}</h3>
               <p className="relative text-[13.5px] leading-relaxed text-muted-foreground mb-6">{successDialog.description}</p>
               <button
-                onClick={() => setSuccessDialog(null)}
+                onClick={closeSuccessAndReturn}
                 className="relative w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition-colors text-white text-sm font-semibold"
               >
                 {t("ঠিক আছে", "Done")}
