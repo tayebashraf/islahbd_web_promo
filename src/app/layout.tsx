@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Amiri, Hind_Siliguri } from "next/font/google"
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
+import { SmartAppBanner } from "@/components/smart-app-banner";
 
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>
             {children}
+            <SmartAppBanner />
           </LangProvider>
         </ThemeProvider>
       </body>
