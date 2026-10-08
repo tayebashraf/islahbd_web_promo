@@ -148,9 +148,9 @@ const PAYMENT_ACCOUNTS: PaymentAccount[] = [
     typeEn: "Merchant Payment",
     actionBn: "Payment (পেমেন্ট)",
     actionEn: "Make Payment",
-    chargeBadgeBn: "চার্জ ফ্রি (০%)",
-    chargeBadgeEn: "0% Free",
-    isFree: true,
+    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
+    chargeBadgeEn: "+15৳ fee/1k",
+    isFree: false,
     displayNumber: "01806-408501",
     rawNumber: "01806408501",
     color: "#E11D48",
@@ -1046,20 +1046,20 @@ export function LifetimeMemberClient() {
                 <span>{t("টাকা পাঠানোর নিয়ম ও খরচের হিসাব:", "Payment & Fee Rules:")}</span>
               </div>
               <p className="text-[11.5px] leading-relaxed">
-                • <strong className="font-bold text-foreground">{t("পার্সোনাল নম্বর (বিকাশ ও নগদ):", "Personal Accounts (bKash & Nagad):")}</strong>{" "}
-                {t("পার্সোনালে Send Money করার সময় অনুগ্রহ করে প্রতি হাজারে ", "When using Send Money to personal accounts, please include ")}
+                • <strong className="font-bold text-foreground">{t("খরচসহ পাঠানোর নিয়ম:", "Please include fee:")}</strong>{" "}
+                {t("বিকাশ (মার্চেন্ট/পার্সোনাল) বা নগদ—যেকোনো নম্বরে টাকা পাঠানোর সময় অনুগ্রহ করে প্রতি হাজারে ", "When sending via bKash (Merchant/Personal) or Nagad, please include ")}
                 <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[11px] whitespace-nowrap shadow-2xs">
-                  {t("১৫ টাকা ক্যাশ-আউট খরচসহ", "৳15 cash-out fee per ৳1000")}
+                  {t("১৫ টাকা খরচসহ", "৳15 fee per ৳1000")}
                 </span>
                 {t(" পাঠাবেন।", ".")}
               </p>
               <p className="text-[11.5px] leading-relaxed">
-                • <strong className="font-bold text-foreground">{t("বিকাশ মার্চেন্ট নম্বর:", "bKash Merchant Account:")}</strong>{" "}
-                {t("বিকাশ অ্যাপের Make Payment (পেমেন্ট) অপশনে পাঠালে ", "If paying via bKash Make Payment, ")}
-                <span className="font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded text-[11px] whitespace-nowrap shadow-2xs">
-                  {t("কোনো বাড়তি খরচ নেই (০% চার্জ / সম্পূর্ণ ফ্রি)", "no extra charge (0% fee / Free)")}
-                </span>
-                {t("।", ".")}
+                • <strong className="font-bold text-foreground">{t("পদ্ধতি:", "Methods:")}</strong>{" "}
+                {t("বিকাশ মার্চেন্টে ", "For bKash Merchant use ")}
+                <strong className="text-foreground">{t("Make Payment (পেমেন্ট)", "Make Payment")}</strong>
+                {t(" এবং পার্সোনাল নম্বরে ", " and for personal accounts use ")}
+                <strong className="text-foreground">{t("Send Money (সেন্ড মানি)", "Send Money")}</strong>
+                {t(" অপশন বেছে নেবেন।", ".")}
               </p>
               <p className="text-[10.5px] text-muted-foreground pt-0.5">
                 • {t("রেফারেন্সে আপনার নাম বা সদস্য নম্বর লিখুন। টাকা পাঠানো শেষে রসিদ জমা দিন।", "Add your name or member ID as reference. Submit your receipt after sending.")}
@@ -1840,20 +1840,16 @@ export function LifetimeMemberClient() {
                     <span>{t("খরচ ও নিয়মাবলী:", "Fee Rules & Guide:")}</span>
                   </div>
                   <p className="leading-relaxed">
-                    • <strong className="font-bold text-foreground">{t("পার্সোনালে পাঠালে:", "For Personal:")}</strong>{" "}
-                    {t("বিকাশ বা নগদ পার্সোনালে পাঠালে অনুগ্রহ করে প্রতি হাজারে ", "If sending via personal, please include ")}
+                    • <strong className="font-bold text-foreground">{t("খরচসহ পাঠানোর নিয়ম:", "Include Fee:")}</strong>{" "}
+                    {t("মার্চেন্ট বা পার্সোনাল—যেকোনো মাধ্যমে পাঠালে প্রতি হাজারে ", "Whether Merchant or Personal, please include ")}
                     <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[10.5px] whitespace-nowrap shadow-2xs">
                       {t("১৫ টাকা খরচসহ", "৳15 fee per ৳1000")}
                     </span>
                     {t(" পাঠাবেন।", ".")}
                   </p>
                   <p className="leading-relaxed">
-                    • <strong className="font-bold text-foreground">{t("বিকাশ মার্চেন্টে পাঠালে:", "For bKash Merchant:")}</strong>{" "}
-                    {t("Make Payment অপশনে পাঠাবেন, ", "Use Make Payment option, ")}
-                    <span className="font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded text-[10.5px] whitespace-nowrap shadow-2xs">
-                      {t("কোনো বাড়তি চার্জ নেই (ফ্রি)", "no extra charge (Free)")}
-                    </span>
-                    {t("।", ".")}
+                    • <strong className="font-bold text-foreground">{t("অপশন:", "Option:")}</strong>{" "}
+                    {t("মার্চেন্টে Make Payment এবং পার্সোনালে Send Money করবেন।", "Use Make Payment for Merchant and Send Money for Personal.")}
                   </p>
                   <p className="text-[10px] text-muted-foreground pt-0.5">
                     • {t("টাকা পাঠানোর পর নিচে আপনার প্রেরক নম্বর ও TrxID দিয়ে রসিদ নিশ্চিত করুন।", "After sending, enter your sender phone and TrxID below to confirm.")}
