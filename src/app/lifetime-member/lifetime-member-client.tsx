@@ -117,16 +117,93 @@ const CONTACTS = [
 ];
 
 
-const PAYMENT_NUMBERS = [
-  { labelBn: "বিকাশ (মার্চেন্ট/ব্যক্তিগত):", labelEn: "bKash (Merchant/Personal):", number: "01718-763978" },
-  { labelBn: "নগদ (পার্সোনাল):", labelEn: "Nagad (Personal):", number: "01916-387935" },
-  { labelBn: "রকেট / ব্যাংক একাউন্ট:", labelEn: "Rocket / Bank Account:", number: "01314-803334" },
+interface PaymentAccount {
+  id: string;
+  provider: "bkash" | "nagad" | "bank";
+  providerBn: string;
+  providerEn: string;
+  titleBn: string;
+  titleEn: string;
+  typeBn: string;
+  typeEn: string;
+  actionBn: string;
+  actionEn: string;
+  chargeBadgeBn: string;
+  chargeBadgeEn: string;
+  isFree?: boolean;
+  displayNumber: string;
+  rawNumber: string;
+  color: string;
+}
+
+const PAYMENT_ACCOUNTS: PaymentAccount[] = [
+  {
+    id: "bkash-merchant",
+    provider: "bkash",
+    providerBn: "বিকাশ",
+    providerEn: "bKash",
+    titleBn: "বিকাশ মার্চেন্ট",
+    titleEn: "bKash Merchant",
+    typeBn: "মার্চেন্ট পেমেন্ট",
+    typeEn: "Merchant Payment",
+    actionBn: "Payment (পেমেন্ট)",
+    actionEn: "Make Payment",
+    chargeBadgeBn: "চার্জ ফ্রি (০%)",
+    chargeBadgeEn: "0% Free",
+    isFree: true,
+    displayNumber: "01806-408501",
+    rawNumber: "01806408501",
+    color: "#E11D48",
+  },
+  {
+    id: "bkash-personal",
+    provider: "bkash",
+    providerBn: "বিকাশ",
+    providerEn: "bKash",
+    titleBn: "বিকাশ পার্সোনাল",
+    titleEn: "bKash Personal",
+    typeBn: "পার্সোনাল একাউন্ট",
+    typeEn: "Personal Account",
+    actionBn: "Send Money",
+    actionEn: "Send Money",
+    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
+    chargeBadgeEn: "+15৳ fee/1k",
+    isFree: false,
+    displayNumber: "01906-832450",
+    rawNumber: "01906832450",
+    color: "#E11D48",
+  },
+  {
+    id: "nagad-personal",
+    provider: "nagad",
+    providerBn: "নগদ",
+    providerEn: "Nagad",
+    titleBn: "নগদ পার্সোনাল",
+    titleEn: "Nagad Personal",
+    typeBn: "পার্সোনাল একাউন্ট",
+    typeEn: "Personal Account",
+    actionBn: "Send Money",
+    actionEn: "Send Money",
+    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
+    chargeBadgeEn: "+15৳ fee/1k",
+    isFree: false,
+    displayNumber: "01906-832450",
+    rawNumber: "01906832450",
+    color: "#EA580C",
+  },
 ];
 
+const PAYMENT_NUMBERS = PAYMENT_ACCOUNTS.map((p) => ({
+  labelBn: `${p.providerBn} (${p.chargeBadgeBn}):`,
+  labelEn: `${p.providerEn} (${p.chargeBadgeEn}):`,
+  number: p.displayNumber,
+  raw: p.rawNumber,
+}));
+
 const PAYMENT_METHODS = [
-  { name: "বিকাশ", nameEn: "bKash", icon: Wallet, color: "#E11D48" },
-  { name: "নগদ", nameEn: "Nagad", icon: Landmark, color: "#EA580C" },
-  { name: "রকেট", nameEn: "Rocket", icon: Send, color: "#9333EA" },
+  { name: "বিকাশ (মার্চেন্ট)", nameEn: "bKash (Merchant)", icon: Wallet, color: "#E11D48" },
+  { name: "বিকাশ (পার্সোনাল)", nameEn: "bKash (Personal)", icon: Wallet, color: "#E11D48" },
+  { name: "নগদ (পার্সোনাল)", nameEn: "Nagad (Personal)", icon: Landmark, color: "#EA580C" },
   { name: "ব্যাংক", nameEn: "Bank", icon: Landmark, color: "#2563EB" },
   { name: "ক্যাশ (অফিসে)", nameEn: "Cash (Office)", icon: Receipt, color: "#16A34A" },
 ];
@@ -489,7 +566,7 @@ export function LifetimeMemberClient() {
   }>(null);
   const [senderNumber, setSenderNumber] = useState("");
   const [trxId, setTrxId] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("বিকাশ");
+  const [paymentMethod, setPaymentMethod] = useState("বিকাশ (মার্চেন্ট)");
   const [senderError, setSenderError] = useState<string | null>(null);
 
   // ── Success dialog ──
@@ -529,7 +606,10 @@ export function LifetimeMemberClient() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text.replace(/-/g, ""));
+    const raw = text.replace(/[^0-9]/g, "");
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(raw || text).catch(() => {});
+    }
     setCopiedNumber(text);
     setTimeout(() => setCopiedNumber(null), 2500);
   };
@@ -654,7 +734,7 @@ export function LifetimeMemberClient() {
     setReviewOpen(false);
     setSenderNumber(newPhone);
     setTrxId("");
-    setPaymentMethod("বিকাশ");
+    setPaymentMethod("বিকাশ (মার্চেন্ট)");
     setSenderError(null);
     setPayModal({
       title: "নতুন সদস্য অনুদান পরিশোধ",
@@ -712,7 +792,7 @@ export function LifetimeMemberClient() {
     const years = Array.from(selectedDueYears).sort((a, b) => a - b);
     setSenderNumber(foundMember.mobile);
     setTrxId("");
-    setPaymentMethod("বিকাশ");
+    setPaymentMethod("বিকাশ (মার্চেন্ট)");
     setSenderError(null);
     setPayModal({
       title: "আজীবন সদস্য বকেয়া/চলতি অনুদান",
@@ -865,6 +945,139 @@ export function LifetimeMemberClient() {
               >
                 <UserCheck className="w-[19px] h-[19px] text-[#B45309]" />
                 <span>পুরাতন সদস্য (হিসাব ও অনুদান প্রদান)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 3.5 OFFICIAL PAYMENT & DONATION CHANNELS */}
+          <div className="rounded-[20px] border border-[#D4AF37]/50 bg-white dark:bg-[#1E293B] p-4 sm:p-4.5 shadow-[0_2px_12px_rgba(212,175,55,0.06)]">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0 border border-amber-500/30">
+                  <Wallet className="w-4 h-4 text-[#B45309] dark:text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[15px] text-[#1E293B] dark:text-white leading-tight">
+                    {t("অফিসিয়াল অনুদান ও পেমেন্ট নম্বর", "Official Payment Numbers")}
+                  </h3>
+                  <p className="text-[10.5px] text-muted-foreground mt-0.5">
+                    {t("বাৎসরিক অনুদান পাঠাতে নিচের নম্বরগুলো ব্যবহার করুন", "Use these numbers to send your contribution")}
+                  </p>
+                </div>
+              </div>
+              <span className="hidden xs:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                {t("ভেরিফাইড", "Verified")}
+              </span>
+            </div>
+
+            {/* Compact Account Rows */}
+            <div className="space-y-2">
+              {PAYMENT_ACCOUNTS.map((p) => {
+                const isCopied = copiedNumber === p.displayNumber || copiedNumber === p.rawNumber;
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-black/8 dark:border-white/10 bg-slate-50/80 dark:bg-[#0F172A]/80 hover:border-[#D4AF37]/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div
+                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-[10.5px] text-white shadow-2xs"
+                        style={{ backgroundColor: p.color }}
+                      >
+                        {p.provider === "bkash" ? "বিকাশ" : "নগদ"}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold text-[13px] text-foreground leading-tight">
+                            {t(p.titleBn, p.titleEn)}
+                          </span>
+                          <span
+                            className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md leading-none tracking-wide whitespace-nowrap shadow-2xs ${
+                              p.isFree
+                                ? "bg-emerald-600 text-white"
+                                : "bg-amber-600 text-white"
+                            }`}
+                          >
+                            {t(p.chargeBadgeBn, p.chargeBadgeEn)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="font-mono font-extrabold text-[13.5px] tracking-wide text-foreground">
+                            {p.displayNumber}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground hidden sm:inline">
+                            ({t(p.actionBn, p.actionEn)})
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => copyToClipboard(p.displayNumber)}
+                      className={`inline-flex items-center gap-1 h-7.5 px-2.5 rounded-lg text-[11px] font-bold transition-all shrink-0 cursor-pointer ${
+                        isCopied
+                          ? "bg-emerald-600 text-white shadow-xs"
+                          : "bg-white dark:bg-card hover:bg-gold/15 text-foreground hover:text-[#B45309] border border-border active:scale-95"
+                      }`}
+                      title={t("ক্লিক করে নম্বর কপি করুন", "Click to copy number")}
+                    >
+                      {isCopied ? (
+                        <>
+                          <Check className="w-3 h-3" />
+                          <span>{t("কপি হয়েছে!", "Copied!")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3 text-muted-foreground" />
+                          <span>{t("কপি", "Copy")}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Note Box with 15 Tk charge rule */}
+            <div className="mt-2.5 p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-[11.5px] text-slate-800 dark:text-slate-100 leading-relaxed space-y-1.5 text-left shadow-2xs">
+              <div className="flex items-center gap-1.5 font-bold text-foreground text-[12px]">
+                <span className="text-amber-600 dark:text-amber-400">⚠️</span>
+                <span>{t("টাকা পাঠানোর নিয়ম ও খরচের হিসাব:", "Payment & Fee Rules:")}</span>
+              </div>
+              <p className="text-[11.5px] leading-relaxed">
+                • <strong className="font-bold text-foreground">{t("পার্সোনাল নম্বর (বিকাশ ও নগদ):", "Personal Accounts (bKash & Nagad):")}</strong>{" "}
+                {t("পার্সোনালে Send Money করার সময় অনুগ্রহ করে প্রতি হাজারে ", "When using Send Money to personal accounts, please include ")}
+                <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[11px] whitespace-nowrap shadow-2xs">
+                  {t("১৫ টাকা ক্যাশ-আউট খরচসহ", "৳15 cash-out fee per ৳1000")}
+                </span>
+                {t(" পাঠাবেন।", ".")}
+              </p>
+              <p className="text-[11.5px] leading-relaxed">
+                • <strong className="font-bold text-foreground">{t("বিকাশ মার্চেন্ট নম্বর:", "bKash Merchant Account:")}</strong>{" "}
+                {t("বিকাশ অ্যাপের Make Payment (পেমেন্ট) অপশনে পাঠালে ", "If paying via bKash Make Payment, ")}
+                <span className="font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded text-[11px] whitespace-nowrap shadow-2xs">
+                  {t("কোনো বাড়তি খরচ নেই (০% চার্জ / সম্পূর্ণ ফ্রি)", "no extra charge (0% fee / Free)")}
+                </span>
+                {t("।", ".")}
+              </p>
+              <p className="text-[10.5px] text-muted-foreground pt-0.5">
+                • {t("রেফারেন্সে আপনার নাম বা সদস্য নম্বর লিখুন। টাকা পাঠানো শেষে রসিদ জমা দিন।", "Add your name or member ID as reference. Submit your receipt after sending.")}
+              </p>
+            </div>
+
+            {/* Footer row: bank transfer & submit button */}
+            <div className="mt-2.5 pt-2 border-t border-border/70 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <span className="truncate">
+                🏦 {t("ব্যাংক/রকেট:", "Bank/Rocket:")} <strong className="text-foreground font-mono">+880 1916-387935</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => openPortal(1)}
+                className="inline-flex items-center gap-1 font-bold text-primary hover:underline shrink-0 cursor-pointer"
+              >
+                <span>{t("রসিদ জমা দিন", "Submit Receipt")}</span>
+                <ArrowRight className="w-3 h-3" />
               </button>
             </div>
           </div>
@@ -1540,29 +1753,112 @@ export function LifetimeMemberClient() {
               </div>
 
               {/* Payment Numbers Notice Box */}
-              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-gold/5 to-gold/10 border border-gold/50 mb-4">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <Landmark className="w-[18px] h-[18px] text-[#B45309]" />
-                  <span className="text-[13px] font-bold text-[#B45309]">{t("অফিসিয়াল পেমেন্ট নম্বরসমূহ", "Official Payment Numbers")}</span>
-                </div>
-                <div className="h-px bg-gold/30 mb-2.5" />
-                <div className="space-y-1.5">
-                  {PAYMENT_NUMBERS.map((p) => (
-                    <div key={p.number} className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">{t(p.labelBn, p.labelEn)}</span>
-                      <button
-                        onClick={() => copyToClipboard(p.number)}
-                        className="flex items-center gap-1 text-[#B45309] font-bold text-[12.5px]"
-                      >
-                        <span>{p.number}</span>
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-amber-500/[0.06] dark:bg-amber-500/10 border border-amber-500/30 mb-3.5 shadow-2xs">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6.5 h-6.5 rounded-md bg-[#B45309]/15 flex items-center justify-center shrink-0">
+                      <Wallet className="w-3.5 h-3.5 text-[#B45309]" />
                     </div>
-                  ))}
+                    <div>
+                      <h4 className="text-[13px] font-bold text-foreground leading-tight">
+                        {t("অফিসিয়াল অনুদান / পেমেন্ট নম্বরসমূহ", "Official Payment Numbers")}
+                      </h4>
+                      <p className="text-[10px] text-muted-foreground">
+                        {t("টাকা পাঠানোর জন্য নিচের যেকোনো নম্বর বেছে নিন", "Choose any number to send your contribution")}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[11.5px] text-muted-foreground mt-2">
-                  {t("টাকা পাঠানোর পর নিচের তথ্যগুলো পূরণ করে রসিদ নিশ্চিত করুন:", "After sending, fill in the details below to confirm your receipt:")}
-                </p>
+
+                <div className="space-y-1.5 mb-2.5">
+                  {PAYMENT_ACCOUNTS.map((p) => {
+                    const isCopied = copiedNumber === p.displayNumber || copiedNumber === p.rawNumber;
+                    return (
+                      <div
+                        key={p.id}
+                        className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-black/8 dark:border-white/10 bg-background/90 dark:bg-background/70 shadow-2xs"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className="px-1.5 py-0.5 rounded text-[10px] font-extrabold text-white shrink-0"
+                            style={{ backgroundColor: p.color }}
+                          >
+                            {p.provider === "bkash" ? "বিকাশ" : "নগদ"}
+                          </span>
+                          <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[12px] font-bold text-foreground truncate">
+                              {t(p.titleBn, p.titleEn)}
+                            </span>
+                            <span
+                              className={`text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md leading-none tracking-wide whitespace-nowrap shadow-2xs ${
+                                p.isFree
+                                  ? "bg-emerald-600 text-white"
+                                  : "bg-amber-600 text-white"
+                              }`}
+                            >
+                              {t(p.chargeBadgeBn, p.chargeBadgeEn)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="font-mono font-extrabold text-[13px] tracking-wide text-foreground">
+                            {p.displayNumber}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(p.displayNumber)}
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-bold transition-all cursor-pointer ${
+                              isCopied
+                                ? "bg-emerald-600 text-white shadow-2xs"
+                                : "bg-secondary hover:bg-gold/15 text-foreground hover:text-[#B45309] border border-border"
+                            }`}
+                            title="নম্বর কপি করুন"
+                          >
+                            {isCopied ? (
+                              <>
+                                <Check className="w-3 h-3" />
+                                <span>{t("কপি!", "Copied!")}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3 text-muted-foreground" />
+                                <span>{t("কপি", "Copy")}</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Instructions bullet box */}
+                <div className="p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-[11.5px] text-slate-800 dark:text-slate-100 leading-relaxed space-y-1.5 shadow-2xs">
+                  <div className="flex items-center gap-1.5 font-bold text-foreground text-[11.5px]">
+                    <span className="text-amber-600 dark:text-amber-400">⚠️</span>
+                    <span>{t("খরচ ও নিয়মাবলী:", "Fee Rules & Guide:")}</span>
+                  </div>
+                  <p className="leading-relaxed">
+                    • <strong className="font-bold text-foreground">{t("পার্সোনালে পাঠালে:", "For Personal:")}</strong>{" "}
+                    {t("বিকাশ বা নগদ পার্সোনালে পাঠালে অনুগ্রহ করে প্রতি হাজারে ", "If sending via personal, please include ")}
+                    <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[10.5px] whitespace-nowrap shadow-2xs">
+                      {t("১৫ টাকা খরচসহ", "৳15 fee per ৳1000")}
+                    </span>
+                    {t(" পাঠাবেন।", ".")}
+                  </p>
+                  <p className="leading-relaxed">
+                    • <strong className="font-bold text-foreground">{t("বিকাশ মার্চেন্টে পাঠালে:", "For bKash Merchant:")}</strong>{" "}
+                    {t("Make Payment অপশনে পাঠাবেন, ", "Use Make Payment option, ")}
+                    <span className="font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded text-[10.5px] whitespace-nowrap shadow-2xs">
+                      {t("কোনো বাড়তি চার্জ নেই (ফ্রি)", "no extra charge (Free)")}
+                    </span>
+                    {t("।", ".")}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground pt-0.5">
+                    • {t("টাকা পাঠানোর পর নিচে আপনার প্রেরক নম্বর ও TrxID দিয়ে রসিদ নিশ্চিত করুন।", "After sending, enter your sender phone and TrxID below to confirm.")}
+                  </p>
+                </div>
               </div>
 
               {/* Method chips */}

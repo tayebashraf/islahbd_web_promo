@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import { Hero } from "@/components/home/hero";
-import { Features } from "@/components/home/features";
-import { PrayerWidget } from "@/components/home/prayer-widget";
-import { AyahSection } from "@/components/home/ayah-section";
-import { Testimonials } from "@/components/home/testimonials";
 import { AppDownload } from "@/components/home/app-download";
+import { AyahSection } from "@/components/home/ayah-section";
 import { BlogPreview } from "@/components/home/blog-preview";
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
+import { Features } from "@/components/home/features";
+import { Hero } from "@/components/home/hero";
+import { PrayerWidget } from "@/components/home/prayer-widget";
+import { Testimonials } from "@/components/home/testimonials";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
 import { fetchLiveStatus } from "@/lib/live-status";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
