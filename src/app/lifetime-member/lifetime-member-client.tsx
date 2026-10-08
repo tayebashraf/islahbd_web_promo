@@ -1069,7 +1069,7 @@ export function LifetimeMemberClient() {
             {/* Footer row: bank transfer & submit button */}
             <div className="mt-2.5 pt-2 border-t border-border/70 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
               <span className="truncate">
-                🏦 {t("ব্যাংক/রকেট:", "Bank/Rocket:")} <strong className="text-foreground font-mono">+880 1916-387935</strong>
+                🏦 {t("ব্যাংক ট্রান্সফার:", "Bank Transfer:")} <strong className="text-foreground font-mono">+880 1916-387935</strong>
               </span>
               <button
                 type="button"
