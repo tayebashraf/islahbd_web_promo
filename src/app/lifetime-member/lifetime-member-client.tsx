@@ -204,7 +204,6 @@ const PAYMENT_METHODS = [
   { name: "বিকাশ (মার্চেন্ট)", nameEn: "bKash (Merchant)", icon: Wallet, color: "#E11D48" },
   { name: "বিকাশ (পার্সোনাল)", nameEn: "bKash (Personal)", icon: Wallet, color: "#E11D48" },
   { name: "নগদ (পার্সোনাল)", nameEn: "Nagad (Personal)", icon: Landmark, color: "#EA580C" },
-  { name: "ব্যাংক", nameEn: "Bank", icon: Landmark, color: "#2563EB" },
   { name: "ক্যাশ (অফিসে)", nameEn: "Cash (Office)", icon: Receipt, color: "#16A34A" },
 ];
 
@@ -1065,21 +1064,6 @@ export function LifetimeMemberClient() {
                 • {t("রেফারেন্সে আপনার নাম বা সদস্য নম্বর লিখুন। টাকা পাঠানো শেষে রসিদ জমা দিন।", "Add your name or member ID as reference. Submit your receipt after sending.")}
               </p>
             </div>
-
-            {/* Footer row: bank transfer & submit button */}
-            <div className="mt-2.5 pt-2 border-t border-border/70 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-              <span className="truncate">
-                🏦 {t("ব্যাংক ট্রান্সফার:", "Bank Transfer:")} <strong className="text-foreground font-mono">+880 1916-387935</strong>
-              </span>
-              <button
-                type="button"
-                onClick={() => openPortal(1)}
-                className="inline-flex items-center gap-1 font-bold text-primary hover:underline shrink-0 cursor-pointer"
-              >
-                <span>{t("রসিদ জমা দিন", "Submit Receipt")}</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
           </div>
 
           {/* 4. 8 DIVINE BENEFITS */}
@@ -1708,7 +1692,7 @@ export function LifetimeMemberClient() {
                 className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold text-sm shadow disabled:opacity-70 active:scale-[0.98] transition-all mb-2.5"
               >
                 <Wallet className="w-5 h-5" />
-                <span>{t("হ্যাঁ, এখনই অনুদান পাঠাবো (বিকাশ/নগদ/ব্যাংক)", "Yes, I'll pay now (bKash/Nagad/Bank)")}</span>
+                <span>{t("হ্যাঁ, এখনই অনুদান পাঠাবো (বিকাশ/নগদ)", "Yes, I'll pay now (bKash/Nagad)")}</span>
               </button>
 
               <button
