@@ -14,6 +14,7 @@ export const TIER_AMOUNTS: Record<string, number> = {
   vip: 10000,
   well_wisher: 5000,
   supporter: 3000,
+  test_tier: 10,
 };
 
 const STATUSES = new Set(["later", "payment_sent"]);

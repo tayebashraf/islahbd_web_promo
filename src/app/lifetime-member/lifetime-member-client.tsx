@@ -215,6 +215,7 @@ const TIERS = [
   { id: "vip", amount: 10000, icon: Medal, color: "#059669", amountBn: "১০,০০০ টাকা", amountEn: "৳10,000", titleBn: "ভিআইপি সদস্য (VIP Member)", titleEn: "VIP Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১০,০০০ টাকা", subEn: "Fixed annual contribution ৳10,000" },
   { id: "well_wisher", amount: 5000, icon: Heart, color: "#7C3AED", amountBn: "৫,০০০ টাকা", amountEn: "৳5,000", titleBn: "শুভাকাঙ্ক্ষী সদস্য (Well-Wisher Member)", titleEn: "Well-Wisher Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫,০০০ টাকা", subEn: "Fixed annual contribution ৳5,000" },
   { id: "supporter", amount: 3000, icon: Handshake, color: "#0D9488", amountBn: "৩,০০০ টাকা", amountEn: "৳3,000", titleBn: "সহযোগী সদস্য (Supporter Member)", titleEn: "Supporter Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৩,০০০ টাকা", subEn: "Fixed annual contribution ৳3,000" },
+  { id: "test_tier", amount: 10, icon: Sparkles, color: "#10B981", amountBn: "১০ টাকা", amountEn: "৳10", titleBn: "পরীক্ষামূলক প্যাকেজ (Test Package)", titleEn: "Test Package (৳10)", subBn: "প্রোডাকশন লাইভ গেটওয়ে পরীক্ষা অনুদান ১০ টাকা", subEn: "Production live test contribution ৳10" },
 ];
 
 const MEMBER_CSV_URL =
