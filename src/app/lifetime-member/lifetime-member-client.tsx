@@ -208,13 +208,13 @@ const PAYMENT_METHODS = [
 ];
 
 const TIERS = [
-  { id: "platinum", icon: Crown, color: "#D97706", amountBn: "১,০০,০০০ টাকা", amountEn: "৳100,000", titleBn: "প্ল্যাটিনাম সদস্য (Platinum Member)", titleEn: "Platinum Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১,০০,০০০ টাকা", subEn: "Fixed annual contribution ৳100,000" },
-  { id: "diamond", icon: Gem, color: "#0EA5E9", amountBn: "৭৫,০০০ টাকা", amountEn: "৳75,000", titleBn: "ডায়মন্ড সদস্য (Diamond Member)", titleEn: "Diamond Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৭৫,০০০ টাকা", subEn: "Fixed annual contribution ৳75,000" },
-  { id: "gold", icon: Star, color: "#F59E0B", amountBn: "৫০,০০০ টাকা", amountEn: "৳50,000", titleBn: "গোল্ড সদস্য (Gold Member)", titleEn: "Gold Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫০,০০০ টাকা", subEn: "Fixed annual contribution ৳50,000" },
-  { id: "silver", icon: Shield, color: "#64748B", amountBn: "২৫,০০০ টাকা", amountEn: "৳25,000", titleBn: "সিলভার সদস্য (Silver Member)", titleEn: "Silver Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ২৫,০০০ টাকা", subEn: "Fixed annual contribution ৳25,000" },
-  { id: "vip", icon: Medal, color: "#059669", amountBn: "১০,০০০ টাকা", amountEn: "৳10,000", titleBn: "ভিআইপি সদস্য (VIP Member)", titleEn: "VIP Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১০,০০০ টাকা", subEn: "Fixed annual contribution ৳10,000" },
-  { id: "well_wisher", icon: Heart, color: "#7C3AED", amountBn: "৫,০০০ টাকা", amountEn: "৳5,000", titleBn: "শুভাকাঙ্ক্ষী সদস্য (Well-Wisher Member)", titleEn: "Well-Wisher Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫,০০০ টাকা", subEn: "Fixed annual contribution ৳5,000" },
-  { id: "supporter", icon: Handshake, color: "#0D9488", amountBn: "৩,০০০ টাকা", amountEn: "৳3,000", titleBn: "সহযোগী সদস্য (Supporter Member)", titleEn: "Supporter Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৩,০০০ টাকা", subEn: "Fixed annual contribution ৳3,000" },
+  { id: "platinum", amount: 100000, icon: Crown, color: "#D97706", amountBn: "১,০০,০০০ টাকা", amountEn: "৳100,000", titleBn: "প্ল্যাটিনাম সদস্য (Platinum Member)", titleEn: "Platinum Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১,০০,০০০ টাকা", subEn: "Fixed annual contribution ৳100,000" },
+  { id: "diamond", amount: 75000, icon: Gem, color: "#0EA5E9", amountBn: "৭৫,০০০ টাকা", amountEn: "৳75,000", titleBn: "ডায়মন্ড সদস্য (Diamond Member)", titleEn: "Diamond Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৭৫,০০০ টাকা", subEn: "Fixed annual contribution ৳75,000" },
+  { id: "gold", amount: 50000, icon: Star, color: "#F59E0B", amountBn: "৫০,০০০ টাকা", amountEn: "৳50,000", titleBn: "গোল্ড সদস্য (Gold Member)", titleEn: "Gold Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫০,০০০ টাকা", subEn: "Fixed annual contribution ৳50,000" },
+  { id: "silver", amount: 25000, icon: Shield, color: "#64748B", amountBn: "২৫,০০০ টাকা", amountEn: "৳25,000", titleBn: "সিলভার সদস্য (Silver Member)", titleEn: "Silver Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ২৫,০০০ টাকা", subEn: "Fixed annual contribution ৳25,000" },
+  { id: "vip", amount: 10000, icon: Medal, color: "#059669", amountBn: "১০,০০০ টাকা", amountEn: "৳10,000", titleBn: "ভিআইপি সদস্য (VIP Member)", titleEn: "VIP Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১০,০০০ টাকা", subEn: "Fixed annual contribution ৳10,000" },
+  { id: "well_wisher", amount: 5000, icon: Heart, color: "#7C3AED", amountBn: "৫,০০০ টাকা", amountEn: "৳5,000", titleBn: "শুভাকাঙ্ক্ষী সদস্য (Well-Wisher Member)", titleEn: "Well-Wisher Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫,০০০ টাকা", subEn: "Fixed annual contribution ৳5,000" },
+  { id: "supporter", amount: 3000, icon: Handshake, color: "#0D9488", amountBn: "৩,০০০ টাকা", amountEn: "৳3,000", titleBn: "সহযোগী সদস্য (Supporter Member)", titleEn: "Supporter Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৩,০০০ টাকা", subEn: "Fixed annual contribution ৳3,000" },
 ];
 
 const MEMBER_CSV_URL =
@@ -339,6 +339,20 @@ async function searchMember(memberId: string, mobile: string): Promise<MemberRec
     if (idMatches && mobileMatches) return m;
   }
   return null;
+}
+
+// Pledged amount cells look like "৫০০০", "5,000" or "10000/-"; null when no amount can be read.
+function parsePledgedAmount(text: string): number | null {
+  const digits = normalizeBanglaDigits(text).replace(/\/-.*$/, "").replace(/[^0-9]/g, "");
+  const value = parseInt(digits, 10);
+  return value > 0 ? value : null;
+}
+
+function formatTaka(amount: number, bn: boolean): string {
+  const formatted = amount.toLocaleString("en-IN");
+  if (!bn) return `৳${formatted}`;
+  const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+  return `${formatted.replace(/[0-9]/g, (d) => banglaDigits[Number(d)])} টাকা`;
 }
 
 function validateBdPhone(value: string, required: boolean): string | null {
@@ -498,7 +512,7 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ clas
 }
 
 export function LifetimeMemberClient() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { setTheme } = useTheme();
 
   const router = useRouter();
@@ -562,14 +576,55 @@ export function LifetimeMemberClient() {
     applicantPhone: string;
     memberId?: string;
     yearsToPay?: number[];
+    // Amount charged through bKash online checkout; null hides that option.
+    onlineAmount: number | null;
   }>(null);
   const [senderNumber, setSenderNumber] = useState("");
   const [trxId, setTrxId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("বিকাশ (মার্চেন্ট)");
   const [senderError, setSenderError] = useState<string | null>(null);
+  const [bkashStarting, setBkashStarting] = useState(false);
+  const [bkashError, setBkashError] = useState<string | null>(null);
+  // Failed / cancelled bKash checkout reported back by /api/bkash/callback.
+  const [bkashFailure, setBkashFailure] = useState<null | { cancelled: boolean; message: string | null }>(null);
 
   // ── Success dialog ──
-  const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string }>(null);
+  const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string; trxId?: string }>(null);
+
+  // Result of a bKash online checkout (set by /api/bkash/callback), shown once and then cleared from the URL.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const outcome = params.get("bkash");
+    if (!outcome) return;
+    if (outcome === "success") {
+      const trx = params.get("trx") ?? "";
+      const amount = Number(params.get("amount"));
+      const amountText = amount > 0 ? formatTaka(Math.round(amount), lang === "bn") : "";
+      const saveFailed = params.get("saved") === "0";
+      // The URL is only readable after mount, so this cannot be initial state (it would break hydration).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSuccessDialog({
+        title: t("বিকাশ পেমেন্ট সফল হয়েছে!", "bKash Payment Successful!"),
+        description: saveFailed
+          ? t(
+              `আপনার ${amountText} অনুদান সফলভাবে গ্রহণ করা হয়েছে, কিন্তু আবেদন সংরক্ষণে সমস্যা হয়েছে। অনুগ্রহ করে নিচের TrxID সহ হেল্পলাইনে যোগাযোগ করুন।`,
+              `Your ${amountText} contribution was received, but saving the application failed. Please contact the helpline with the TrxID below.`
+            )
+          : t(
+              `জাযাকাল্লাহু খাইরান! আপনার ${amountText} অনুদান বিকাশের মাধ্যমে সফলভাবে গ্রহণ করা হয়েছে। রসিদের জন্য নিচের TrxID সংরক্ষণ করুন।`,
+              `JazakAllahu khairan! Your ${amountText} contribution was received via bKash. Keep the TrxID below as your receipt.`
+            ),
+        trxId: trx,
+      });
+    } else {
+      setBkashFailure({ cancelled: outcome === "cancel", message: params.get("msg") });
+    }
+    for (const key of ["bkash", "trx", "amount", "saved", "msg"]) params.delete(key);
+    const rest = params.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${rest ? `?${rest}` : ""}`);
+    // Runs once on mount; `t`/`lang` only pick the dialog language.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Dismiss the success dialog, clear every form and send the user to the home page.
   const closeSuccessAndReturn = useCallback(() => {
@@ -604,8 +659,9 @@ export function LifetimeMemberClient() {
     setPortalOpen(true);
   };
 
-  const copyToClipboard = (text: string) => {
-    const raw = text.replace(/[^0-9]/g, "");
+  // Phone numbers are copied as digits only; pass digitsOnly=false for IDs such as a TrxID.
+  const copyToClipboard = (text: string, digitsOnly = true) => {
+    const raw = digitsOnly ? text.replace(/[^0-9]/g, "") : text;
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(raw || text).catch(() => {});
     }
@@ -614,10 +670,11 @@ export function LifetimeMemberClient() {
   };
 
   useEffect(() => {
-    if (!portalOpen && !payModal && !successDialog) return;
+    if (!portalOpen && !payModal && !successDialog && !bkashFailure) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (successDialog) closeSuccessAndReturn();
+      if (bkashFailure) setBkashFailure(null);
+      else if (successDialog) closeSuccessAndReturn();
       else if (payModal) setPayModal(null);
       else if (portalOpen) setPortalOpen(false);
     };
@@ -627,7 +684,7 @@ export function LifetimeMemberClient() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [portalOpen, payModal, successDialog, closeSuccessAndReturn]);
+  }, [portalOpen, payModal, successDialog, bkashFailure, closeSuccessAndReturn]);
 
   // ── New member submit ──
   const validateNewMemberForm = () => {
@@ -669,6 +726,26 @@ export function LifetimeMemberClient() {
     setReviewOpen(true);
   };
 
+  const newMemberApplication = (
+    status: "later" | "payment_sent",
+    payment?: { method: string; senderNumber: string; trxId: string }
+  ) => ({
+    status,
+    tierId: currentTier.id,
+    tierTitle: currentTier.titleBn,
+    amount: currentTier.amountBn,
+    name: newName.trim(),
+    phone: normalizePhone(newPhone),
+    whatsapp: newWhatsapp.trim() ? normalizePhone(newWhatsapp) : "",
+    profession: newProfession.trim(),
+    address: newAddress.trim(),
+    mediumName: mediumName.trim(),
+    mediumPhone: mediumPhone.trim() ? normalizePhone(mediumPhone) : "",
+    paymentMethod: payment?.method ?? "",
+    senderNumber: payment?.senderNumber ?? "",
+    trxId: payment?.trxId ?? "",
+  });
+
   // Stores the application in the Google Sheet via /api/lifetime-member.
   const saveNewMemberApplication = async (
     status: "later" | "payment_sent",
@@ -678,22 +755,7 @@ export function LifetimeMemberClient() {
       const res = await fetch("/api/lifetime-member", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status,
-          tierId: currentTier.id,
-          tierTitle: currentTier.titleBn,
-          amount: currentTier.amountBn,
-          name: newName.trim(),
-          phone: normalizePhone(newPhone),
-          whatsapp: newWhatsapp.trim() ? normalizePhone(newWhatsapp) : "",
-          profession: newProfession.trim(),
-          address: newAddress.trim(),
-          mediumName: mediumName.trim(),
-          mediumPhone: mediumPhone.trim() ? normalizePhone(mediumPhone) : "",
-          paymentMethod: payment?.method ?? "",
-          senderNumber: payment?.senderNumber ?? "",
-          trxId: payment?.trxId ?? "",
-        }),
+        body: JSON.stringify(newMemberApplication(status, payment)),
       });
       const result = await res.json().catch(() => null);
       return res.ok && !!result?.ok;
@@ -735,12 +797,14 @@ export function LifetimeMemberClient() {
     setTrxId("");
     setPaymentMethod("বিকাশ (মার্চেন্ট)");
     setSenderError(null);
+    setBkashError(null);
     setPayModal({
       title: "নতুন সদস্য অনুদান পরিশোধ",
       titleEn: "New Member Contribution Payment",
       amountText: t(currentTier.amountBn, currentTier.amountEn),
       applicantName: newName.trim(),
       applicantPhone: normalizePhone(newPhone),
+      onlineAmount: currentTier.amount,
     });
   };
 
@@ -789,10 +853,12 @@ export function LifetimeMemberClient() {
   const openPayForExisting = () => {
     if (!foundMember) return;
     const years = Array.from(selectedDueYears).sort((a, b) => a - b);
+    const pledged = parsePledgedAmount(foundMember.pledgedAmount);
     setSenderNumber(foundMember.mobile);
     setTrxId("");
     setPaymentMethod("বিকাশ (মার্চেন্ট)");
     setSenderError(null);
+    setBkashError(null);
     setPayModal({
       title: "আজীবন সদস্য বকেয়া/চলতি অনুদান",
       titleEn: "Lifetime Member Due/Current Contribution",
@@ -801,7 +867,47 @@ export function LifetimeMemberClient() {
       applicantPhone: foundMember.mobile,
       memberId: foundMember.memberId,
       yearsToPay: years,
+      onlineAmount: pledged ? pledged * Math.max(1, years.length) : null,
     });
+  };
+
+  // Starts bKash online checkout; the browser leaves for bKash and comes back via /api/bkash/callback.
+  const startBkashPayment = async () => {
+    if (!payModal || bkashStarting) return;
+    setBkashStarting(true);
+    setBkashError(null);
+    const body = payModal.memberId
+      ? {
+          kind: "existing",
+          memberId: payModal.memberId,
+          phone: normalizePhone(payModal.applicantPhone),
+          years: payModal.yearsToPay ?? [],
+          amount: payModal.onlineAmount,
+          app: isApp,
+        }
+      : { kind: "new", application: newMemberApplication("payment_sent"), app: isApp };
+    try {
+      const res = await fetch("/api/bkash/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json().catch(() => null);
+      if (res.ok && result?.ok && typeof result.bkashURL === "string") {
+        window.location.href = result.bkashURL;
+        return; // keep the spinner while the browser navigates away
+      }
+      setBkashError(
+        result?.message ||
+          t(
+            "এই মুহূর্তে বিকাশ অনলাইন পেমেন্ট শুরু করা যাচ্ছে না। একটু পরে চেষ্টা করুন অথবা নিচের নম্বরে টাকা পাঠান।",
+            "Could not start bKash online payment right now. Try again shortly or send to a number below."
+          )
+      );
+    } catch {
+      setBkashError(t("ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।", "Check your connection and try again."));
+    }
+    setBkashStarting(false);
   };
 
   const submitPayment = async () => {
@@ -948,123 +1054,6 @@ export function LifetimeMemberClient() {
             </div>
           </div>
 
-          {/* 3.5 OFFICIAL PAYMENT & DONATION CHANNELS */}
-          <div className="rounded-[20px] border border-[#D4AF37]/50 bg-white dark:bg-[#1E293B] p-4 sm:p-4.5 shadow-[0_2px_12px_rgba(212,175,55,0.06)]">
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0 border border-amber-500/30">
-                  <Wallet className="w-4 h-4 text-[#B45309] dark:text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-[15px] text-[#1E293B] dark:text-white leading-tight">
-                    {t("অফিসিয়াল অনুদান ও পেমেন্ট নম্বর", "Official Payment Numbers")}
-                  </h3>
-                  <p className="text-[10.5px] text-muted-foreground mt-0.5">
-                    {t("বাৎসরিক অনুদান পাঠাতে নিচের নম্বরগুলো ব্যবহার করুন", "Use these numbers to send your contribution")}
-                  </p>
-                </div>
-              </div>
-              <span className="hidden xs:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                {t("ভেরিফাইড", "Verified")}
-              </span>
-            </div>
-
-            {/* Compact Account Rows */}
-            <div className="space-y-2">
-              {PAYMENT_ACCOUNTS.map((p) => {
-                const isCopied = copiedNumber === p.displayNumber || copiedNumber === p.rawNumber;
-                return (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-black/8 dark:border-white/10 bg-slate-50/80 dark:bg-[#0F172A]/80 hover:border-[#D4AF37]/40 transition-colors"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div
-                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-[10.5px] text-white shadow-2xs"
-                        style={{ backgroundColor: p.color }}
-                      >
-                        {p.provider === "bkash" ? "বিকাশ" : "নগদ"}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-bold text-[13px] text-foreground leading-tight">
-                            {t(p.titleBn, p.titleEn)}
-                          </span>
-                          <span
-                            className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md leading-none tracking-wide whitespace-nowrap shadow-2xs ${
-                              p.isFree
-                                ? "bg-emerald-600 text-white"
-                                : "bg-amber-600 text-white"
-                            }`}
-                          >
-                            {t(p.chargeBadgeBn, p.chargeBadgeEn)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="font-mono font-extrabold text-[13.5px] tracking-wide text-foreground">
-                            {p.displayNumber}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground hidden sm:inline">
-                            ({t(p.actionBn, p.actionEn)})
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => copyToClipboard(p.displayNumber)}
-                      className={`inline-flex items-center gap-1 h-7.5 px-2.5 rounded-lg text-[11px] font-bold transition-all shrink-0 cursor-pointer ${
-                        isCopied
-                          ? "bg-emerald-600 text-white shadow-xs"
-                          : "bg-white dark:bg-card hover:bg-gold/15 text-foreground hover:text-[#B45309] border border-border active:scale-95"
-                      }`}
-                      title={t("ক্লিক করে নম্বর কপি করুন", "Click to copy number")}
-                    >
-                      {isCopied ? (
-                        <>
-                          <Check className="w-3 h-3" />
-                          <span>{t("কপি হয়েছে!", "Copied!")}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3 text-muted-foreground" />
-                          <span>{t("কপি", "Copy")}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Note Box with 15 Tk charge rule */}
-            <div className="mt-2.5 p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-[11.5px] text-slate-800 dark:text-slate-100 leading-relaxed space-y-1.5 text-left shadow-2xs">
-              <div className="flex items-center gap-1.5 font-bold text-foreground text-[12px]">
-                <span className="text-amber-600 dark:text-amber-400">⚠️</span>
-                <span>{t("টাকা পাঠানোর নিয়ম ও খরচের হিসাব:", "Payment & Fee Rules:")}</span>
-              </div>
-              <p className="text-[11.5px] leading-relaxed">
-                • <strong className="font-bold text-foreground">{t("খরচসহ পাঠানোর নিয়ম:", "Please include fee:")}</strong>{" "}
-                {t("বিকাশ (মার্চেন্ট/পার্সোনাল) বা নগদ—যেকোনো নম্বরে টাকা পাঠানোর সময় অনুগ্রহ করে প্রতি হাজারে ", "When sending via bKash (Merchant/Personal) or Nagad, please include ")}
-                <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[11px] whitespace-nowrap shadow-2xs">
-                  {t("১৫ টাকা খরচসহ", "৳15 fee per ৳1000")}
-                </span>
-                {t(" পাঠাবেন।", ".")}
-              </p>
-              <p className="text-[11.5px] leading-relaxed">
-                • <strong className="font-bold text-foreground">{t("পদ্ধতি:", "Methods:")}</strong>{" "}
-                {t("বিকাশ মার্চেন্টে ", "For bKash Merchant use ")}
-                <strong className="text-foreground">{t("Make Payment (পেমেন্ট)", "Make Payment")}</strong>
-                {t(" এবং পার্সোনাল নম্বরে ", " and for personal accounts use ")}
-                <strong className="text-foreground">{t("Send Money (সেন্ড মানি)", "Send Money")}</strong>
-                {t(" অপশন বেছে নেবেন।", ".")}
-              </p>
-              <p className="text-[10.5px] text-muted-foreground pt-0.5">
-                • {t("রেফারেন্সে আপনার নাম বা সদস্য নম্বর লিখুন। টাকা পাঠানো শেষে রসিদ জমা দিন।", "Add your name or member ID as reference. Submit your receipt after sending.")}
-              </p>
-            </div>
-          </div>
 
           {/* 4. 8 DIVINE BENEFITS */}
           <div className="rounded-[20px] border border-black/6 dark:border-white/10 bg-white dark:bg-[#1E293B] p-[18px] shadow-[0_3px_12px_rgba(0,0,0,0.04)]">
@@ -1736,6 +1725,79 @@ export function LifetimeMemberClient() {
                 <h3 className="text-[16.5px] font-bold text-foreground">{t(payModal.title, payModal.titleEn)}</h3>
               </div>
 
+              {/* bKash online checkout (tokenized PGW) */}
+              {payModal.onlineAmount !== null && (
+                <>
+                  <div className="p-3.5 rounded-2xl border-[1.5px] border-[#E2136E]/45 bg-[#E2136E]/[0.05] dark:bg-[#E2136E]/10 shadow-2xs">
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-[#E2136E] flex items-center justify-center shrink-0 font-bold text-[11px] text-white shadow-2xs">
+                        বিকাশ
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h4 className="text-[13.5px] font-bold text-foreground leading-tight">
+                            {t("বিকাশে সরাসরি অনলাইন পেমেন্ট", "Pay Online with bKash")}
+                          </h4>
+                          <span className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md leading-none bg-emerald-600 text-white whitespace-nowrap">
+                            {t("অতিরিক্ত খরচ নেই", "No extra fee")}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+                          {t(
+                            "বিকাশ নম্বর, OTP ও PIN দিয়ে পেমেন্ট করুন — TrxID ও রসিদ স্বয়ংক্রিয়ভাবে জমা হবে, আলাদা করে তথ্য দিতে হবে না।",
+                            "Pay with your bKash number, OTP and PIN — the TrxID and receipt are recorded automatically."
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/90 dark:bg-background/70 border border-black/8 dark:border-white/10">
+                      <span className="text-[12px] text-muted-foreground">{t("পরিশোধের পরিমাণ:", "Amount:")}</span>
+                      <span className="text-[15px] font-extrabold text-foreground">
+                        {formatTaka(payModal.onlineAmount, lang === "bn")}
+                        {payModal.yearsToPay && payModal.yearsToPay.length > 1 && (
+                          <span className="ml-1 text-[11px] font-semibold text-muted-foreground">
+                            ({payModal.yearsToPay.length} {t("বছর", "years")})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+
+                    {bkashError && (
+                      <div className="mt-2.5 flex items-start gap-2 p-2.5 rounded-xl border border-red-500/30 bg-red-500/10">
+                        <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                        <p className="text-[11.5px] leading-relaxed text-red-700 dark:text-red-300">{bkashError}</p>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={startBkashPayment}
+                      disabled={bkashStarting || submitting}
+                      className="w-full mt-3 h-[50px] inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E2136E] hover:bg-[#C80F60] text-white font-bold text-[14px] shadow-[0_2px_8px_rgba(226,19,110,0.3)] disabled:opacity-70 active:scale-[0.98] transition-all cursor-pointer"
+                    >
+                      {bkashStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wallet className="w-5 h-5" />}
+                      <span>
+                        {bkashStarting
+                          ? t("বিকাশে নিয়ে যাওয়া হচ্ছে...", "Opening bKash...")
+                          : t(
+                              `বিকাশ দিয়ে ${formatTaka(payModal.onlineAmount, true)} পরিশোধ করুন`,
+                              `Pay ${formatTaka(payModal.onlineAmount, false)} with bKash`
+                            )}
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 my-3.5" aria-hidden="true">
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="text-[11.5px] font-bold text-muted-foreground">
+                      {t("অথবা নিজে টাকা পাঠিয়ে তথ্য দিন", "Or send manually and submit details")}
+                    </span>
+                    <div className="h-px flex-1 bg-border" />
+                  </div>
+                </>
+              )}
+
               {/* Payment Numbers Notice Box */}
               <div className="p-3 sm:p-3.5 rounded-2xl bg-amber-500/[0.06] dark:bg-amber-500/10 border border-amber-500/30 mb-3.5 shadow-2xs">
                 <div className="flex items-center justify-between mb-2">
@@ -1939,11 +2001,77 @@ export function LifetimeMemberClient() {
               </div>
               <h3 className="relative text-lg font-bold text-foreground mb-2">{successDialog.title}</h3>
               <p className="relative text-[13.5px] leading-relaxed text-muted-foreground mb-6">{successDialog.description}</p>
+              {successDialog.trxId && (
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(successDialog.trxId!, false)}
+                  className="relative -mt-3 mb-6 w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-border bg-secondary/60 cursor-pointer"
+                  title={t("ক্লিক করে কপি করুন", "Click to copy")}
+                >
+                  <span className="text-[12px] text-muted-foreground">TrxID</span>
+                  <span className="flex items-center gap-1.5 font-mono font-extrabold text-[14px] tracking-wide text-foreground">
+                    {successDialog.trxId}
+                    {copiedNumber === successDialog.trxId ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                    )}
+                  </span>
+                </button>
+              )}
               <button
                 onClick={closeSuccessAndReturn}
                 className="relative w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition-colors text-white text-sm font-semibold"
               >
                 {t("ঠিক আছে", "Done")}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── bKASH CHECKOUT FAILED / CANCELLED ─── */}
+      <AnimatePresence>
+        {bkashFailure && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.target === e.currentTarget && setBkashFailure(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 8 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              className="relative w-full max-w-sm bg-background rounded-3xl border border-border shadow-2xl px-6 pt-8 pb-6 text-center"
+            >
+              <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-red-500/15 flex items-center justify-center">
+                <CircleAlert className="w-9 h-9 text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                {bkashFailure.cancelled
+                  ? t("বিকাশ পেমেন্ট বাতিল করা হয়েছে", "bKash Payment Cancelled")
+                  : t("বিকাশ পেমেন্ট সম্পন্ন হয়নি", "bKash Payment Not Completed")}
+              </h3>
+              {bkashFailure.message && (
+                <p className="text-[13px] font-semibold text-red-600 dark:text-red-400 mb-2">{bkashFailure.message}</p>
+              )}
+              <p className="text-[13px] leading-relaxed text-muted-foreground mb-6">
+                {t(
+                  "পেমেন্ট সম্পন্ন না হলে বিকাশ একাউন্ট থেকে টাকা কাটা হয় না। আবার চেষ্টা করুন অথবা অফিসিয়াল নম্বরে টাকা পাঠিয়ে তথ্য দিন। টাকা কেটে থাকলে হেল্পলাইনে যোগাযোগ করুন।",
+                  "An incomplete payment does not deduct money from your bKash account. Try again, or send to an official number and submit the details. If money was deducted, contact the helpline."
+                )}
+              </p>
+              <button
+                onClick={() => setBkashFailure(null)}
+                className="w-full h-11 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+              >
+                {t("ঠিক আছে", "OK")}
               </button>
             </motion.div>
           </motion.div>
