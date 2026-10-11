@@ -23,7 +23,8 @@ export class BkashError extends Error {
 }
 
 export function isBkashConfigured(): boolean {
-  return !!(APP_KEY && APP_SECRET && USERNAME && PASSWORD);
+  // Configured if MMS Backend URL exists (centralized gateway engine) OR local credentials exist
+  return !!BACKEND_URL || !!(APP_KEY && APP_SECRET && USERNAME && PASSWORD);
 }
 
 type BkashResponse = Record<string, unknown>;
@@ -59,7 +60,9 @@ let cachedToken: { value: string; expiresAt: number } | null = null;
 
 async function getToken(): Promise<string> {
   if (cachedToken && Date.now() < cachedToken.expiresAt) return cachedToken.value;
-  if (!isBkashConfigured()) throw new BkashError("bKash credentials are not configured", "not_configured");
+  if (!APP_KEY || !APP_SECRET || !USERNAME || !PASSWORD) {
+    throw new BkashError("Direct bKash credentials are not configured", "not_configured");
+  }
 
   const data = await post(
     "/tokenized-checkout/auth/grant-token",
@@ -97,7 +100,7 @@ export async function createPayment(input: {
   callbackURL: string;
   application?: Record<string, unknown>;
 }): Promise<CreatedPayment> {
-  // 1. Try forwarding to Django backend first to record transaction and audit log on the server
+  // 1. Try forwarding to MMS backend first (centralized payment gateway engine)
   try {
     const res = await fetch(`${BACKEND_URL}/api/bkash/create/`, {
       method: "POST",
@@ -112,34 +115,47 @@ export async function createPayment(input: {
       cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (res.ok) {
-      const data = (await res.json()) as { ok?: boolean; paymentId?: string; bkashURL?: string };
-      if (data.paymentId && data.bkashURL) {
-        return { paymentId: data.paymentId, bkashURL: data.bkashURL };
-      }
-    } else {
-      const errData = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
-      if (errData?.message) {
-        console.warn("bKash backend returned error:", errData);
-      }
+    const data = (await res.json().catch(() => null)) as {
+      ok?: boolean;
+      paymentId?: string;
+      bkashURL?: string;
+      message?: string;
+      error?: string;
+    } | null;
+
+    if (res.ok && data?.paymentId && data?.bkashURL) {
+      return { paymentId: data.paymentId, bkashURL: data.bkashURL };
+    }
+    if (data?.message || data?.error) {
+      throw new BkashError(
+        data.message || data.error || "পেমেন্ট তৈরি করা যায়নি",
+        data.error || "backend_error",
+        data.message || null
+      );
     }
   } catch (backendErr) {
-    console.warn("bKash create: Django backend request failed, trying direct bKash fallback:", backendErr);
+    if (backendErr instanceof BkashError) throw backendErr;
+    console.warn("bKash create: MMS backend request failed:", backendErr);
   }
 
-  // 2. Direct fallback to bKash API if backend is not reachable or direct config exists
-  const data = await authedPost("/tokenized-checkout/payment/create", {
-    payerReference: input.payerReference,
-    callbackURL: input.callbackURL,
-    amount: input.amount.toFixed(2),
-    currency: "BDT",
-    intent: "sale",
-    merchantInvoiceNumber: input.merchantInvoiceNumber,
-  });
-  const paymentId = str(data.paymentId) || str(data.paymentID);
-  const bkashURL = str(data.bkashURL) || str(data.bKashURL);
-  if (!paymentId || !bkashURL) throw new BkashError("bKash create returned no paymentId/bkashURL", "bad_response");
-  return { paymentId, bkashURL };
+  // 2. Direct fallback to bKash API if direct credentials exist in env
+  if (APP_KEY && APP_SECRET && USERNAME && PASSWORD) {
+    const data = await authedPost("/tokenized-checkout/payment/create", {
+      mode: "0011",
+      payerReference: input.payerReference,
+      callbackURL: input.callbackURL,
+      amount: input.amount.toFixed(2),
+      currency: "BDT",
+      intent: "sale",
+      merchantInvoiceNumber: input.merchantInvoiceNumber,
+    });
+    const paymentId = str(data.paymentId) || str(data.paymentID);
+    const bkashURL = str(data.bkashURL) || str(data.bKashURL);
+    if (!paymentId || !bkashURL) throw new BkashError("bKash create returned no paymentId/bkashURL", "bad_response");
+    return { paymentId, bkashURL };
+  }
+
+  throw new BkashError("বিকাশ গেটওয়ে বর্তমানে সংযুক্ত নয়", "not_configured");
 }
 
 export interface PaymentResult {
@@ -177,25 +193,27 @@ export async function queryPayment(paymentId: string): Promise<PaymentResult> {
       }
     }
   } catch (err) {
-    console.warn("bKash query: Django backend request failed, trying direct fallback:", err);
+    console.warn("bKash query: MMS backend request failed:", err);
   }
-  return toResult(await authedPost("/tokenized-checkout/query/payment", { paymentId }));
+  if (APP_KEY && APP_SECRET && USERNAME && PASSWORD) {
+    return toResult(await authedPost("/tokenized-checkout/payment/query", { paymentID: paymentId, paymentId }));
+  }
+  throw new BkashError("পেমেন্ট কোয়েরি করা যায়নি", "query_failed");
 }
 
-// Executes a payment after bKash's success callback. If execute gives no usable answer
-// (timeout / network / "already executed"), the spec says to fall back to Query Payment.
+// Executes a payment after bKash's success callback.
 export async function executePayment(paymentId: string): Promise<PaymentResult> {
-  // 1. Try executing via Django backend to persist status, link application, and write server logs
+  // 1. Try executing via MMS backend to persist status, link application, and trigger Donor Bridge
   try {
     const res = await fetch(`${BACKEND_URL}/api/bkash/execute/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ paymentId }),
+      body: JSON.stringify({ paymentId, paymentID: paymentId }),
       cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (res.ok) {
-      const data = (await res.json()) as Record<string, unknown>;
+    const data = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+    if (res.ok && data) {
       return {
         completed: data.completed === true || data.transactionStatus === "Completed",
         transactionStatus: str(data.transactionStatus) || "Completed",
@@ -205,11 +223,23 @@ export async function executePayment(paymentId: string): Promise<PaymentResult> 
         merchantInvoiceNumber: str(data.merchantInvoiceNumber),
       };
     }
+    if (data?.message || data?.error) {
+      throw new BkashError(
+        str(data.message) || str(data.error) || "পেমেন্ট সম্পন্ন করতে ব্যর্থ হয়েছে",
+        str(data.error) || "execute_failed",
+        str(data.message) || null
+      );
+    }
   } catch (backendErr) {
-    console.warn("bKash execute: Django backend request failed, trying direct bKash fallback:", backendErr);
+    if (backendErr instanceof BkashError) throw backendErr;
+    console.warn("bKash execute: MMS backend request failed:", backendErr);
   }
 
-  // 2. Direct bKash fallback
-  return toResult(await authedPost("/tokenized-checkout/payment/execute", { paymentId }));
+  // 2. Direct fallback only if local credentials are provided
+  if (APP_KEY && APP_SECRET && USERNAME && PASSWORD) {
+    return toResult(await authedPost("/tokenized-checkout/payment/execute", { paymentID: paymentId, paymentId }));
+  }
+
+  throw new BkashError("পেমেন্ট সম্পন্ন করা যায়নি", "execute_failed");
 }
 
