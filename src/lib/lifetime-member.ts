@@ -1,6 +1,8 @@
-// Server-side helpers shared by the lifetime-member application route and the bKash payment routes.
-
-const BACKEND = process.env.LIFETIME_MEMBER_API_URL ?? "https://api.islahbd.com";
+const BACKEND = (
+  process.env.MMS_BACKEND_URL ??
+  process.env.LIFETIME_MEMBER_API_URL ??
+  "https://ihsan.markazulihsan.com"
+).replace(/\/+$/, "");
 const MAX_LEN = 300;
 
 // Annual contribution (BDT) per tier — must match TIERS in lifetime-member-client.tsx.

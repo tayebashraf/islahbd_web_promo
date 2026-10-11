@@ -79,9 +79,10 @@ async function authedPost(path: string, body: unknown): Promise<BkashResponse> {
 }
 
 const BACKEND_URL = (
+  process.env.MMS_BACKEND_URL ??
   process.env.NEXT_PUBLIC_BACKEND_URL ??
   process.env.LIFETIME_MEMBER_API_URL ??
-  "https://api.islahbd.com"
+  "https://ihsan.markazulihsan.com"
 ).replace(/\/+$/, "");
 
 export interface CreatedPayment {
