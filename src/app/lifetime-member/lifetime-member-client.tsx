@@ -48,6 +48,16 @@ import {
   Award,
   CreditCard,
 } from "lucide-react";
+import {
+  LifetimeReceiptModal,
+  type LifetimeReceiptData,
+  numberToBanglaWords,
+} from "@/components/lifetime-receipt-modal";
+import {
+  BKASH_CHARGE_PERCENT,
+  calculateBkashCharge,
+  getBkashTotalAmount,
+} from "@/lib/lifetime-member";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -235,7 +245,6 @@ const TIERS = [
   { id: "vip", amount: 10000, icon: Medal, color: "#059669", amountBn: "১০,০০০ টাকা", amountEn: "৳10,000", titleBn: "ভিআইপি সদস্য (VIP Member)", titleEn: "VIP Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ১০,০০০ টাকা", subEn: "Fixed annual contribution ৳10,000" },
   { id: "well_wisher", amount: 5000, icon: Heart, color: "#7C3AED", amountBn: "৫,০০০ টাকা", amountEn: "৳5,000", titleBn: "শুভাকাঙ্ক্ষী সদস্য (Well-Wisher Member)", titleEn: "Well-Wisher Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৫,০০০ টাকা", subEn: "Fixed annual contribution ৳5,000" },
   { id: "supporter", amount: 3000, icon: Handshake, color: "#0D9488", amountBn: "৩,০০০ টাকা", amountEn: "৳3,000", titleBn: "সহযোগী সদস্য (Supporter Member)", titleEn: "Supporter Member", subBn: "বাৎসরিক নির্ধারিত অনুদান ৩,০০০ টাকা", subEn: "Fixed annual contribution ৳3,000" },
-  { id: "test_tier", amount: 10, icon: Sparkles, color: "#10B981", amountBn: "১০ টাকা", amountEn: "৳10", titleBn: "পরীক্ষামূলক প্যাকেজ (Test Package)", titleEn: "Test Package (৳10)", subBn: "প্রোডাকশন লাইভ গেটওয়ে পরীক্ষা অনুদান ১০ টাকা", subEn: "Production live test contribution ৳10" },
 ];
 
 const MEMBER_CSV_URL =
@@ -614,8 +623,9 @@ export function LifetimeMemberClient() {
   const [sslczError, setSslczError] = useState<string | null>(null);
   const [sslczFailure, setSslczFailure] = useState<null | { cancelled: boolean; message: string | null }>(null);
 
-  // ── Success dialog ──
+  // ── Success dialog & Official Receipt ──
   const [successDialog, setSuccessDialog] = useState<null | { title: string; description: string; trxId?: string }>(null);
+  const [receiptModalData, setReceiptModalData] = useState<LifetimeReceiptData | null>(null);
 
   // Result of a bKash or SSLCOMMERZ online checkout, shown once and then cleared from the URL.
   useEffect(() => {
@@ -623,40 +633,36 @@ export function LifetimeMemberClient() {
     const bkashOutcome = params.get("bkash");
     const sslczOutcome = params.get("sslcz");
 
-    if (bkashOutcome === "success") {
-      const trx = params.get("trx") ?? "";
-      const amount = Number(params.get("amount"));
-      const amountText = amount > 0 ? formatTaka(Math.round(amount), lang === "bn") : "";
-      const saveFailed = params.get("saved") === "0";
-      setSuccessDialog({
-        title: t("বিকাশ পেমেন্ট সফল হয়েছে!", "bKash Payment Successful!"),
-        description: saveFailed
-          ? t(
-              `আপনার ${amountText} অনুদান সফলভাবে গ্রহণ করা হয়েছে, কিন্তু আবেদন সংরক্ষণে সমস্যা হয়েছে। অনুগ্রহ করে নিচের TrxID সহ হেল্পলাইনে যোগাযোগ করুন।`,
-              `Your ${amountText} contribution was received, but saving the application failed. Please contact the helpline with the TrxID below.`
-            )
-          : t(
-              `জাযাকাল্লাহু খাইরান! আপনার ${amountText} অনুদান বিকাশের মাধ্যমে সফলভাবে গ্রহণ করা হয়েছে। রসিদের জন্য নিচের TrxID সংরক্ষণ করুন।`,
-              `JazakAllahu khairan! Your ${amountText} contribution was received via bKash. Keep the TrxID below as your receipt.`
-            ),
+    if (bkashOutcome === "success" || sslczOutcome === "success") {
+      const trx = params.get("trx") ?? params.get("tran_id") ?? "";
+      let pendingInfo: any = null;
+      try {
+        const raw = typeof window !== "undefined" ? localStorage.getItem("ihsan_pending_receipt") : null;
+        if (raw) pendingInfo = JSON.parse(raw);
+      } catch {}
+
+      const paidAmount = Number(params.get("amount")) || pendingInfo?.amount || 0;
+      const receiptNo = trx ? `LMR-${trx.slice(-6).toUpperCase()}` : `LMR-${Math.floor(1000 + Math.random() * 9000)}`;
+      const todayBn = new Intl.DateTimeFormat("bn-BD", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
+
+      const receiptData: LifetimeReceiptData = {
+        receiptNo,
+        date: todayBn,
+        name: pendingInfo?.name || "সম্মানিত আজীবন সদস্য",
+        memberId: pendingInfo?.memberId || "অনলাইন",
+        address: pendingInfo?.address || "ঢাকা, বাংলাদেশ",
+        amount: paidAmount,
+        amountInWords: numberToBanglaWords(paidAmount),
+        mobile: pendingInfo?.phone || "",
+        tierTitle: pendingInfo?.tierTitle || "আজীবন সদস্য অনুদান",
         trxId: trx,
-      });
+        paymentMethod: bkashOutcome === "success" ? "বিকাশ (অনলাইন)" : "SSLCOMMERZ (কার্ড/নেট ব্যাংকিং)",
+        donationType: "yearly",
+      };
+
+      setReceiptModalData(receiptData);
     } else if (bkashOutcome) {
       setBkashFailure({ cancelled: bkashOutcome === "cancel", message: params.get("msg") });
-    }
-
-    if (sslczOutcome === "success") {
-      const trx = params.get("trx") ?? params.get("tran_id") ?? "";
-      const amount = Number(params.get("amount"));
-      const amountText = amount > 0 ? formatTaka(Math.round(amount), lang === "bn") : "";
-      setSuccessDialog({
-        title: t("অনলাইন পেমেন্ট সফল হয়েছে!", "Online Payment Successful!"),
-        description: t(
-          `জাযাকাল্লাহু খাইরান! আপনার ${amountText} অনুদান SSLCOMMERZ-এর মাধ্যমে সফলভাবে গ্রহণ করা হয়েছে। অফিশিয়াল রসিদের জন্য নিচের TrxID সংরক্ষণ করুন।`,
-          `JazakAllahu khairan! Your ${amountText} contribution was successfully received via SSLCOMMERZ. Keep the TrxID below as your official receipt.`
-        ),
-        trxId: trx,
-      });
     } else if (sslczOutcome) {
       setSslczFailure({ cancelled: sslczOutcome === "cancel", message: params.get("msg") });
     }
@@ -670,10 +676,16 @@ export function LifetimeMemberClient() {
 
   // Dismiss the success dialog, clear every form and send the user to the home page.
   const closeSuccessAndReturn = useCallback(() => {
+    setReceiptModalData(null);
     setSuccessDialog(null);
     setPayModal(null);
     setReviewOpen(false);
     setPortalOpen(false);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem("ihsan_pending_receipt");
+      } catch {}
+    }
     setStep(0);
     setSelectedTierId("gold");
     setNewName("");
@@ -918,6 +930,25 @@ export function LifetimeMemberClient() {
     if (!payModal || bkashStarting) return;
     setBkashStarting(true);
     setBkashError(null);
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(
+          "ihsan_pending_receipt",
+          JSON.stringify({
+            name: payModal.applicantName || newName.trim(),
+            phone: normalizePhone(payModal.applicantPhone || newPhone),
+            memberId: payModal.memberId || "",
+            address: newAddress.trim() || (foundMember?.address ?? ""),
+            amount: payModal.onlineAmount ?? currentTier.amount,
+            tierTitle: payModal.memberId ? "আজীবন সদস্য অনুদান" : currentTier.titleBn,
+            years: payModal.yearsToPay,
+            date: new Date().toISOString(),
+          })
+        );
+      } catch {}
+    }
+
     const body = payModal.memberId
       ? {
           kind: "existing",
@@ -942,8 +973,8 @@ export function LifetimeMemberClient() {
       setBkashError(
         result?.message ||
           t(
-            "এই মুহূর্তে বিকাশ অনলাইন পেমেন্ট শুরু করা যাচ্ছে না। একটু পরে চেষ্টা করুন অথবা নিচের নম্বরে টাকা পাঠান।",
-            "Could not start bKash online payment right now. Try again shortly or send to a number below."
+            "এই মুহূর্তে বিকাশ অনলাইন পেমেন্ট শুরু করা যাচ্ছে না। অনুগ্রহ করে একটু পর আবার চেষ্টা করুন অথবা কার্ড/নেট ব্যাংকিং বেছে নিন।",
+            "Could not start bKash online payment right now. Please try again shortly or choose Cards / Net Banking."
           )
       );
     } catch {
@@ -957,6 +988,25 @@ export function LifetimeMemberClient() {
     if (!payModal || sslczStarting) return;
     setSslczStarting(true);
     setSslczError(null);
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(
+          "ihsan_pending_receipt",
+          JSON.stringify({
+            name: payModal.applicantName || newName.trim(),
+            phone: normalizePhone(payModal.applicantPhone || newPhone),
+            memberId: payModal.memberId || "",
+            address: newAddress.trim() || (foundMember?.address ?? ""),
+            amount: payModal.onlineAmount ?? currentTier.amount,
+            tierTitle: payModal.memberId ? "আজীবন সদস্য অনুদান" : currentTier.titleBn,
+            years: payModal.yearsToPay,
+            date: new Date().toISOString(),
+          })
+        );
+      } catch {}
+    }
+
     const body = payModal.memberId
       ? {
           kind: "existing",
@@ -984,8 +1034,8 @@ export function LifetimeMemberClient() {
       setSslczError(
         result?.message ||
           t(
-            "এই মুহূর্তে SSLCOMMERZ অনলাইন পেমেন্ট শুরু করা যাচ্ছে না। একটু পরে চেষ্টা করুন অথবা অন্য মাধ্যমে পরিশোধ করুন।",
-            "Could not start SSLCOMMERZ online payment right now. Try again shortly or pay via other methods."
+            "এই মুহূর্তে SSLCOMMERZ অনলাইন পেমেন্ট শুরু করা যাচ্ছে না। অনুগ্রহ করে একটু পর আবার চেষ্টা করুন অথবা বিকাশ বেছে নিন।",
+            "Could not start SSLCOMMERZ online payment right now. Please try again shortly or choose bKash."
           )
       );
     } catch {
@@ -1762,30 +1812,17 @@ export function LifetimeMemberClient() {
               <button
                 onClick={openPayForNewMember}
                 disabled={submitting}
-                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold text-sm shadow disabled:opacity-70 active:scale-[0.98] transition-all mb-2.5"
+                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-[14.5px] shadow-lg hover:shadow-xl hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer"
               >
                 <Wallet className="w-5 h-5" />
-                <span>{t("হ্যাঁ, এখনই অনুদান পাঠাবো (বিকাশ/নগদ)", "Yes, I'll pay now (bKash/Nagad)")}</span>
-              </button>
-
-              <button
-                onClick={completeNewMemberSubmissionWithoutPay}
-                disabled={submitting}
-                className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl border border-border text-foreground font-bold text-sm disabled:opacity-70 active:scale-[0.98] transition-all"
-              >
-                {submitting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : <Send className="w-[18px] h-[18px]" />}
-                <span>
-                  {submitting
-                    ? t("জমা হচ্ছে...", "Submitting...")
-                    : t("পরবর্তীতে অনুদান প্রদান করবো (ফরম জমা দিন)", "I'll contribute later (Submit form)")}
-                </span>
+                <span>{t("হ্যাঁ, এখনই অনুদান পরিশোধ করুন (বিকাশ / কার্ড)", "Yes, Pay Contribution Now (bKash / Card)")}</span>
               </button>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* ─── PAYMENT INSTRUCTIONS & RECEIPT SHEET ─── */}
+      {/* ─── LIVE ONLINE PAYMENT GATEWAY SHEET (bKash & SSLCOMMERZ) ─── */}
       <AnimatePresence>
         {payModal && (
           <div
@@ -1802,350 +1839,230 @@ export function LifetimeMemberClient() {
               className="relative w-full sm:max-w-md max-h-[92vh] overflow-y-auto bg-background rounded-t-3xl sm:rounded-3xl border border-border shadow-2xl p-5 sm:p-6"
             >
               <div className="mx-auto sm:hidden w-11 h-[4.5px] rounded-full bg-muted-foreground/30 mb-4" />
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="p-2 rounded-full bg-[#B45309]/15">
-                  <Receipt className="w-[22px] h-[22px] text-[#B45309]" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-full bg-emerald-500/15">
+                    <Wallet className="w-[22px] h-[22px] text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-[17px] font-bold text-foreground leading-tight">
+                      {t("অনলাইন অনুদান পরিশোধ", "Online Contribution Payment")}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground">
+                      {t("পেমেন্টের মাধ্যম বেছে নিয়ে অনুদান সম্পন্ন করুন", "Choose payment method to complete contribution")}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-[16.5px] font-bold text-foreground">{t(payModal.title, payModal.titleEn)}</h3>
+
+                <button
+                  type="button"
+                  onClick={() => setPayModal(null)}
+                  className="w-8 h-8 rounded-full bg-secondary/80 hover:bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
-              {/* Online payment gateway choices (bKash & SSLCOMMERZ) */}
-              {payModal.onlineAmount !== null && (
-                <>
-                  {/* Gateway selector tabs */}
-                  <div className="grid grid-cols-2 gap-1.5 p-1 bg-muted/60 dark:bg-muted/30 rounded-2xl border border-border mb-3.5">
-                    <button
-                      type="button"
-                      onClick={() => setOnlineGateway("bkash")}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                        onlineGateway === "bkash"
-                          ? "bg-[#E2136E] text-white shadow-xs"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <Wallet className="w-3.5 h-3.5 shrink-0" />
-                      <span>{t("বিকাশ অনলাইন", "bKash Online")}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setOnlineGateway("sslcommerz")}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                        onlineGateway === "sslcommerz"
-                          ? "bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-xs"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <CreditCard className="w-3.5 h-3.5 shrink-0" />
-                      <span>{t("কার্ড / নেট ব্যাংকিং", "Cards / Banking")}</span>
-                    </button>
+              {/* Contribution Summary */}
+              {(() => {
+                const baseAmount = payModal.onlineAmount ?? currentTier.amount;
+                const bkashFee = calculateBkashCharge(baseAmount);
+                const isBkash = onlineGateway === "bkash";
+                const totalPayable = isBkash ? getBkashTotalAmount(baseAmount) : baseAmount;
+
+                return (
+                  <div className="p-3.5 rounded-2xl bg-muted/40 border border-border/60 mb-4 space-y-1.5 text-xs">
+                    {payModal.applicantName && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[12.5px] text-muted-foreground">{t("আবেদনকারীর নাম:", "Applicant Name:")}</span>
+                        <span className="text-[13px] font-bold text-foreground text-right">{payModal.applicantName}</span>
+                      </div>
+                    )}
+                    {payModal.applicantPhone && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[12.5px] text-muted-foreground">{t("মোবাইল:", "Mobile:")}</span>
+                        <span className="text-[13px] font-mono text-foreground text-right">{payModal.applicantPhone}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[12.5px] text-muted-foreground">{t("অনুদানের বিবরণ:", "Contribution Tier:")}</span>
+                      <span className="text-[13px] font-semibold text-foreground text-right">
+                        {payModal.memberId ? t("আজীবন সদস্য অনুদান", "Lifetime Member Contribution") : currentTier.titleBn}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[12.5px] text-muted-foreground">{t("মূল অনুদান পরিমাণ:", "Base Amount:")}</span>
+                      <span className="text-[13px] font-bold font-mono text-foreground text-right">
+                        {formatTaka(baseAmount, lang === "bn")}
+                      </span>
+                    </div>
+                    {isBkash && (
+                      <div className="flex items-center justify-between gap-2 text-[#E2136E] font-medium pt-1 border-t border-border/40">
+                        <span className="text-[12px] flex items-center gap-1">
+                          <span>{t(`বিকাশ গেটওয়ে সার্ভিস চার্জ (${BKASH_CHARGE_PERCENT}%):`, `bKash Gateway Charge (${BKASH_CHARGE_PERCENT}%):`)}</span>
+                        </span>
+                        <span className="text-[12.5px] font-bold font-mono text-right">
+                          +{formatTaka(bkashFee, lang === "bn")}
+                        </span>
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-border flex items-center justify-between gap-2">
+                      <span className="text-[13px] font-bold text-foreground">{t("সর্বমোট পরিশোধযোগ্য:", "Total Payable:")}</span>
+                      <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
+                        {formatTaka(totalPayable, lang === "bn")}
+                      </span>
+                    </div>
                   </div>
+                );
+              })()}
 
-                  {/* bKash Panel */}
-                  {onlineGateway === "bkash" && (
-                    <div className="p-3.5 rounded-2xl border-[1.5px] border-[#E2136E]/45 bg-[#E2136E]/[0.05] dark:bg-[#E2136E]/10 shadow-2xs">
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-[#E2136E] flex items-center justify-center shrink-0 font-bold text-[11px] text-white shadow-2xs">
-                          বিকাশ
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h4 className="text-[13.5px] font-bold text-foreground leading-tight">
-                              {t("বিকাশে সরাসরি অনলাইন পেমেন্ট", "Pay Online with bKash")}
-                            </h4>
-                            <span className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md leading-none bg-emerald-600 text-white whitespace-nowrap">
-                              {t("অতিরিক্ত খরচ নেই", "No extra fee")}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                            {t(
-                              "বিকাশ নম্বর, OTP ও PIN দিয়ে পেমেন্ট করুন — TrxID ও রসিদ স্বয়ংক্রিয়ভাবে জমা হবে, আলাদা করে তথ্য দিতে হবে না।",
-                              "Pay with your bKash number, OTP and PIN — the TrxID and receipt are recorded automatically."
-                            )}
-                          </p>
-                        </div>
-                      </div>
+              {/* Gateway Selection Title */}
+              <p className="text-[12.5px] font-bold text-foreground mb-2.5">
+                {t("অনলাইন পেমেন্ট মাধ্যম বেছে নিন:", "Select Online Payment Method:")}
+              </p>
 
-                      <div className="mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/90 dark:bg-background/70 border border-black/8 dark:border-white/10">
-                        <span className="text-[12px] text-muted-foreground">{t("পরিশোধের পরিমাণ:", "Amount:")}</span>
-                        <span className="text-[15px] font-extrabold text-foreground">
-                          {formatTaka(payModal.onlineAmount, lang === "bn")}
-                          {payModal.yearsToPay && payModal.yearsToPay.length > 1 && (
-                            <span className="ml-1 text-[11px] font-semibold text-muted-foreground">
-                              ({payModal.yearsToPay.length} {t("বছর", "years")})
-                            </span>
-                          )}
-                        </span>
-                      </div>
-
-                      {bkashError && (
-                        <div className="mt-2.5 flex items-start gap-2 p-2.5 rounded-xl border border-red-500/30 bg-red-500/10">
-                          <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                          <p className="text-[11.5px] leading-relaxed text-red-700 dark:text-red-300">{bkashError}</p>
-                        </div>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={startBkashPayment}
-                        disabled={bkashStarting || submitting}
-                        className="w-full mt-3 h-[50px] inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E2136E] hover:bg-[#C80F60] text-white font-bold text-[14px] shadow-[0_2px_8px_rgba(226,19,110,0.3)] disabled:opacity-70 active:scale-[0.98] transition-all cursor-pointer"
-                      >
-                        {bkashStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wallet className="w-5 h-5" />}
-                        <span>
-                          {bkashStarting
-                            ? t("বিকাশে নিয়ে যাওয়া হচ্ছে...", "Opening bKash...")
-                            : t(
-                                `বিকাশ দিয়ে ${formatTaka(payModal.onlineAmount, true)} পরিশোধ করুন`,
-                                `Pay ${formatTaka(payModal.onlineAmount, false)} with bKash`
-                              )}
-                        </span>
-                      </button>
+              {/* Gateway Choice Cards */}
+              <div className="space-y-2.5 mb-4">
+                {/* 1. bKash Card */}
+                <div
+                  onClick={() => setOnlineGateway("bkash")}
+                  className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative ${
+                    onlineGateway === "bkash"
+                      ? "border-[#E2136E] bg-[#E2136E]/[0.06] shadow-sm"
+                      : "border-border hover:border-[#E2136E]/40 bg-card"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#E2136E] flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-xs">
+                      বিকাশ
                     </div>
-                  )}
-
-                  {/* SSLCOMMERZ Panel */}
-                  {onlineGateway === "sslcommerz" && (
-                    <div className="p-3.5 rounded-2xl border-[1.5px] border-sky-500/45 bg-sky-500/[0.05] dark:bg-sky-500/10 shadow-2xs">
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center shrink-0 font-bold text-[10px] text-white shadow-2xs">
-                          SSL
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h4 className="text-[13.5px] font-bold text-foreground leading-tight">
-                              {t("কার্ড, নেট ব্যাংকিং ও এমএফএস", "Cards, Net Banking & MFS")}
-                            </h4>
-                            <span className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md leading-none bg-sky-600 text-white whitespace-nowrap">
-                              {t("SSLCOMMERZ", "SSLCOMMERZ")}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                            {t(
-                              "ভিসা, মাস্টারকার্ড, নগদ, রকেট, ডিবিবিএল নেক্সাস বা ব্যাংক একাউন্টের মাধ্যমে সরাসরি পরিশোধ করুন।",
-                              "Pay securely using Visa, Mastercard, Nagad, Rocket, DBBL Nexus or your bank account."
-                            )}
-                          </p>
-
-                          {/* Gateway Brand Badges */}
-                          <div className="mt-2 flex items-center gap-1 flex-wrap text-[9px] font-extrabold text-slate-700 dark:text-slate-300">
-                            <span className="px-1.5 py-0.5 rounded bg-background border border-border">VISA</span>
-                            <span className="px-1.5 py-0.5 rounded bg-background border border-border">Mastercard</span>
-                            <span className="px-1.5 py-0.5 rounded bg-background border border-border">AMEX</span>
-                            <span className="px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-700 dark:text-orange-300 border border-orange-500/30">নগদ</span>
-                            <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">রকেট</span>
-                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">DBBL Nexus</span>
-                            <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">ব্যাংক</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-background/90 dark:bg-background/70 border border-black/8 dark:border-white/10">
-                        <span className="text-[12px] text-muted-foreground">{t("পরিশোধের পরিমাণ:", "Amount:")}</span>
-                        <span className="text-[15px] font-extrabold text-foreground">
-                          {formatTaka(payModal.onlineAmount, lang === "bn")}
-                          {payModal.yearsToPay && payModal.yearsToPay.length > 1 && (
-                            <span className="ml-1 text-[11px] font-semibold text-muted-foreground">
-                              ({payModal.yearsToPay.length} {t("বছর", "years")})
-                            </span>
-                          )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[14px] font-bold text-foreground leading-tight">
+                          {t("বিকাশ সরাসরি পেমেন্ট", "bKash Direct Payment")}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#E2136E]/15 text-[#E2136E] border border-[#E2136E]/30 shrink-0">
+                          {t(`+${BKASH_CHARGE_PERCENT}% গেটওয়ে ফি`, `+${BKASH_CHARGE_PERCENT}% Fee`)}
                         </span>
                       </div>
-
-                      {sslczError && (
-                        <div className="mt-2.5 flex items-start gap-2 p-2.5 rounded-xl border border-red-500/30 bg-red-500/10">
-                          <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                          <p className="text-[11.5px] leading-relaxed text-red-700 dark:text-red-300">{sslczError}</p>
-                        </div>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={startSslcommerzPayment}
-                        disabled={sslczStarting || submitting}
-                        className="w-full mt-3 h-[50px] inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-[14px] shadow-[0_2px_8px_rgba(2,132,199,0.3)] disabled:opacity-70 active:scale-[0.98] transition-all cursor-pointer"
-                      >
-                        {sslczStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
-                        <span>
-                          {sslczStarting
-                            ? t("SSLCOMMERZ এ নিয়ে যাওয়া হচ্ছে...", "Opening SSLCOMMERZ...")
-                            : t(
-                                `SSLCOMMERZ দিয়ে ${formatTaka(payModal.onlineAmount, true)} পরিশোধ করুন`,
-                                `Pay ${formatTaka(payModal.onlineAmount, false)} via SSLCOMMERZ`
-                              )}
-                        </span>
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-3 my-3.5" aria-hidden="true">
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="text-[11.5px] font-bold text-muted-foreground">
-                      {t("অথবা নিজে টাকা পাঠিয়ে তথ্য দিন", "Or send manually and submit details")}
-                    </span>
-                    <div className="h-px flex-1 bg-border" />
-                  </div>
-                </>
-              )}
-
-              {/* Payment Numbers Notice Box */}
-              <div className="p-3 sm:p-3.5 rounded-2xl bg-amber-500/[0.06] dark:bg-amber-500/10 border border-amber-500/30 mb-3.5 shadow-2xs">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6.5 h-6.5 rounded-md bg-[#B45309]/15 flex items-center justify-center shrink-0">
-                      <Wallet className="w-3.5 h-3.5 text-[#B45309]" />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-bold text-foreground leading-tight">
-                        {t("অফিসিয়াল অনুদান / পেমেন্ট নম্বরসমূহ", "Official Payment Numbers")}
-                      </h4>
-                      <p className="text-[10px] text-muted-foreground">
-                        {t("টাকা পাঠানোর জন্য নিচের যেকোনো নম্বর বেছে নিন", "Choose any number to send your contribution")}
+                      <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                        {t(
+                          `বিকাশ অ্যাপ, ওটিপি ও পিন দিয়ে গেটওয়ে সার্ভিস চার্জ সহ তৎক্ষণাৎ স্বয়ংক্রিয় রসিদ`,
+                          `Pay instantly via bKash App, OTP & PIN (+${BKASH_CHARGE_PERCENT}% fee included)`
+                        )}
                       </p>
                     </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                      onlineGateway === "bkash" ? "border-[#E2136E] bg-[#E2136E]" : "border-muted-foreground/40"
+                    }`}>
+                      {onlineGateway === "bkash" && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-1.5 mb-2.5">
-                  {PAYMENT_ACCOUNTS.map((p) => {
-                    const isCopied = copiedNumber === p.displayNumber || copiedNumber === p.rawNumber;
-                    return (
-                      <div
-                        key={p.id}
-                        className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-black/8 dark:border-white/10 bg-background/90 dark:bg-background/70 shadow-2xs"
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span
-                            className="px-1.5 py-0.5 rounded text-[10px] font-extrabold text-white shrink-0"
-                            style={{ backgroundColor: p.color }}
-                          >
-                            {p.provider === "bkash" ? "বিকাশ" : "নগদ"}
-                          </span>
-                          <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[12px] font-bold text-foreground truncate">
-                              {t(p.titleBn, p.titleEn)}
-                            </span>
-                            <span
-                              className={`text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md leading-none tracking-wide whitespace-nowrap shadow-2xs ${
-                                p.isFree
-                                  ? "bg-emerald-600 text-white"
-                                  : "bg-amber-600 text-white"
-                              }`}
-                            >
-                              {t(p.chargeBadgeBn, p.chargeBadgeEn)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="font-mono font-extrabold text-[13px] tracking-wide text-foreground">
-                            {p.displayNumber}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => copyToClipboard(p.displayNumber)}
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-bold transition-all cursor-pointer ${
-                              isCopied
-                                ? "bg-emerald-600 text-white shadow-2xs"
-                                : "bg-secondary hover:bg-gold/15 text-foreground hover:text-[#B45309] border border-border"
-                            }`}
-                            title="নম্বর কপি করুন"
-                          >
-                            {isCopied ? (
-                              <>
-                                <Check className="w-3 h-3" />
-                                <span>{t("কপি!", "Copied!")}</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="w-3 h-3 text-muted-foreground" />
-                                <span>{t("কপি", "Copy")}</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
+                {/* 2. SSLCOMMERZ Card */}
+                <div
+                  onClick={() => setOnlineGateway("sslcommerz")}
+                  className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative ${
+                    onlineGateway === "sslcommerz"
+                      ? "border-sky-600 bg-sky-500/[0.06] shadow-sm"
+                      : "border-border hover:border-sky-500/40 bg-card"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center text-white shrink-0 shadow-xs">
+                      <CreditCard className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[14px] font-bold text-foreground leading-tight">
+                          {t("কার্ড ও নেট ব্যাংকিং (SSLCOMMERZ)", "Cards & Banking (SSLCOMMERZ)")}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0">
+                          {t("সকল কার্ড", "All Cards")}
+                        </span>
                       </div>
-                    );
-                  })}
-                </div>
-
-                {/* Instructions bullet box */}
-                <div className="p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-[11.5px] text-slate-800 dark:text-slate-100 leading-relaxed space-y-1.5 shadow-2xs">
-                  <div className="flex items-center gap-1.5 font-bold text-foreground text-[11.5px]">
-                    <span className="text-amber-600 dark:text-amber-400">⚠️</span>
-                    <span>{t("খরচ ও নিয়মাবলী:", "Fee Rules & Guide:")}</span>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                        {t("ভিসা, মাস্টারকার্ড, নগদ, রকেট ও ব্যাংক একাউন্ট", "Visa, Mastercard, Nagad, Rocket, DBBL Nexus")}
+                      </p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                      onlineGateway === "sslcommerz" ? "border-sky-600 bg-sky-600" : "border-muted-foreground/40"
+                    }`}>
+                      {onlineGateway === "sslcommerz" && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
                   </div>
-                  <p className="leading-relaxed">
-                    • <strong className="font-bold text-foreground">{t("খরচসহ পাঠানোর নিয়ম:", "Include Fee:")}</strong>{" "}
-                    {t("মার্চেন্ট বা পার্সোনাল—যেকোনো মাধ্যমে পাঠালে প্রতি হাজারে ", "Whether Merchant or Personal, please include ")}
-                    <span className="font-extrabold text-white bg-amber-600 px-1.5 py-0.5 rounded text-[10.5px] whitespace-nowrap shadow-2xs">
-                      {t("১৫ টাকা খরচসহ", "৳15 fee per ৳1000")}
-                    </span>
-                    {t(" পাঠাবেন।", ".")}
-                  </p>
-                  <p className="leading-relaxed">
-                    • <strong className="font-bold text-foreground">{t("অপশন:", "Option:")}</strong>{" "}
-                    {t("মার্চেন্টে Make Payment এবং পার্সোনালে Send Money করবেন।", "Use Make Payment for Merchant and Send Money for Personal.")}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground pt-0.5">
-                    • {t("টাকা পাঠানোর পর নিচে আপনার প্রেরক নম্বর ও TrxID দিয়ে রসিদ নিশ্চিত করুন।", "After sending, enter your sender phone and TrxID below to confirm.")}
-                  </p>
+
+                  {/* Channel Badges */}
+                  <div className="mt-2.5 pt-2 border-t border-border/60 flex items-center gap-1.5 flex-wrap text-[9.5px] font-extrabold">
+                    <span className="px-1.5 py-0.5 rounded bg-background border border-border">VISA</span>
+                    <span className="px-1.5 py-0.5 rounded bg-background border border-border">Mastercard</span>
+                    <span className="px-1.5 py-0.5 rounded bg-background border border-border">AMEX</span>
+                    <span className="px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">নগদ</span>
+                    <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">রকেট</span>
+                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">Nexus</span>
+                    <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30">ব্যাংক</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Method chips */}
-              <p className="text-[12.5px] font-semibold text-muted-foreground mb-2">{t("পেমেন্টের মাধ্যম বেছে নিন *", "Choose payment method *")}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {PAYMENT_METHODS.map((m) => {
-                  const Icon = m.icon;
-                  const isSel = paymentMethod === m.name;
-                  return (
-                    <button
-                      key={m.name}
-                      onClick={() => setPaymentMethod(m.name)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-bold transition-colors"
-                      style={{
-                        backgroundColor: isSel ? m.color : "var(--secondary)",
-                        color: isSel ? "#fff" : "var(--foreground)",
-                      }}
-                    >
-                      <Icon className="w-4 h-4" style={{ color: isSel ? "#fff" : m.color }} />
-                      <span>{t(m.name, m.nameEn)}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Error messages if any */}
+              {bkashError && onlineGateway === "bkash" && (
+                <div className="mb-3 flex items-start gap-2 p-2.5 rounded-xl border border-red-500/30 bg-red-500/10">
+                  <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-[11.5px] leading-relaxed text-red-700 dark:text-red-300">{bkashError}</p>
+                </div>
+              )}
 
-              <div className="space-y-3 mb-5">
-                <TextInput
-                  label={t("যে নম্বর থেকে টাকা পাঠিয়েছেন *", "Number you sent the payment from *")}
-                  hint="017XXXXXXXX"
-                  icon={PhoneCall}
-                  value={senderNumber}
-                  onChange={(v) => {
-                    setSenderNumber(v);
-                    setSenderError(null);
-                  }}
-                  error={senderError}
-                />
-                <TextInput
-                  label={t("ট্রানজেকশন আইডি (TrxID) / রেফারেন্স", "Transaction ID (TrxID) / Reference")}
-                  hint={t("যেমন: 9J3K8LM2", "e.g. 9J3K8LM2")}
-                  icon={Sparkle}
-                  value={trxId}
-                  onChange={setTrxId}
-                />
-              </div>
+              {sslczError && onlineGateway === "sslcommerz" && (
+                <div className="mb-3 flex items-start gap-2 p-2.5 rounded-xl border border-red-500/30 bg-red-500/10">
+                  <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-[11.5px] leading-relaxed text-red-700 dark:text-red-300">{sslczError}</p>
+                </div>
+              )}
 
-              <button
-                onClick={submitPayment}
-                disabled={submitting}
-                className="w-full h-[54px] inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white font-bold text-[14.5px] shadow disabled:opacity-70 active:scale-[0.98] transition-all"
-              >
-                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CircleCheck className="w-5 h-5" />}
-                <span>
-                  {submitting ? t("জমা হচ্ছে...", "Submitting...") : t("পেমেন্ট নিশ্চিত করুন ও রসিদ পাঠান", "Confirm Payment & Send Receipt")}
-                </span>
-              </button>
+              {/* Primary Action Button */}
+              {onlineGateway === "bkash" ? (
+                <button
+                  type="button"
+                  onClick={startBkashPayment}
+                  disabled={bkashStarting || submitting}
+                  className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E2136E] hover:bg-[#C80F60] text-white font-bold text-[14.5px] shadow-[0_4px_14px_rgba(226,19,110,0.35)] disabled:opacity-70 active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  {bkashStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wallet className="w-5 h-5" />}
+                  <span>
+                    {bkashStarting
+                      ? t("বিকাশে নিয়ে যাওয়া হচ্ছে...", "Opening bKash...")
+                      : t(
+                          `বিকাশ দিয়ে ${formatTaka(getBkashTotalAmount(payModal.onlineAmount ?? currentTier.amount), true)} পরিশোধ করুন`,
+                          `Pay ${formatTaka(getBkashTotalAmount(payModal.onlineAmount ?? currentTier.amount), false)} with bKash`
+                        )}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={startSslcommerzPayment}
+                  disabled={sslczStarting || submitting}
+                  className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-[14.5px] shadow-[0_4px_14px_rgba(2,132,199,0.35)] disabled:opacity-70 active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  {sslczStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
+                  <span>
+                    {sslczStarting
+                      ? t("SSLCOMMERZ এ নিয়ে যাওয়া হচ্ছে...", "Opening SSLCOMMERZ...")
+                      : t(
+                          `কার্ড / নেট ব্যাংকিং দিয়ে ${formatTaka(payModal.onlineAmount ?? currentTier.amount, true)} পরিশোধ করুন`,
+                          `Pay ${formatTaka(payModal.onlineAmount ?? currentTier.amount, false)} via Cards/Banking`
+                        )}
+                  </span>
+                </button>
+              )}
+
+              {/* Security Footnote */}
+              <p className="text-[11px] text-center text-muted-foreground mt-3 flex items-center justify-center gap-1.5">
+                <span>🔒</span>
+                <span>{t("১০০% নিরাপদ অফিসিয়াল গেটওয়ে • পেমেন্ট সম্পন্ন হওয়ামাত্রই রসিদ পাবেন", "100% Secure Official Gateway • Instant Receipt Provided")}</span>
+              </p>
             </motion.div>
           </div>
         )}
@@ -2312,6 +2229,13 @@ export function LifetimeMemberClient() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── OFFICIAL LIFETIME MEMBER MONEY RECEIPT MODAL ─── */}
+      <LifetimeReceiptModal
+        data={receiptModalData}
+        isOpen={!!receiptModalData}
+        onClose={closeSuccessAndReturn}
+      />
     </div>
   );
 }

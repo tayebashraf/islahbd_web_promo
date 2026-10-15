@@ -14,8 +14,20 @@ export const TIER_AMOUNTS: Record<string, number> = {
   vip: 10000,
   well_wisher: 5000,
   supporter: 3000,
-  test_tier: 10,
 };
+
+// bKash Merchant Gateway Service Charge (ডিফল্ট ১.৫% = প্রতি হাজারে ১৫ টাকা)
+// প্রয়োজন হলে এটি পরিবর্তন করে ১.৫৫ বা অন্য যেকোনো হার নির্ধারণ করা যাবে।
+export const BKASH_CHARGE_PERCENT = 1.5;
+
+export function calculateBkashCharge(baseAmount: number): number {
+  if (!baseAmount || baseAmount <= 0) return 0;
+  return Math.round(baseAmount * (BKASH_CHARGE_PERCENT / 100));
+}
+
+export function getBkashTotalAmount(baseAmount: number): number {
+  return baseAmount + calculateBkashCharge(baseAmount);
+}
 
 const STATUSES = new Set(["later", "payment_sent"]);
 
