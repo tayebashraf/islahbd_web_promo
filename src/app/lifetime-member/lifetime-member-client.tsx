@@ -54,7 +54,6 @@ import {
   numberToBanglaWords,
 } from "@/components/lifetime-receipt-modal";
 import {
-  BKASH_CHARGE_PERCENT,
   calculateBkashCharge,
   getBkashTotalAmount,
 } from "@/lib/lifetime-member";
@@ -159,8 +158,8 @@ const PAYMENT_ACCOUNTS: PaymentAccount[] = [
     typeEn: "Merchant Payment",
     actionBn: "Payment (পেমেন্ট)",
     actionEn: "Make Payment",
-    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
-    chargeBadgeEn: "+15৳ fee/1k",
+    chargeBadgeBn: "চার্জ প্রযোজ্য",
+    chargeBadgeEn: "Fee Applies",
     isFree: false,
     displayNumber: "01806-408501",
     rawNumber: "01806408501",
@@ -177,8 +176,8 @@ const PAYMENT_ACCOUNTS: PaymentAccount[] = [
     typeEn: "Personal Account",
     actionBn: "Send Money",
     actionEn: "Send Money",
-    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
-    chargeBadgeEn: "+15৳ fee/1k",
+    chargeBadgeBn: "চার্জ প্রযোজ্য",
+    chargeBadgeEn: "Fee Applies",
     isFree: false,
     displayNumber: "01906-832450",
     rawNumber: "01906832450",
@@ -195,8 +194,8 @@ const PAYMENT_ACCOUNTS: PaymentAccount[] = [
     typeEn: "Personal Account",
     actionBn: "Send Money",
     actionEn: "Send Money",
-    chargeBadgeBn: "হাজারে ১৫৳ খরচসহ",
-    chargeBadgeEn: "+15৳ fee/1k",
+    chargeBadgeBn: "চার্জ প্রযোজ্য",
+    chargeBadgeEn: "Fee Applies",
     isFree: false,
     displayNumber: "01906-832450",
     rawNumber: "01906832450",
@@ -1899,7 +1898,7 @@ export function LifetimeMemberClient() {
                     {isBkash && (
                       <div className="flex items-center justify-between gap-2 text-[#E2136E] font-medium pt-1 border-t border-border/40">
                         <span className="text-[12px] flex items-center gap-1">
-                          <span>{t(`বিকাশ গেটওয়ে সার্ভিস চার্জ (${BKASH_CHARGE_PERCENT}%):`, `bKash Gateway Charge (${BKASH_CHARGE_PERCENT}%):`)}</span>
+                          <span>{t("বিকাশ গেটওয়ে সার্ভিস চার্জ:", "bKash Gateway Service Charge:")}</span>
                         </span>
                         <span className="text-[12.5px] font-bold font-mono text-right">
                           +{formatTaka(bkashFee, lang === "bn")}
@@ -1942,13 +1941,13 @@ export function LifetimeMemberClient() {
                           {t("বিকাশ সরাসরি পেমেন্ট", "bKash Direct Payment")}
                         </span>
                         <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#E2136E]/15 text-[#E2136E] border border-[#E2136E]/30 shrink-0">
-                          {t(`+${BKASH_CHARGE_PERCENT}% গেটওয়ে ফি`, `+${BKASH_CHARGE_PERCENT}% Fee`)}
+                          {t("চার্জ প্রযোজ্য", "Fee Applies")}
                         </span>
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
                         {t(
                           `বিকাশ অ্যাপ, ওটিপি ও পিন দিয়ে গেটওয়ে সার্ভিস চার্জ সহ তৎক্ষণাৎ স্বয়ংক্রিয় রসিদ`,
-                          `Pay instantly via bKash App, OTP & PIN (+${BKASH_CHARGE_PERCENT}% fee included)`
+                          `Pay instantly via bKash App, OTP & PIN (service charge included)`
                         )}
                       </p>
                     </div>
