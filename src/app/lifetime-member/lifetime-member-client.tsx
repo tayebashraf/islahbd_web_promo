@@ -773,9 +773,18 @@ export function LifetimeMemberClient() {
     goToStep((step + 1) as 0 | 1 | 2);
   };
 
+  const [isPreSaved, setIsPreSaved] = useState(false);
+
   const submitNewMemberForm = () => {
     if (!validateNewMemberForm()) return;
     setSubmitError(null);
+    // Pre-save application immediately when clicking 'আবেদন পর্যালোচনা ও জমা'
+    // so data is safely stored in backend even before entering the payment option
+    if (!isPreSaved) {
+      saveNewMemberApplication("later").then((ok) => {
+        if (ok) setIsPreSaved(true);
+      });
+    }
     setReviewOpen(true);
   };
 
@@ -827,7 +836,11 @@ export function LifetimeMemberClient() {
     if (submitting) return;
     setSubmitting(true);
     setSubmitError(null);
-    const saved = await saveNewMemberApplication("later");
+    let saved = isPreSaved;
+    if (!saved) {
+      saved = await saveNewMemberApplication("later");
+      if (saved) setIsPreSaved(true);
+    }
     setSubmitting(false);
     if (!saved) {
       setSubmitError(saveFailedMessage());
