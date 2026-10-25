@@ -16,6 +16,7 @@ import {
   Feather,
 } from 'lucide-react';
 import './topics.css';
+import BlogNav from '@/components/sirat/layout/BlogNav';
 
 function toBanglaNum(num) {
   const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
@@ -47,6 +48,9 @@ export default function TopicsPage() {
 
   return (
     <div className="w-full max-w-[800px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      {/* Blog Desktop Tab Navigation */}
+      <BlogNav />
+
       <div className="topics-hub">
           {/* 1. Islamic Hero Banner Card */}
           <div className="topics-hero">
@@ -242,6 +246,5 @@ export default function TopicsPage() {
 
         </div>
       </div>
-    </div>
   );
 }

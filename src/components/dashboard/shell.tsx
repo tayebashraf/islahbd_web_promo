@@ -11,6 +11,7 @@ import { LANGS, useLang } from "@/components/providers/lang-provider";
 import { usePlayer } from "@/components/player/player-provider";
 import { PlayerBar } from "@/components/player/player-bar";
 import { ALL_LINKS, BOTTOM_NAV, LINKS, MORE, NAV_GROUPS, TOP_NAV, isActive, type NavLink } from "@/lib/nav";
+import { BLOG_NAV_ITEMS, isBlogTabActive } from "@/components/sirat/layout/BlogNav";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/constants";
 import { SOCIAL } from "@/data/paribar";
 import { cn } from "@/lib/utils";
@@ -320,12 +321,17 @@ export function FeatureLink({ link, className, children, onClick }: { link: NavL
 
 function BottomNav({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
   const { t } = useLang();
+  const isBlog = pathname.startsWith("/blog");
+  const navList = isBlog ? BLOG_NAV_ITEMS : BOTTOM_NAV;
 
   return (
-    <nav aria-label={t("নিচের নেভিগেশন", "Bottom navigation")} className="fixed inset-x-0 bottom-0 z-[55] border-t border-line bg-canvas-2/95 pb-safe backdrop-blur-xl lg:hidden">
+    <nav
+      aria-label={t(isBlog ? "ব্লগ নেভিগেশন" : "নিচের নেভিগেশন", isBlog ? "Blog navigation" : "Bottom navigation")}
+      className="fixed inset-x-0 bottom-0 z-[55] border-t border-line bg-canvas-2/95 pb-safe backdrop-blur-xl lg:hidden font-kalpurush"
+    >
       <ul className="mx-auto grid h-16 max-w-lg grid-cols-5">
-        {BOTTOM_NAV.map((l) => {
-          const active = isActive(pathname, l.href);
+        {navList.map((l) => {
+          const active = isBlog ? isBlogTabActive(pathname, l.href) : isActive(pathname, l.href);
           const Icon = l.icon;
           return (
             <li key={l.href}>
@@ -338,7 +344,7 @@ function BottomNav({ pathname, onNavigate }: { pathname: string; onNavigate: () 
                 <span className="relative flex h-8 w-14 items-center justify-center">
                   {active && (
                     <motion.span
-                      layoutId="bottom-pill"
+                      layoutId={isBlog ? "blog-bottom-pill" : "bottom-pill"}
                       className="absolute inset-0 rounded-full bg-brand-soft"
                       transition={{ type: "spring", damping: 30, stiffness: 380 }}
                     />

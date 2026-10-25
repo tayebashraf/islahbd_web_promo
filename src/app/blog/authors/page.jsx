@@ -6,6 +6,7 @@ import AuthorCard from '@/components/sirat/author/AuthorCard';
 import { sampleAuthors } from '@/lib/sirat/sampleData';
 import { Users, Search } from 'lucide-react';
 import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import BlogNav from '@/components/sirat/layout/BlogNav';
 import { cn } from '@/lib/utils';
 
 const FILTER_TOPICS = ['সব গবেষক', 'সিরাত গবেষণা', 'হাদিস শাস্ত্র', 'নববী আখলাক', 'মক্কী জীবন', 'মাদানী জীবন', 'তাফসির'];
@@ -34,6 +35,9 @@ export default function AuthorsPage() {
 
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      {/* Blog Desktop Tab Navigation */}
+      <BlogNav />
+
       <PageHeader
         title="সিরাত গবেষক ও ওলামায়ে কেরাম"
         muted="সম্মানিত লেখক ও গবেষকবৃন্দ"

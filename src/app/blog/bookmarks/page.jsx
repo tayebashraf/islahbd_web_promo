@@ -6,6 +6,7 @@ import PostCard from '@/components/sirat/feed/PostCard';
 import { Bookmark, Trash2, BookOpen } from 'lucide-react';
 import { sampleArticles } from '@/lib/sirat/sampleData';
 import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import BlogNav from '@/components/sirat/layout/BlogNav';
 
 export default function BookmarksPage() {
   const [savedIds, setSavedIds] = useState([]);
@@ -33,6 +34,9 @@ export default function BookmarksPage() {
 
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      {/* Blog Desktop Tab Navigation */}
+      <BlogNav />
+
       <div className="flex items-center justify-between mb-4">
         <PageHeader
           title="সংরক্ষিত প্রবন্ধসমূহ"

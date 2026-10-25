@@ -3,22 +3,23 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PostCard from '@/components/sirat/feed/PostCard';
 import { sampleArticles, sampleTopics } from '@/lib/sirat/sampleData';
-import { PageHeader, EmptyState } from '@/components/dashboard/ui';
-import { BookOpen } from 'lucide-react';
+import { EmptyState } from '@/components/dashboard/ui';
+import BlogHero from '@/components/sirat/layout/BlogHero';
+import { BookOpen, Sparkles, Heart, Feather, Compass, Layers, Bookmark, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
 
 const BLOG_CATEGORIES = [
-  { slug: 'all', name: 'সব প্রবন্ধ' },
-  { slug: 'sirat', name: 'সিরাত চর্চা' },
-  { slug: 'akhlaq', name: 'আখলাক ও শামায়েল' },
-  { slug: 'hadith', name: 'হাদিস ও সুন্নাহ' },
-  { slug: 'makki-jiban', name: 'মক্কী জীবন' },
-  { slug: 'madani-jiban', name: 'মাদানী জীবন' },
-  { slug: 'tafsir', name: 'তাফসির ও আয়াত' },
-  { slug: 'islamic-history', name: 'ইতিহাস ও ঐতিহ্য' },
+  { slug: 'all', name: 'সব প্রবন্ধ', icon: Sparkles },
+  { slug: 'sirat', name: 'সিরাত চর্চা', icon: BookOpen },
+  { slug: 'akhlaq', name: 'আখলাক ও শামায়েল', icon: Heart },
+  { slug: 'hadith', name: 'হাদিস ও সুন্নাহ', icon: Feather },
+  { slug: 'makki-jiban', name: 'মক্কী জীবন', icon: Compass },
+  { slug: 'madani-jiban', name: 'মাদানী জীবন', icon: Layers },
+  { slug: 'tafsir', name: 'তাফসির ও আয়াত', icon: Bookmark },
+  { slug: 'islamic-history', name: 'ইতিহাস ও ঐতিহ্য', icon: ShieldCheck },
 ];
 
 export default function HomePage() {
@@ -88,33 +89,41 @@ export default function HomePage() {
 
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush">
-      {/* 1. Official Islah Page Header */}
-      <PageHeader
-        title="ইসলাহ ব্লগ"
-        muted="জ্ঞানভিত্তিক ইসলামিক নিবন্ধ ও সীরাত চর্চা"
-        description="রাসূলুল্লাহ ﷺ-এর সীরাত, তাযকিয়ায়ে নফস, হাদীস ও প্রামাণ্য ইসলামিক গবেষণাধর্মী উন্মুক্ত ডিজিটাল আর্কাইভ।"
-      />
+      {/* 1. Dignified Islamic Blog Hero & Desktop Tab Nav */}
+      <BlogHero />
 
       {/* 2. Sleek Horizontal Category Filters */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-none">
-        {BLOG_CATEGORIES.map((cat) => {
-          const active = selectedCategory === cat.slug;
-          return (
-            <button
-              key={cat.slug}
-              type="button"
-              onClick={() => handleSelectCategory(cat.slug)}
-              className={cn(
-                "inline-flex shrink-0 items-center rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition active:scale-95 cursor-pointer",
-                active
-                  ? "bg-brand text-white shadow-sm"
-                  : "border border-line bg-panel text-ink hover:border-brand/40"
-              )}
-            >
-              {cat.name}
-            </button>
-          );
-        })}
+      <div className="mb-5">
+        <div className="flex items-center justify-between mb-2.5 px-1">
+          <span className="text-xs sm:text-sm font-semibold text-ink-2 flex items-center gap-1.5">
+            <span>🏷️ বিষয়শ্রেণী ফিল্টার</span>
+          </span>
+          <span className="text-xs text-ink-3">
+            {filteredPosts.length} টি প্রবন্ধ
+          </span>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {BLOG_CATEGORIES.map((cat) => {
+            const active = selectedCategory === cat.slug;
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.slug}
+                type="button"
+                onClick={() => handleSelectCategory(cat.slug)}
+                className={cn(
+                  "inline-flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs sm:text-sm font-semibold transition active:scale-95 cursor-pointer shadow-2xs",
+                  active
+                    ? "bg-brand text-white shadow-sm ring-2 ring-brand/20"
+                    : "border border-line bg-panel text-ink hover:border-brand/40 hover:bg-brand-soft/40"
+                )}
+              >
+                <Icon className={cn("h-3.5 w-3.5", active ? "text-white" : "text-brand")} />
+                <span>{cat.name}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* 3. Feed Posts Stream */}

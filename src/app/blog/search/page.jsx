@@ -6,6 +6,7 @@ import PostCard from '@/components/sirat/feed/PostCard';
 import { searchArticlesLocal, sampleTopics } from '@/lib/sirat/sampleData';
 import { Search as SearchIcon, X, BookOpen } from 'lucide-react';
 import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import BlogNav from '@/components/sirat/layout/BlogNav';
 import { cn } from '@/lib/utils';
 
 const popularKeywords = ['মাক্কী জীবন', 'মাদানী সনদ', 'তায়েফ', 'হিজরত', 'আখলাক', 'বদরের যুদ্ধ'];
@@ -56,6 +57,9 @@ function SearchContent() {
 
   return (
     <div className="space-y-4">
+      {/* Blog Desktop Tab Navigation */}
+      <BlogNav />
+
       {/* Search Header Card */}
       <PageHeader
         title="ব্লগ অনুসন্ধান"
