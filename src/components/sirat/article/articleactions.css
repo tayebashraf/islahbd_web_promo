@@ -1,0 +1,142 @@
+/* ============================================================
+   সীরাত.ব্লগ — Article Actions Bar CSS
+   ============================================================ */
+
+.article-actions-bar {
+  max-width: var(--max-width-article);
+  margin: var(--space-8) auto;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid var(--color-border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.article-actions-bar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.article-actions-bar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-default);
+  position: relative;
+  user-select: none;
+}
+
+.action-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+  background-color: var(--color-interactive-hover);
+}
+
+.action-btn--primary {
+  color: var(--color-brand-primary);
+  border-color: rgba(45, 95, 45, 0.3);
+  background-color: var(--color-brand-subtle);
+}
+
+.action-btn--primary:hover {
+  background-color: var(--color-brand-muted);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+
+.action-btn--active {
+  background-color: var(--color-brand-primary) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-brand-primary) !important;
+}
+
+.action-btn__count {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-full);
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.action-btn--active .action-btn__count {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.durood-btn {
+  font-family: var(--font-arabic), var(--font-bengali-ui);
+  font-size: 0.95rem;
+  border-color: rgba(184, 134, 11, 0.3);
+  color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+}
+
+.durood-btn:hover {
+  border-color: var(--color-warning);
+  background-color: #FFF2CC;
+}
+
+.durood-btn--active {
+  animation: durood-pulse 600ms ease-out;
+}
+
+@keyframes durood-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.font-scaler {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.font-scaler__btn {
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-latin);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+.font-scaler__btn:hover {
+  background-color: var(--color-interactive-hover);
+  color: var(--color-text-primary);
+}
+
+.font-scaler__btn + .font-scaler__btn {
+  border-left: 1px solid var(--color-border-secondary);
+}

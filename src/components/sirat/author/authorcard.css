@@ -1,0 +1,276 @@
+/* ============================================================
+   সীরাত.ব্লগ — Premium Scholar Card & Multi-Tier Verification Badge CSS
+   ============================================================ */
+
+/* Verification & Status Badges System */
+.author-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.author-status-badge--verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.author-status-badge__label {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.author-status-badge--verified .author-status-badge__label {
+  color: #1877F2;
+  background-color: #E7F3FF;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+:root[data-theme="dark"] .author-status-badge--verified .author-status-badge__label {
+  color: #60A5FA;
+  background-color: #0D2744;
+}
+
+.author-status-badge--review {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+:root[data-theme="dark"] .author-status-badge--review {
+  background-color: #33270A;
+  color: #FCD34D;
+  border-color: #78350F;
+}
+
+.author-status-badge--unverified {
+  background-color: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+:root[data-theme="dark"] .author-status-badge--unverified {
+  background-color: #1E293B;
+  color: #94A3B8;
+  border-color: #334155;
+}
+
+.author-status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: #94A3B8;
+  display: inline-block;
+}
+
+/* Scholar Card */
+.author-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-fast), border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.author-card:hover {
+  border-color: rgba(6, 95, 70, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Top Banner Pattern */
+.author-card__banner {
+  height: 52px;
+  background: linear-gradient(135deg, #065F46 0%, #0C4A6E 50%, #1E3A8A 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.author-card__banner-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background-image: radial-gradient(#FFFFFF 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+
+.author-card__body {
+  padding: 0 16px 16px;
+  margin-top: -24px;
+}
+
+.author-card__avatar-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.author-card__avatar {
+  border: 3px solid var(--color-bg-surface) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.author-card__follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  padding: 5px 12px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.author-card__follow-btn:hover {
+  background-color: #ECFDF5;
+  border-color: #065F46;
+  color: #065F46;
+}
+
+.author-card__follow-btn--active {
+  background-color: #ECFDF5;
+  border-color: #065F46;
+  color: #065F46;
+}
+
+:root[data-theme="dark"] .author-card__follow-btn--active,
+:root[data-theme="dark"] .author-card__follow-btn:hover {
+  background-color: #064E3B;
+  border-color: #10B981;
+  color: #34D399;
+}
+
+.author-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.author-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Islamic Deep Green Author Name */
+.author-card__name {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700 !important;
+  color: #065F46 !important;
+  text-decoration: none;
+  transition: color var(--duration-fast);
+}
+
+:root[data-theme="dark"] .author-card__name {
+  color: #34D399 !important;
+}
+
+.author-card__name:hover {
+  color: #047857 !important;
+  text-decoration: underline;
+}
+
+:root[data-theme="dark"] .author-card__name:hover {
+  color: #6EE7B7 !important;
+}
+
+.author-card__bio {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .author-card__bio {
+  color: #94A3B8;
+}
+
+.author-card__expertise-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 6px;
+}
+
+.author-card__expertise-pill {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #065F46;
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+:root[data-theme="dark"] .author-card__expertise-pill {
+  color: #34D399;
+  background-color: #064E3B;
+  border-color: #047857;
+}
+
+.author-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border-secondary);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.author-card__stats {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12px;
+  color: #64748B;
+}
+
+.author-card__view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #065F46;
+  text-decoration: none;
+  transition: transform var(--duration-fast);
+}
+
+:root[data-theme="dark"] .author-card__view-link {
+  color: #34D399;
+}
+
+.author-card__view-link:hover {
+  transform: translateX(3px);
+  text-decoration: underline;
+}

@@ -1,0 +1,286 @@
+/* ============================================================
+   সীরাত.ব্লগ — Facebook News Feed Theme Tokens
+   ============================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ============================================================
+     LIGHT MODE TOKENS (Facebook Classic News Feed)
+     ============================================================ */
+  --color-bg-primary: #F0F2F5;
+  --color-bg-secondary: #E4E6E9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-inverse: #050505;
+
+  /* Text */
+  --color-text-primary: #050505;
+  --color-text-secondary: #65676B;
+  --color-text-tertiary: #8A8D91;
+  --color-text-inverse: #FFFFFF;
+  --color-text-link: #1877F2;
+
+  /* Brand (Facebook Blue with Islamic Green Accents) */
+  --color-brand-primary: #1877F2;
+  --color-brand-hover: #166FE5;
+  --color-brand-subtle: #E7F3FF;
+  --color-brand-muted: #F0F7FF;
+
+  /* Islamic Accent (for special spiritual elements) */
+  --color-islamic-green: #2D8A4E;
+  --color-islamic-green-bg: #E8F5EC;
+  --color-islamic-gold: #C28B00;
+  --color-islamic-gold-bg: #FEF9E7;
+
+  /* Borders */
+  --color-border-primary: #CED0D4;
+  --color-border-secondary: #E4E6EB;
+  --color-border-focus: #1877F2;
+  --color-border-strong: #BEC2C8;
+
+  /* Interactive */
+  --color-interactive-hover: #F2F2F2;
+  --color-interactive-active: #E4E6EB;
+  --color-icon-circle-bg: #E4E6EB;
+  --color-icon-circle-hover: #D8DADF;
+
+  /* Semantic */
+  --color-success: #31A24C;
+  --color-success-bg: #E7F6EB;
+  --color-warning: #F5C33B;
+  --color-warning-bg: #FFF8E7;
+  --color-error: #FA383E;
+  --color-error-bg: #FEEBEB;
+  --color-info: #1877F2;
+  --color-info-bg: #E7F3FF;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Skeleton loading */
+  --color-skeleton-base: #E4E6EB;
+  --color-skeleton-shine: #F0F2F5;
+}
+
+/* ============================================================
+   DARK MODE TOKENS (Facebook Dark Theme)
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-primary: #18191A;
+    --color-bg-secondary: #242526;
+    --color-bg-surface: #242526;
+    --color-bg-elevated: #3A3B3C;
+    --color-bg-inverse: #E4E6EB;
+
+    --color-text-primary: #E4E6EB;
+    --color-text-secondary: #B0B3B8;
+    --color-text-tertiary: #8A8D91;
+    --color-text-inverse: #050505;
+    --color-text-link: #4599FF;
+
+    --color-brand-primary: #2D88FF;
+    --color-brand-hover: #1877F2;
+    --color-brand-subtle: #263951;
+    --color-brand-muted: #1E2D40;
+
+    --color-islamic-green: #45B36B;
+    --color-islamic-green-bg: #1A3324;
+    --color-islamic-gold: #E5A812;
+    --color-islamic-gold-bg: #33270A;
+
+    --color-border-primary: #393A3B;
+    --color-border-secondary: #2F3031;
+    --color-border-focus: #2D88FF;
+    --color-border-strong: #4E4F50;
+
+    --color-interactive-hover: #3A3B3C;
+    --color-interactive-active: #4E4F50;
+    --color-icon-circle-bg: #3A3B3C;
+    --color-icon-circle-hover: #4E4F50;
+
+    --color-success: #45B36B;
+    --color-success-bg: #1A3324;
+    --color-warning: #F5C33B;
+    --color-warning-bg: #33270A;
+    --color-error: #FA383E;
+    --color-error-bg: #38181A;
+    --color-info: #2D88FF;
+    --color-info-bg: #1E2D40;
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    --color-skeleton-base: #3A3B3C;
+    --color-skeleton-shine: #4E4F50;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"],
+:root.dark,
+html.dark,
+.dark {
+  color-scheme: dark;
+
+  --color-bg-primary: #18191A;
+  --color-bg-secondary: #242526;
+  --color-bg-surface: #242526;
+  --color-bg-elevated: #3A3B3C;
+  --color-bg-inverse: #E4E6EB;
+
+  --color-text-primary: #E4E6EB;
+  --color-text-secondary: #B0B3B8;
+  --color-text-tertiary: #8A8D91;
+  --color-text-inverse: #050505;
+  --color-text-link: #4599FF;
+
+  --color-brand-primary: #2D88FF;
+  --color-brand-hover: #1877F2;
+  --color-brand-subtle: #263951;
+  --color-brand-muted: #1E2D40;
+
+  --color-islamic-green: #45B36B;
+  --color-islamic-green-bg: #1A3324;
+  --color-islamic-gold: #E5A812;
+  --color-islamic-gold-bg: #33270A;
+
+  --color-border-primary: #393A3B;
+  --color-border-secondary: #2F3031;
+  --color-border-focus: #2D88FF;
+  --color-border-strong: #4E4F50;
+
+  --color-interactive-hover: #3A3B3C;
+  --color-interactive-active: #4E4F50;
+  --color-icon-circle-bg: #3A3B3C;
+  --color-icon-circle-hover: #4E4F50;
+
+  --color-success: #45B36B;
+  --color-success-bg: #1A3324;
+  --color-warning: #F5C33B;
+  --color-warning-bg: #33270A;
+  --color-error: #FA383E;
+  --color-error-bg: #38181A;
+  --color-info: #2D88FF;
+  --color-info-bg: #1E2D40;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  --color-skeleton-base: #3A3B3C;
+  --color-skeleton-shine: #4E4F50;
+}
+
+/* ============================================================
+   TYPOGRAPHY & DIMENSIONS
+   ============================================================ */
+:root {
+  --font-bengali-body: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  --font-bengali-ui: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  --font-arabic: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif;
+  --font-arabic-calligraphy: var(--font-arabic-calligraphy), 'Aref Ruqaa', 'Amiri', 'Traditional Arabic', serif;
+  --font-arabic-kufi: var(--font-arabic-kufi), 'Reem Kufi', sans-serif;
+  --font-latin: var(--font-latin), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Default Type Scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;/* 15px - Classic FB body */
+  --text-lg: 1.0625rem;  /* 17px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.75rem;   /* 28px */
+  --text-4xl: 2.25rem;   /* 36px */
+
+  --text-article-body: 1.0625rem;
+  --leading-bengali-body: 1.85;
+  --leading-arabic: 1.8;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spacing Tokens */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* Facebook Layout Dimensions */
+  --header-height: 56px;
+  --fb-left-width: 360px;
+  --fb-right-width: 360px;
+  --fb-feed-width: 590px;
+  --max-width-site: 100%;
+
+  /* Z-Index */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-header: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* ============================================================
+   ACTIVE FONT SIZE CUSTOMIZATION ENGINE (ছোট / স্বাভাবিক / বড়)
+   ============================================================ */
+html[data-font-size="small"] {
+  font-size: 13.5px !important;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.84375rem;
+  --text-lg: 0.9375rem;
+  --text-xl: 1.1rem;
+  --text-2xl: 1.3rem;
+  --text-3xl: 1.5rem;
+  --text-4xl: 1.9rem;
+  --text-article-body: 0.95rem;
+}
+
+html[data-font-size="normal"],
+html:not([data-font-size]) {
+  font-size: 15px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.25rem;
+  --text-article-body: 1.0625rem;
+}
+
+html[data-font-size="large"] {
+  font-size: 17.5px !important;
+  --text-xs: 0.875rem;
+  --text-sm: 0.95rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.45rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.1rem;
+  --text-4xl: 2.6rem;
+  --text-article-body: 1.25rem;
+}

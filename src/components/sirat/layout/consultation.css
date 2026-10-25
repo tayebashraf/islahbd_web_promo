@@ -1,0 +1,256 @@
+/* ==========================================================================
+   সীরাত.ব্লগ — Feedback & Advice Consultation Box Styles
+   ========================================================================== */
+
+.sirat-feedback-card-surface {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 60%, #047857 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: #FFFFFF;
+  margin: 28px 0 20px;
+  box-shadow: 0 4px 16px rgba(6, 78, 59, 0.12);
+  font-family: var(--font-kalpurush), sans-serif;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sirat-feedback-card-surface:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.2);
+}
+
+.sirat-feedback-surface-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sirat-feedback-surface-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #FBBF24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(6px);
+}
+
+.sirat-feedback-surface-text {
+  flex: 1;
+  min-width: 260px;
+}
+
+.sirat-feedback-surface-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 4px 0;
+}
+
+.sirat-feedback-surface-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.sirat-feedback-surface-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FBBF24;
+  color: #064E3B;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+  transition: all 0.2s ease;
+}
+
+.sirat-feedback-surface-btn:hover {
+  background: #F59E0B;
+  transform: scale(1.02);
+}
+
+/* Modal Content */
+.sirat-feedback-modal-content {
+  font-family: var(--font-kalpurush), sans-serif;
+}
+
+.sirat-feedback-contact-banner {
+  background: #F0FDF4;
+  border: 1.5px solid #BBF7D0;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.sirat-feedback-banner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #DCFCE7;
+  color: #15803D;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.sirat-feedback-banner-desc {
+  font-size: 13px;
+  color: #166534;
+  margin: 0 0 14px 0;
+  line-height: 1.5;
+}
+
+.sirat-feedback-direct-channels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.sirat-feedback-channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.sirat-feedback-channel--phone {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #0F172A;
+}
+
+.sirat-feedback-channel--phone:hover {
+  border-color: #047857;
+  background: #F8FAFC;
+}
+
+.sirat-feedback-channel--phone .sirat-feedback-channel-icon {
+  background: #ECFDF5;
+  color: #047857;
+}
+
+.sirat-feedback-channel--whatsapp {
+  background: #25D366;
+  border: 1.5px solid #1EBE5D;
+  color: #FFFFFF;
+}
+
+.sirat-feedback-channel--whatsapp:hover {
+  background: #1EBE5D;
+}
+
+.sirat-feedback-channel--whatsapp .sirat-feedback-channel-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.sirat-feedback-channel-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sirat-feedback-channel-label {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.sirat-feedback-channel-val {
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.sirat-feedback-form-divider {
+  text-align: center;
+  position: relative;
+  margin: 16px 0;
+}
+
+.sirat-feedback-form-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border-secondary, #E2E8F0);
+}
+
+.sirat-feedback-form-divider span {
+  position: relative;
+  background: var(--color-bg-surface, #FFFFFF);
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--color-text-secondary, #64748B);
+  font-weight: 700;
+}
+
+/* Form Styles */
+.sirat-feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sirat-feedback-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sirat-feedback-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-text-primary, #0F172A);
+  margin-bottom: 5px;
+}
+
+.sirat-feedback-input,
+.sirat-feedback-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-secondary, #CBD5E1);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13.5px;
+  background: var(--color-bg-surface, #FFFFFF);
+  color: var(--color-text-primary, #0F172A);
+  outline: none;
+}
+
+.sirat-feedback-input:focus,
+.sirat-feedback-textarea:focus {
+  border-color: #047857;
+  box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.15);
+}
+
+.sirat-feedback-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}

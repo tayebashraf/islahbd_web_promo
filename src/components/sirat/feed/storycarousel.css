@@ -1,0 +1,147 @@
+/* ============================================================
+   সীরাত.ব্লগ — Facebook Stories Carousel CSS (Fixed Circular Avatars)
+   ============================================================ */
+
+.fb-story-carousel {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 6px;
+}
+
+.fb-story-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual Story Card (Proper Vertical Ratio) */
+.fb-story-card {
+  width: 105px;
+  height: 165px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.fb-story-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fb-story-card__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform var(--duration-normal);
+}
+
+.fb-story-card:hover .fb-story-card__bg {
+  transform: scale(1.06);
+}
+
+.fb-story-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+}
+
+/* PURE CIRCULAR STORY AVATAR (ফিক্সড গোল গোল অ্যাভাটার) */
+.fb-story-card__avatar {
+  position: relative;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  border-radius: 50%;
+  border: 2.5px solid #1877F2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-surface);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.fb-story-card__avatar .avatar-img,
+.fb-story-card__avatar .avatar-initials {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+}
+
+.fb-story-card__title {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.35;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Create Story Card */
+.fb-create-story-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  padding: 0;
+}
+
+.fb-create-story__img-wrap {
+  height: 115px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-primary);
+}
+
+.fb-create-story__btn {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background-color: #1877F2;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--color-bg-surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  transition: transform var(--duration-fast);
+}
+
+.fb-create-story-card:hover .fb-create-story__btn {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.fb-create-story__label {
+  padding: 18px 4px 8px;
+  text-align: center;
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}

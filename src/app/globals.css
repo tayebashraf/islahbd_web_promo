@@ -14,57 +14,78 @@
 
 @layer base {
   :root {
-    --background: #F8F7F3;
-    --foreground: #111827;
-    --card: #FFFFFF;
-    --card-foreground: #111827;
-    --popover: #FFFFFF;
-    --popover-foreground: #111827;
-    --primary: #CBA135;
-    --primary-foreground: #111827;
-    --secondary: #F3F4F6;
-    --secondary-foreground: #374151;
-    --muted: #F3F4F6;
-    --muted-foreground: #6B7280;
-    --accent: #065F46;
+    /* Dashboard palette — light */
+    --canvas: #ECEEEB;
+    --panel: #FFFFFF;
+    --panel-2: #F3F5F2;
+    --line: #E4E8E3;
+    --ink: #0E1A13;
+    --ink-2: #47554C;
+    --ink-3: #87938B;
+    --brand: #178A52;
+    --brand-strong: #0E6B3E;
+    --brand-soft: #E2F2E9;
+    --brand-tint: #8EC3A6;
+    --live: #E5484D;
+
+    --background: var(--canvas);
+    --foreground: var(--ink);
+    --card: var(--panel);
+    --card-foreground: var(--ink);
+    --popover: var(--panel);
+    --popover-foreground: var(--ink);
+    --primary: var(--brand);
+    --primary-foreground: #FFFFFF;
+    --secondary: var(--panel-2);
+    --secondary-foreground: var(--ink-2);
+    --muted: var(--panel-2);
+    --muted-foreground: var(--ink-3);
+    --accent: var(--brand);
     --accent-foreground: #FFFFFF;
-    --border: #E5E7EB;
-    --input: #E5E7EB;
-    --ring: #CBA135;
+    --border: var(--line);
+    --input: var(--line);
+    --ring: var(--brand);
     --radius: 0.75rem;
     --gold: #CBA135;
     --gold-light: #E8C96C;
     --gold-dark: #A07E28;
-    --emerald-deep: #065F46;
-    --emerald-soft: #D1FAE5;
-    --surface-elevated: #FFFFFF;
-    --surface-subtle: #F9F8F4;
+    --emerald-deep: var(--brand-strong);
+    --emerald-soft: var(--brand-soft);
+    --surface-elevated: var(--panel);
+    --surface-subtle: var(--panel-2);
   }
 
   .dark {
-    --background: #0D1117;
-    --foreground: #F9FAFB;
-    --card: #161B22;
-    --card-foreground: #F9FAFB;
-    --popover: #161B22;
-    --popover-foreground: #F9FAFB;
-    --primary: #CBA135;
-    --primary-foreground: #111827;
-    --secondary: #1F2937;
-    --secondary-foreground: #D1D5DB;
-    --muted: #1F2937;
-    --muted-foreground: #9CA3AF;
-    --accent: #059669;
-    --accent-foreground: #FFFFFF;
-    --border: #374151;
-    --input: #374151;
-    --ring: #CBA135;
-    --surface-elevated: #1C2333;
-    --surface-subtle: #131920;
+    /* Dashboard palette — dark (own steps, not an inversion) */
+    --canvas: #0A0F0C;
+    --panel: #131A16;
+    --panel-2: #1A231E;
+    --line: #25302A;
+    --ink: #EDF3EF;
+    --ink-2: #B2C0B7;
+    --ink-3: #7C8A82;
+    --brand: #2BB673;
+    --brand-strong: #1E9A5D;
+    --brand-soft: #16301F;
+    --brand-tint: #2F6A4B;
+    --live: #FF6369;
+    --primary-foreground: #06120B;
   }
 }
 
 @theme inline {
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-tint: var(--brand-tint);
+  --color-live: var(--live);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -85,7 +106,7 @@
   --color-emerald-deep: var(--emerald-deep);
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-subtle: var(--surface-subtle);
-  --font-sans: var(--font-bengali), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-urbanist), var(--font-bengali), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-bengali: var(--font-bengali);
   --font-arabic: var(--font-amiri);
   --font-display: var(--font-playfair);
@@ -253,3 +274,28 @@ body {
   from { width: 0%; }
   to   { width: 100%; }
 }
+
+/* ── Dashboard primitives ───────────────────────────────────────── */
+@layer components {
+  .panel {
+    background: var(--panel);
+    border-radius: 28px;
+    box-shadow: 0 1px 0 rgba(14, 26, 19, 0.03);
+  }
+}
+.hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22) 0 2px,
+    transparent 2px 9px
+  );
+}
+.font-num { font-family: var(--font-urbanist), var(--font-inter), system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-5 { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+input[type="range"].seek { -webkit-appearance: none; appearance: none; background: transparent; height: 16px; cursor: pointer; }
+input[type="range"].seek::-webkit-slider-runnable-track { height: 4px; border-radius: 999px; background: linear-gradient(to right, var(--brand) var(--pct, 0%), var(--line) var(--pct, 0%)); }
+input[type="range"].seek::-moz-range-track { height: 4px; border-radius: 999px; background: linear-gradient(to right, var(--brand) var(--pct, 0%), var(--line) var(--pct, 0%)); }
+input[type="range"].seek::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -5px; height: 14px; width: 14px; border-radius: 999px; background: var(--brand); border: 2px solid var(--panel); }
+input[type="range"].seek::-moz-range-thumb { height: 12px; width: 12px; border-radius: 999px; background: var(--brand); border: 2px solid var(--panel); }

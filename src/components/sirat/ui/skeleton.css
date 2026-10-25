@@ -1,0 +1,50 @@
+/* ============================================================
+   সীরাত.ব্লগ — Skeleton Loading CSS
+   ============================================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton-base) 25%,
+    var(--color-skeleton-shine) 50%,
+    var(--color-skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton--text {
+  height: 1rem;
+  margin-bottom: var(--space-2);
+  width: 100%;
+}
+
+.skeleton--title {
+  height: 1.75rem;
+  width: 75%;
+  margin-bottom: var(--space-3);
+}
+
+.skeleton--circle {
+  border-radius: var(--radius-full);
+}
+
+.skeleton-card {
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

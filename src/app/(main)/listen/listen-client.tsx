@@ -5,6 +5,7 @@ import Hls from "hls.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, Radio, Users, Loader2, AlertCircle, Clock, MapPin } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
+import { EXCLUSIVE_AUDIO_EVENT, usePlayer } from "@/components/player/player-provider";
 import { cn } from "@/lib/utils";
 
 const BACKEND = "https://api.islahbd.com";
@@ -71,6 +72,7 @@ function LivePulse({ className }: { className?: string }) {
 
 export function ListenClient() {
   const { t } = useLang();
+  const globalPlayer = usePlayer();
   const audioRef = useRef<HTMLAudioElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -106,6 +108,16 @@ export function ListenClient() {
     setLoading(false);
     setError("");
   }, [teardownMedia]);
+
+  // One audio source at a time: stop here when the site-wide player starts.
+  useEffect(() => {
+    const onExclusive = () => {
+      stop();
+      recAudioRef.current?.pause();
+    };
+    document.addEventListener(EXCLUSIVE_AUDIO_EVENT, onExclusive);
+    return () => document.removeEventListener(EXCLUSIVE_AUDIO_EVENT, onExclusive);
+  }, [stop]);
 
   // Poll live status; tear down when stream goes offline.
   useEffect(() => {
@@ -161,6 +173,7 @@ export function ListenClient() {
 
       recAudioRef.current?.pause();
       setRecPlaying(false);
+      globalPlayer.pause();
 
       teardownMedia();
       setError("");
@@ -230,7 +243,7 @@ export function ListenClient() {
         }
       });
     },
-    [status?.streamUrl, teardownMedia, t],
+    [status?.streamUrl, teardownMedia, t, globalPlayer],
   );
 
   const toggleRecording = useCallback(() => {
@@ -242,31 +255,32 @@ export function ListenClient() {
     }
     // Interrupt the live stream if it's playing — one audio source at a time.
     stop();
+    globalPlayer.pause();
     if (!audio.src) audio.src = recording.audioUrl;
     audio.play().catch(() => setError(t("রেকর্ডিং চালানো যায়নি", "Couldn't play the recording")));
-  }, [recPlaying, recording, stop, t]);
+  }, [recPlaying, recording, stop, t, globalPlayer]);
 
   const live = status?.isLive ?? false;
 
   return (
-    <div className="relative min-h-screen overflow-hidden gradient-hero islamic-pattern-subtle pt-24 pb-20">
+    <div className="relative overflow-hidden rounded-[28px] bg-panel py-12 sm:py-16">
       {/* Ambient glow orbs, matching the hero */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
           className={cn(
             "absolute -top-32 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full blur-[120px] transition-colors duration-700",
-            live ? "bg-red-500/10" : "bg-gold/6",
+            live ? "bg-red-500/10" : "bg-brand/8",
           )}
         />
-        <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-emerald-deep/6 blur-[100px]" />
+        <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-brand/6 blur-[100px]" />
       </div>
 
       {/* Geometric ornament, matching the hero */}
       <div className="absolute top-24 right-8 hidden opacity-10 animate-geometric lg:block">
         <svg width="100" height="100" viewBox="0 0 120 120" fill="none">
-          <polygon points="60,4 112,30 112,90 60,116 8,90 8,30" stroke="#CBA135" strokeWidth="1.5" />
-          <polygon points="60,20 96,40 96,80 60,100 24,80 24,40" stroke="#CBA135" strokeWidth="1" />
-          <circle cx="60" cy="60" r="8" stroke="#CBA135" strokeWidth="1" />
+          <polygon points="60,4 112,30 112,90 60,116 8,90 8,30" stroke="var(--brand)" strokeWidth="1.5" />
+          <polygon points="60,20 96,40 96,80 60,100 24,80 24,40" stroke="var(--brand)" strokeWidth="1" />
+          <circle cx="60" cy="60" r="8" stroke="var(--brand)" strokeWidth="1" />
         </svg>
       </div>
 
@@ -300,10 +314,10 @@ export function ListenClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="mb-3 block text-sm font-semibold uppercase tracking-widest text-gold">
+          <span className="mb-3 block text-sm font-semibold uppercase tracking-widest text-brand">
             {t("সরাসরি সম্প্রচার", "Live Broadcast")}
           </span>
-          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+          <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
             {t("লাইভ শুনুন", "Listen Live")}
           </h1>
           <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
@@ -320,8 +334,8 @@ export function ListenClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className={cn(
-            "relative overflow-hidden rounded-3xl border bg-card p-10 text-center shadow-xl transition-colors duration-500",
-            live ? "border-red-500/25 prayer-card-glow" : "border-border",
+            "relative overflow-hidden rounded-[28px] border bg-panel-2 p-8 text-center transition-colors duration-500 sm:p-10",
+            live ? "border-red-500/25" : "border-line",
           )}
         >
           {live && (
@@ -349,7 +363,7 @@ export function ListenClient() {
             </AnimatePresence>
 
             <div>
-              <h2 className="font-display text-2xl font-bold text-card-foreground sm:text-3xl">
+              <h2 className="text-2xl font-bold text-card-foreground sm:text-3xl">
                 {live && status?.title ? status.title : t("লাইভ সম্প্রচার", "Live Broadcast")}
               </h2>
               <p className="mt-1.5 text-sm text-muted-foreground">
@@ -373,8 +387,8 @@ export function ListenClient() {
                   !live
                     ? "cursor-not-allowed bg-muted text-muted-foreground shadow-none"
                     : loading
-                      ? "gradient-gold opacity-80"
-                      : "gradient-gold hover:scale-105 hover:brightness-110 active:scale-95",
+                      ? "bg-brand opacity-80"
+                      : "bg-brand hover:scale-105 hover:bg-brand-strong active:scale-95",
                 )}
               >
                 {loading ? (
@@ -424,9 +438,9 @@ export function ListenClient() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="card-hover mt-6 rounded-3xl border border-border bg-card p-6 shadow-lg"
+              className="mt-6 rounded-[28px] bg-panel-2 p-6"
             >
-              <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-deep dark:text-emerald-400">
+              <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand">
                 <Radio className="h-3.5 w-3.5" />
                 {t("সাম্প্রতিক লাইভ", "Recent Live")}
               </div>
@@ -435,7 +449,7 @@ export function ListenClient() {
                 <button
                   onClick={toggleRecording}
                   aria-label={recPlaying ? t("থামান", "Pause") : t("শুনুন", "Play")}
-                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full gradient-emerald text-white shadow-lg transition hover:scale-105 hover:brightness-110 active:scale-95"
+                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-lg transition hover:scale-105 hover:brightness-110 active:scale-95"
                 >
                   {recPlaying ? (
                     <Pause className="h-6 w-6" fill="currentColor" />
@@ -445,7 +459,7 @@ export function ListenClient() {
                 </button>
 
                 <div className="min-w-0 flex-1 text-left">
-                  <p className="truncate font-display text-lg font-bold text-card-foreground">
+                  <p className="truncate text-lg font-bold text-card-foreground">
                     {recording.title || t("সরাসরি সম্প্রচার", "Live Broadcast")}
                   </p>
                   <p className="truncate text-sm text-muted-foreground">

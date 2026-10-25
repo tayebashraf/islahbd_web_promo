@@ -1,0 +1,120 @@
+/* ============================================================
+   সীরাত.ব্লগ — Facebook Left Sidebar CSS
+   ============================================================ */
+
+.fb-left-sidebar {
+  width: var(--fb-left-width);
+  height: calc(100vh - var(--header-height));
+  position: sticky;
+  top: var(--header-height);
+  padding: 8px 4px 24px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.fb-sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fb-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+}
+
+.fb-sidebar-item:hover {
+  background-color: var(--color-interactive-hover);
+}
+
+.fb-sidebar-item--active {
+  background-color: var(--color-brand-subtle);
+  color: var(--color-brand-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.fb-sidebar-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-icon-circle-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-brand-primary);
+}
+
+.fb-sidebar-divider {
+  height: 1px;
+  background-color: var(--color-border-secondary);
+  margin: var(--space-3) var(--space-2);
+}
+
+.fb-sidebar-heading {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  padding: var(--space-2) var(--space-3);
+}
+
+.fb-topic-shortcut {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+}
+
+.fb-topic-shortcut:hover {
+  background-color: var(--color-interactive-hover);
+}
+
+.fb-topic-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.fb-left-footer {
+  padding: var(--space-4) var(--space-3) 0;
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+}
+
+.fb-left-footer a {
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  margin-right: var(--space-2);
+}
+
+.fb-left-footer a:hover {
+  text-decoration: underline;
+}

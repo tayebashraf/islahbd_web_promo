@@ -1,15 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display, Amiri, Hind_Siliguri } from "next/font/google";
+import { Inter, Playfair_Display, Amiri, Hind_Siliguri, Urbanist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
 import { SmartAppBanner } from "@/components/smart-app-banner";
+import { PlayerProvider } from "@/components/player/player-provider";
 
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const urbanist = Urbanist({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-urbanist",
   display: "swap",
 });
 
@@ -73,8 +81,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F8F7F3" },
-    { media: "(prefers-color-scheme: dark)", color: "#0D1117" },
+    { media: "(prefers-color-scheme: light)", color: "#ECEEEB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0F0C" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -82,12 +90,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" suppressHydrationWarning className={`${inter.variable} ${hindSiliguri.variable} ${playfair.variable} ${amiri.variable}`}>
+    <html lang="bn" suppressHydrationWarning className={`${inter.variable} ${urbanist.variable} ${hindSiliguri.variable} ${playfair.variable} ${amiri.variable}`}>
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>
-            {children}
-            <SmartAppBanner />
+            <PlayerProvider>
+              {children}
+              <SmartAppBanner />
+            </PlayerProvider>
           </LangProvider>
         </ThemeProvider>
       </body>

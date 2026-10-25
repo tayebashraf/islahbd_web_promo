@@ -1,0 +1,203 @@
+/* ============================================================
+   সীরাত.ব্লগ — Kalpurush Typography System
+   ============================================================ */
+
+/* --- Harmonious Heading Hierarchy in Kalpurush --- */
+
+h1, .h1 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 1.25rem; /* ~20px — 1-2 sizes above body */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin: 0 0 10px;
+}
+
+h2, .h2 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 1.15rem; /* ~18.4px — 1 size above body */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin: 18px 0 8px;
+}
+
+h3, .h3 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 1.08rem; /* ~17.2px */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin: 14px 0 6px;
+}
+
+h4, .h4 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #1E293B;
+  margin: 12px 0 4px;
+}
+
+h5, .h5 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+h6, .h6 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4 {
+  color: #F8FAFC;
+}
+
+/* --- Body Text (100% Justified in Kalpurush) --- */
+
+p {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  text-align: justify;
+  text-justify: inter-character;
+  text-align-last: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.85;
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+:root[data-theme="dark"] p {
+  color: #CBD5E1;
+}
+
+.text-body {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: #334155;
+}
+
+.text-body-sm {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* --- Article-Specific Typography in Kalpurush --- */
+
+.article-body,
+.article-body-content {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: #334155;
+}
+
+:root[data-theme="dark"] .article-body,
+:root[data-theme="dark"] .article-body-content {
+  color: #CBD5E1;
+}
+
+.article-body p,
+.article-body-content p {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  text-align: justify;
+  text-justify: inter-character;
+  text-align-last: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: 0.01em;
+  margin-bottom: 14px;
+}
+
+.article-body-content h2,
+.article-body h2 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif !important;
+  font-size: 1.15rem !important; /* Exactly 1 size larger than body */
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  color: #1E293B !important;
+  margin-top: 20px !important;
+  margin-bottom: 8px !important;
+  padding-bottom: 2px !important;
+  border-bottom: 1px solid var(--color-border-secondary) !important;
+}
+
+:root[data-theme="dark"] .article-body-content h2,
+:root[data-theme="dark"] .article-body h2 {
+  color: #F8FAFC !important;
+}
+
+.article-body-content h3,
+.article-body h3 {
+  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif !important;
+  font-size: 1.08rem !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  color: #1E293B !important;
+  margin-top: 16px !important;
+  margin-bottom: 6px !important;
+}
+
+:root[data-theme="dark"] .article-body-content h3,
+:root[data-theme="dark"] .article-body h3 {
+  color: #F8FAFC !important;
+}
+
+/* ============================================================
+   ACTIVE FONT SCALING SELECTORS (ছোট, স্বাভাবিক, বড়)
+   ============================================================ */
+
+/* --- SMALL FONT SCALING (ছোট) --- */
+html[data-font-size="small"] body,
+html[data-font-size="small"] p,
+html[data-font-size="small"] .fb-post-text,
+html[data-font-size="small"] .article-body-content,
+html[data-font-size="small"] .article-body,
+html[data-font-size="small"] .text-body,
+html[data-font-size="small"] .fb-comment-bubble-text {
+  font-size: 13.5px !important;
+  line-height: 1.75 !important;
+}
+
+html[data-font-size="small"] h1, html[data-font-size="small"] .h1 { font-size: 1.15rem !important; }
+html[data-font-size="small"] h2, html[data-font-size="small"] .h2 { font-size: 1.05rem !important; }
+html[data-font-size="small"] h3, html[data-font-size="small"] .h3 { font-size: 0.98rem !important; }
+html[data-font-size="small"] .fb-post-author-name { font-size: 13px !important; }
+html[data-font-size="small"] .fb-author-card__bio { font-size: 12px !important; }
+
+/* --- LARGE FONT SCALING (বড়) --- */
+html[data-font-size="large"] body,
+html[data-font-size="large"] p,
+html[data-font-size="large"] .fb-post-text,
+html[data-font-size="large"] .article-body-content,
+html[data-font-size="large"] .article-body,
+html[data-font-size="large"] .text-body,
+html[data-font-size="large"] .fb-comment-bubble-text {
+  font-size: 17.5px !important;
+  line-height: 2 !important;
+}
+
+html[data-font-size="large"] h1, html[data-font-size="large"] .h1 { font-size: 1.45rem !important; }
+html[data-font-size="large"] h2, html[data-font-size="large"] .h2 { font-size: 1.3rem !important; }
+html[data-font-size="large"] h3, html[data-font-size="large"] .h3 { font-size: 1.2rem !important; }
+html[data-font-size="large"] .fb-post-author-name { font-size: 16px !important; }
+html[data-font-size="large"] .fb-author-card__bio { font-size: 14.5px !important; }
+

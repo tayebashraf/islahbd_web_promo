@@ -1,0 +1,364 @@
+@import './tokens.css';
+@import './typography.css';
+
+/* --- Kalpurush Local & High-Speed Font --- */
+@font-face {
+  font-family: 'Kalpurush';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('/fonts/kalpurush.woff2') format('woff2'),
+       url('/fonts/kalpurush.ttf') format('truetype');
+}
+
+/* --- Modern Reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
+}
+
+body:has(.sirat-shell),
+.sirat-shell {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-full);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Focus Visible */
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Base Card Style (Facebook Post / Container Card) */
+.fb-card {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border-secondary);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Main 3-Column Facebook Layout Container */
+.fb-layout {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100vh - var(--header-height));
+  padding-top: var(--header-height);
+  overflow-x: hidden;
+}
+
+.fb-feed-container {
+  width: 100%;
+  max-width: var(--fb-feed-width);
+  min-width: 0; /* Critical: Allows flex item to shrink properly on mobile without overflowing */
+  margin: 0 auto;
+  padding: 8px 8px 64px;
+  flex: 1;
+}
+
+
+@media (max-width: 1100px) {
+  .fb-layout__right {
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .fb-layout__left {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .fb-feed-container {
+    padding: 8px 8px 64px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .fb-card {
+    border-radius: var(--radius-lg);
+    margin-bottom: 12px;
+  }
+}
+
+/* Utility Animations */
+.fade-in {
+  animation: fadeIn 200ms ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   INFINITE SCROLL & SKELETON LOADER
+   ============================================================ */
+
+.fb-feed-sentinel {
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+}
+
+.fb-feed-skeleton-card {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-secondary);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.fb-skeleton-pulse {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.12) 50%, rgba(0, 0, 0, 0.06) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+:root[data-theme="dark"] .fb-skeleton-pulse {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.fb-skeleton-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.fb-skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+}
+
+.fb-skeleton-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fb-skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+}
+
+.fb-skeleton-line--title {
+  height: 16px;
+  width: 75%;
+  margin-bottom: 10px;
+}
+
+.fb-skeleton-line--full {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.fb-skeleton-line--short {
+  width: 60%;
+  margin-bottom: 14px;
+}
+
+.fb-skeleton-loading-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  padding: 12px 0 4px;
+}
+
+/* End of Feed Banner */
+.fb-feed-end-banner {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  padding: 24px 16px;
+  margin: 16px 0 32px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.fb-feed-end-banner__icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.fb-feed-end-banner__title {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 4px;
+}
+
+:root[data-theme="dark"] .fb-feed-end-banner__title {
+  color: #F8FAFC;
+}
+
+.fb-feed-end-banner__subtitle {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12.5px;
+  color: var(--color-text-tertiary);
+  display: block;
+}
+
+/* ============================================================
+   A4 OFFICIAL PRINT & EXPORT DOCUMENT STYLES
+   ============================================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
+  }
+
+  /* Hide Header, Sidebars, Buttons, Navigation during print */
+  header,
+  .fb-header,
+  .fb-left-sidebar,
+  .fb-right-sidebar,
+  .fb-bottom-nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  .fb-layout {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .fb-feed-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .fb-card {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .a4-document-paper {
+    box-shadow: none !important;
+    border: 1px solid #000000 !important;
+    max-width: 100% !important;
+    padding: 20px !important;
+    page-break-inside: avoid;
+  }
+}
+

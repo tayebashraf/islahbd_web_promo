@@ -1,0 +1,150 @@
+/* ============================================================
+   সীরাত.ব্লগ — Compact Mobile-Optimized Article Header CSS
+   ============================================================ */
+
+.article-header {
+  max-width: var(--max-width-article);
+  margin: 0 auto 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+/* 1-Line Compact Meta Row */
+.article-header__meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.article-header__topic-badge {
+  display: inline-block;
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  background-color: var(--color-brand-subtle);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+}
+
+.article-header__breadcrumb-text {
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.article-header__breadcrumb-text a {
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+}
+
+.article-header__breadcrumb-text a:hover {
+  color: var(--color-brand-primary);
+}
+
+/* Title: Harmonious 1-2 Sizes Larger than Body, Kalpurush Font */
+.article-header__title {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 1.22rem; /* ~19.5px — 1-2 steps above 16.5px body */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin: 6px 0 8px;
+  letter-spacing: -0.01em;
+}
+
+:root[data-theme="dark"] .article-header__title {
+  color: #F8FAFC;
+}
+
+/* Subtitle / Excerpt */
+.article-header__subtitle {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 0.95rem;
+  color: #64748B;
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+:root[data-theme="dark"] .article-header__subtitle {
+  color: #94A3B8;
+}
+
+/* Author Row Directly Below Title */
+.article-header__author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.article-header__author-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.article-header__author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.article-header__author-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.article-header__author-name {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700 !important;
+  color: #065F46 !important;
+  text-decoration: none;
+}
+
+:root[data-theme="dark"] .article-header__author-name {
+  color: #34D399 !important;
+}
+
+.article-header__author-name:hover {
+  color: #047857 !important;
+  text-decoration: underline;
+}
+
+.article-header__date-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.article-listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.article-listen-btn:hover {
+  background-color: var(--color-brand-subtle);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}

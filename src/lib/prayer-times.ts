@@ -14,68 +14,62 @@ export interface PrayerTimesResponse {
   hijriDate: string;
 }
 
-function toRadians(deg: number) { return deg * Math.PI / 180; }
-function toDegrees(rad: number) { return rad * 180 / Math.PI; }
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const deg = (r: number) => (r * 180) / Math.PI;
+const fix = (a: number, b: number) => ((a % b) + b) % b;
 
 function julianDate(date: Date): number {
-  const Y = date.getFullYear();
-  const M = date.getMonth() + 1;
+  let Y = date.getFullYear();
+  let M = date.getMonth() + 1;
   const D = date.getDate();
-  if (M <= 2) return Math.floor(365.25 * (Y - 1)) + Math.floor(30.6001 * (M + 13)) + D + 1720994.5;
-  return Math.floor(365.25 * Y) + Math.floor(30.6001 * (M + 1)) + D + 1720994.5;
+  if (M <= 2) {
+    Y -= 1;
+    M += 12;
+  }
+  const A = Math.floor(Y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + D + B - 1524.5;
 }
 
-function sunEquation(jd: number) {
-  const T = (jd - 2451545.0) / 36525;
-  const L0 = (280.46646 + T * (36000.76983 + T * 0.0003032)) % 360;
-  const M = toRadians((357.52911 + T * (35999.05029 - T * 0.0001537)) % 360);
-  const C = (1.914602 - T * (0.004817 + T * 0.000014)) * Math.sin(M)
-    + (0.019993 - T * 0.000101) * Math.sin(2 * M)
-    + 0.000289 * Math.sin(3 * M);
-  const sunLon = L0 + C;
-  const omega = toRadians(125.04 - 1934.136 * T);
-  const lambda = toRadians(sunLon + (-0.00569 - 0.00478 * Math.sin(omega)));
-  const obliq = toRadians(23.439 - T * 0.00013);
-  const decl = Math.asin(Math.sin(obliq) * Math.sin(lambda));
-  const eqTime = (L0 - 0.0057183 - toDegrees(Math.atan2(Math.cos(obliq) * Math.sin(lambda), Math.cos(lambda))) + 180 + (C > 0 ? 0 : 360)) % 360;
-  return { decl, eqTime: (eqTime > 180 ? eqTime - 360 : eqTime) * 4 };
+/** Sun declination (radians) and equation of time (hours) — praytimes.org algorithm. */
+function sunPosition(jd: number) {
+  const d = jd - 2451545.0;
+  const g = rad(fix(357.529 + 0.98560028 * d, 360));
+  const q = fix(280.459 + 0.98564736 * d, 360);
+  const L = rad(fix(q + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g), 360));
+  const e = rad(23.439 - 0.00000036 * d);
+  const ra = fix(deg(Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L))) / 15, 24);
+  return { decl: Math.asin(Math.sin(e) * Math.sin(L)), eqt: q / 15 - ra };
 }
 
-function hourAngle(lat: number, decl: number, altitude: number): number {
-  const num = Math.sin(toRadians(altitude)) - Math.sin(toRadians(lat)) * Math.sin(decl);
-  const den = Math.cos(toRadians(lat)) * Math.cos(decl);
-  return toDegrees(Math.acos(num / den));
+/** Hours from solar noon until the sun reaches `altitude` degrees. */
+function hourOffset(lat: number, decl: number, altitude: number): number {
+  const cos = (Math.sin(rad(altitude)) - Math.sin(rad(lat)) * Math.sin(decl)) / (Math.cos(rad(lat)) * Math.cos(decl));
+  return deg(Math.acos(Math.min(1, Math.max(-1, cos)))) / 15;
 }
 
-function toTimeStr(decimal: number): string {
-  const h = Math.floor(decimal) % 24;
-  const m = Math.floor((decimal % 1) * 60);
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+function toTimeStr(hours: number): string {
+  const total = Math.round(fix(hours, 24) * 60) % 1440;
+  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
 }
 
+/**
+ * Karachi method (Fajr/Isha at 18°) with Hanafi Asr — the same convention the
+ * islahbd app uses for Bangladesh.
+ */
 export function calculatePrayerTimes(lat: number, lng: number, date = new Date(), timezone = 6): PrayerTimes {
-  const jd = julianDate(date);
-  const { decl, eqTime } = sunEquation(jd);
-  const noon = 12 - lng / 15 - eqTime / 60 + timezone;
-
-  const fajrAngle = -18;
-  const ishaAngle = -17;
-
-  const fajrHA = hourAngle(lat, decl, fajrAngle);
-  const sunriseHA = hourAngle(lat, decl, -0.8333);
-  const asrShadow = 1 + Math.tan(Math.abs(toRadians(lat) - decl));
-  const asrAlt = toDegrees(Math.atan(1 / asrShadow));
-  const asrHA = hourAngle(lat, decl, asrAlt);
-  const maghribHA = sunriseHA;
-  const ishaHA = hourAngle(lat, decl, ishaAngle);
+  const { decl, eqt } = sunPosition(julianDate(date) - lng / (15 * 24));
+  const noon = 12 + timezone - lng / 15 - eqt;
+  const sunrise = hourOffset(lat, decl, -0.833);
+  const asrAltitude = deg(Math.atan(1 / (2 + Math.tan(Math.abs(rad(lat) - decl)))));
 
   return {
-    Fajr: toTimeStr(noon - fajrHA / 15),
-    Sunrise: toTimeStr(noon - sunriseHA / 15),
-    Dhuhr: toTimeStr(noon),
-    Asr: toTimeStr(noon + asrHA / 15),
-    Maghrib: toTimeStr(noon + maghribHA / 15),
-    Isha: toTimeStr(noon + ishaHA / 15),
+    Fajr: toTimeStr(noon - hourOffset(lat, decl, -18)),
+    Sunrise: toTimeStr(noon - sunrise),
+    Dhuhr: toTimeStr(noon + 1 / 60),
+    Asr: toTimeStr(noon + hourOffset(lat, decl, asrAltitude)),
+    Maghrib: toTimeStr(noon + sunrise + 1 / 60),
+    Isha: toTimeStr(noon + hourOffset(lat, decl, -18)),
   };
 }
 

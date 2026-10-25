@@ -1,0 +1,122 @@
+/* ============================================================
+   সীরাত.ব্লগ — Editorial Justified Article Body CSS
+   ============================================================ */
+
+.article-body-container {
+  max-width: var(--max-width-article);
+  margin: 0 auto 24px;
+}
+
+.article-body-content {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 1.05rem; /* ~16.8px — comfortable reading size */
+  line-height: 1.85; /* Relaxed editorial reading rhythm */
+  color: #334155; /* Soft deep charcoal slate — prevents eye strain */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+:root[data-theme="dark"] .article-body-content {
+  color: #CBD5E1;
+}
+
+/* 100% Justified Paragraphs with Optical Character Alignment */
+.article-body-content p {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  text-align: justify;
+  text-justify: inter-character;
+  text-align-last: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: 0.01em;
+  margin-bottom: 14px;
+}
+
+/* Subheadings: Kalpurush, 1-2 Sizes Larger than Body */
+.article-body-content h2 {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 1.2rem; /* ~19.2px */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+:root[data-theme="dark"] .article-body-content h2 {
+  color: #F8FAFC;
+}
+
+.article-body-content h3 {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 1.12rem; /* ~18px */
+  font-weight: 700;
+  line-height: 1.55;
+  color: #1E293B;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+:root[data-theme="dark"] .article-body-content h3 {
+  color: #F8FAFC;
+}
+
+/* Editorial Blockquotes */
+.article-body-content blockquote,
+.article-body-content .pull-quote {
+  font-family: var(--font-bengali-body), 'Noto Serif Bengali', serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #475569;
+  border-left: 3px solid var(--color-brand-primary);
+  padding: 10px 14px;
+  margin: 16px 0;
+  background-color: var(--color-bg-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  text-align: justify;
+  text-align-last: left;
+}
+
+:root[data-theme="dark"] .article-body-content blockquote,
+:root[data-theme="dark"] .article-body-content .pull-quote {
+  color: #94A3B8;
+}
+
+/* Classical Arabic Ayats & Hadiths */
+.article-body-content .arabic-text {
+  font-family: var(--font-arabic-calligraphy), var(--font-arabic), serif;
+  font-size: 1.35rem;
+  line-height: 1.85;
+  direction: rtl;
+  text-align: right;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin: 16px 0;
+  border: 1px solid var(--color-border-secondary);
+  border-right: 3px solid var(--color-brand-primary);
+}
+
+.article-body-content .hadith-block {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-secondary);
+  border-left: 3px solid var(--color-islamic-gold);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+
+.article-body-content ul,
+.article-body-content ol {
+  margin: 12px 0 16px 20px;
+  line-height: 1.8;
+}
+
+.article-body-content li {
+  margin-bottom: 6px;
+  text-align: justify;
+  text-align-last: left;
+}

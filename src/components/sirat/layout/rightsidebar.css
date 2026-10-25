@@ -1,0 +1,137 @@
+/* ============================================================
+   সীরাত.ব্লগ — Facebook Right Sidebar CSS
+   ============================================================ */
+
+.fb-right-sidebar {
+  width: var(--fb-right-width);
+  height: calc(100vh - var(--header-height));
+  position: sticky;
+  top: var(--header-height);
+  padding: 8px 8px 24px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+
+.fb-right-widget {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.fb-right-widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.fb-right-widget__title {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.fb-daily-hadith__arabic {
+  font-family: var(--font-arabic);
+  font-size: 1.25rem;
+  line-height: 1.7;
+  direction: rtl;
+  text-align: right;
+  color: var(--color-brand-primary);
+  margin-bottom: var(--space-2);
+}
+
+.fb-daily-hadith__text {
+  font-family: var(--font-bengali-body);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.fb-daily-hadith__ref {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.fb-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fb-contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: background-color var(--duration-fast);
+}
+
+.fb-contact-item:hover {
+  background-color: var(--color-interactive-hover);
+}
+
+.fb-contact-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fb-contact-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fb-contact-name {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fb-contact-desc {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fb-trending-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.fb-tag-pill {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-brand-primary);
+  background-color: var(--color-brand-subtle);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--duration-fast);
+}
+
+.fb-tag-pill:hover {
+  background-color: var(--color-brand-muted);
+}

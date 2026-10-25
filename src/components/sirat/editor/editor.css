@@ -1,0 +1,179 @@
+/* ============================================================
+   সীরাত.ব্লগ — Writing Studio & Editor CSS
+   ============================================================ */
+
+.editor-wrapper {
+  min-height: 85vh;
+  background-color: var(--color-bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-topbar {
+  position: sticky;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-primary);
+  padding: var(--space-3) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.editor-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.editor-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.editor-status {
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-6);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-secondary);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.editor-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.toolbar-btn {
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--duration-fast);
+}
+
+.toolbar-btn:hover {
+  background-color: var(--color-interactive-hover);
+  color: var(--color-text-primary);
+}
+
+.toolbar-btn--active {
+  background-color: var(--color-brand-subtle);
+  color: var(--color-brand-primary);
+  border-color: rgba(45, 95, 45, 0.2);
+}
+
+.toolbar-btn--special {
+  color: var(--color-brand-primary);
+  font-weight: var(--weight-semibold);
+  border: 1px solid rgba(45, 95, 45, 0.2);
+  background-color: var(--color-brand-subtle);
+}
+
+.toolbar-btn--special:hover {
+  background-color: var(--color-brand-muted);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--color-border-secondary);
+  margin: 0 var(--space-1);
+}
+
+.editor-canvas {
+  max-width: var(--max-width-article);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+  flex: 1;
+}
+
+.editor-input-title {
+  width: 100%;
+  font-family: var(--font-bengali-body);
+  font-size: clamp(2rem, 1.6rem + 1.4vw, 2.75rem);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  margin-bottom: var(--space-3);
+  line-height: var(--leading-tight);
+}
+
+.editor-input-title::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 0.6;
+}
+
+.editor-input-subtitle {
+  width: 100%;
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  outline: none;
+  margin-bottom: var(--space-6);
+  line-height: var(--leading-relaxed);
+}
+
+.editor-input-subtitle::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 0.6;
+}
+
+.editor-textarea {
+  width: 100%;
+  min-height: 450px;
+  font-family: var(--font-bengali-body);
+  font-size: var(--text-article-body);
+  line-height: var(--leading-bengali-body);
+  color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: vertical;
+}
+
+.editor-textarea::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 0.5;
+}
+
+.editor-stats-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-6);
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--color-border-secondary);
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}

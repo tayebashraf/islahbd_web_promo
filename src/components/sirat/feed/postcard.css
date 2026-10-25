@@ -1,0 +1,1356 @@
+/* ============================================================
+   সীরাত.ব্লগ — Editorial Luxury Typography & Post Card CSS
+   ============================================================ */
+
+.fb-post-card {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border-secondary);
+  margin-bottom: var(--space-4);
+  overflow: visible;
+  position: relative;
+  animation: fadeIn 200ms ease-out;
+  transition: box-shadow var(--duration-fast);
+}
+
+.fb-post-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Post Header */
+.fb-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+}
+
+.fb-post-header__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fb-post-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.fb-post-author-name {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700 !important;
+  color: #065F46 !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+:root[data-theme="dark"] .fb-post-author-name {
+  color: #34D399 !important;
+}
+
+.fb-post-author-name:hover {
+  color: #047857 !important;
+  text-decoration: underline;
+}
+
+:root[data-theme="dark"] .fb-post-author-name:hover {
+  color: #6EE7B7 !important;
+}
+
+.fb-post-time-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-bengali-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: 1px;
+}
+
+.fb-post-topic-tag {
+  color: var(--color-brand-primary);
+  background-color: var(--color-brand-subtle);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.fb-post-menu-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+.fb-post-menu-btn:hover {
+  background-color: var(--color-interactive-hover);
+  color: var(--color-text-primary);
+}
+
+.fb-post-menu-anchor {
+  position: relative;
+}
+
+.fb-post-options-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  min-width: 210px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-kalpurush), sans-serif;
+  animation: scaleIn 0.15s ease-out;
+}
+
+.fb-post-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fb-post-dropdown-item:hover {
+  background-color: var(--color-interactive-hover, #F1F5F9);
+}
+
+.fb-post-dropdown-item--danger {
+  color: #DC2626 !important;
+}
+
+.fb-post-dropdown-item--danger:hover {
+  background-color: #FEF2F2 !important;
+  color: #B91C1C !important;
+}
+
+.fb-post-dropdown-item--primary {
+  color: #047857 !important;
+}
+
+.fb-post-dropdown-item--primary:hover {
+  background-color: #ECFDF5 !important;
+}
+
+.fb-post-dropdown-divider {
+  height: 1px;
+  background-color: var(--color-border-secondary);
+  margin: 4px 6px;
+}
+
+/* Thin Divider Line under Author Row, ABOVE the Title */
+.fb-post-divider-line {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0%, var(--color-border-secondary) 15%, var(--color-border-secondary) 85%, rgba(0, 0, 0, 0.03) 100%);
+  margin: 0 16px 12px;
+  border: none;
+}
+
+:root[data-theme="dark"] .fb-post-divider-line {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0%, var(--color-border-secondary) 15%, var(--color-border-secondary) 85%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+/* ============================================================
+   EDITORIAL LUXURY TYPOGRAPHY (সম্পাদকীয় নান্দনিকতা ও চোখের আরাম)
+   ============================================================ */
+
+.fb-post-body {
+  padding: 0 18px 12px;
+}
+
+/* Post Title: Harmonious Serif, gentle 1.05rem, eye-soothing slate-ink */
+.fb-post-title {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 1.05rem; /* ~16.8px — 1 gentle size above body, perfectly balanced */
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px 0;
+  transition: color var(--duration-fast);
+}
+
+:root[data-theme="dark"] .fb-post-title {
+  color: #F8FAFC;
+}
+
+.fb-post-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fb-post-title a:hover {
+  color: var(--color-brand-primary);
+}
+
+.fb-post-text-wrapper {
+  cursor: pointer;
+  position: relative;
+  border-radius: var(--radius-sm);
+  padding: 1px 0;
+  transition: background-color var(--duration-fast);
+}
+
+/* Post Text: Kalpurush with gentle word spacing & soothing charcoal color */
+.fb-post-text {
+  font-family: 'Kalpurush', var(--font-bengali-body), serif;
+  font-size: 0.95rem; /* ~15.2px */
+  font-weight: 400;
+  line-height: 1.85; /* Relaxed editorial rhythm */
+  color: #334155; /* Soft deep charcoal slate — completely eliminates harsh glare */
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-character;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+:root[data-theme="dark"] .fb-post-text {
+  color: #CBD5E1;
+}
+
+.fb-post-text p {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-character;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.fb-post-text--clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-character;
+}
+
+
+
+/* Embedded Arabic Hadith/Ayat Box */
+.fb-post-hadith-box {
+  background-color: var(--color-bg-primary);
+  border-left: 3px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 10px 0;
+}
+
+.fb-post-hadith-arabic {
+  font-family: var(--font-arabic-calligraphy), var(--font-arabic), serif;
+  font-size: 1.28rem;
+  line-height: 1.85;
+  direction: rtl;
+  text-align: right;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.fb-post-hadith-translation {
+  font-family: var(--font-bengali-body), 'Noto Serif Bengali', serif;
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.7;
+  text-align: justify;
+  text-align-last: left;
+}
+
+:root[data-theme="dark"] .fb-post-hadith-translation {
+  color: #94A3B8;
+}
+
+.fb-post-hadith-ref {
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Multiple Sources Box */
+.fb-post-sources-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  border-left: 2.5px solid var(--color-brand-primary);
+}
+
+.fb-post-sources-label {
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.fb-post-source-tag {
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  color: var(--color-text-primary);
+}
+
+/* ============================================================
+   Post Stats & Overlapping Circular Reaction Icons
+   ============================================================ */
+.fb-post-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-family: var(--font-bengali-ui);
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  border-bottom: 1px solid var(--color-border-secondary);
+  margin: 0 16px;
+}
+
+.fb-stats-badge-cluster {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-overlapping-circles {
+  display: flex;
+  align-items: center;
+}
+
+.fb-overlapping-circle-wrap {
+  margin-right: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform var(--duration-fast);
+  cursor: pointer;
+}
+
+.fb-overlapping-circle-wrap:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.fb-post-stats-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Action Buttons Bar
+   ============================================================ */
+.fb-post-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 8px;
+  position: relative;
+}
+
+.fb-post-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-family: var(--font-bengali-ui);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.fb-post-action-btn:hover {
+  background-color: var(--color-interactive-hover);
+}
+
+.fb-post-action-btn--selected {
+  font-weight: var(--weight-bold);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+:root[data-theme="dark"] .fb-post-action-btn--selected {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.fb-post-action-btn--active {
+  color: var(--color-brand-primary) !important;
+}
+
+/* ============================================================
+   PURE CIRCULAR REACTION ICONS
+   ============================================================ */
+
+.reaction-circle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  border: 1.5px solid var(--color-bg-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  user-select: none;
+  transition: transform var(--duration-fast);
+  line-height: 1;
+}
+
+.rci-jazakallah {
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  color: #059669;
+}
+:root[data-theme="dark"] .rci-jazakallah {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
+  color: #34D399;
+}
+
+.rci-mashaallah {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  color: #2563EB;
+}
+:root[data-theme="dark"] .rci-mashaallah {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
+  color: #60A5FA;
+}
+
+.rci-alhamdulillah {
+  background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);
+  color: #0D9488;
+}
+:root[data-theme="dark"] .rci-alhamdulillah {
+  background: linear-gradient(135deg, #134E4A 0%, #0F766E 100%);
+  color: #2DD4BF;
+}
+
+.rci-subhanallah {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  color: #D97706;
+}
+:root[data-theme="dark"] .rci-subhanallah {
+  background: linear-gradient(135deg, #78350F 0%, #92400E 100%);
+  color: #FBBF24;
+}
+
+.rci-salawat {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%);
+  color: #BE123C;
+}
+:root[data-theme="dark"] .rci-salawat {
+  background: linear-gradient(135deg, #881337 0%, #9F1239 100%);
+  color: #FB7185;
+}
+
+.rci-barakallah {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+  color: #7C3AED;
+}
+:root[data-theme="dark"] .rci-barakallah {
+  background: linear-gradient(135deg, #581C87 0%, #6B21A8 100%);
+  color: #A78BFA;
+}
+
+/* Reaction Popup */
+.fb-arabic-reaction-container {
+  position: relative;
+  flex: 1;
+}
+
+.fb-arabic-reaction-popup {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-full);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border-secondary);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: var(--z-dropdown);
+  animation: arabicPopIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@keyframes arabicPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fb-calligraphy-popup-item {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fb-calligraphy-popup-item:hover {
+  transform: translateY(-5px) scale(1.25);
+  z-index: 10;
+}
+
+.fb-calligraphy-popup-item:hover .reaction-circle-icon {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.fb-calligraphy-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #FFFFFF;
+  font-family: var(--font-bengali-ui);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+
+.fb-calligraphy-popup-item:hover .fb-calligraphy-tooltip {
+  opacity: 1;
+}
+
+/* ============================================================
+   MODERN FACEBOOK-STYLE IN-FEED COMMENTS & DUROOD RIBBON
+   ============================================================ */
+
+.fb-infeed-comments {
+  padding: 10px 16px 16px;
+  background-color: var(--color-bg-surface);
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+/* Sleek Horizontal Scrollable Durood Ribbon (Delayed Smooth Fade-in & Full Horizontal Drag/Scroll) */
+.fb-durood-ribbon {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 10px;
+  overflow: hidden;
+  position: relative;
+  animation: duroodEntrance 350ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+}
+
+@keyframes duroodEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fb-durood-ribbon__chips {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  padding: 3px 2px 5px;
+  width: 100%;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+
+.fb-durood-ribbon__chips:active {
+  cursor: grabbing;
+}
+
+.fb-durood-ribbon__chips::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.fb-durood-ribbon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-primary);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  transition: all var(--duration-fast);
+}
+
+.fb-durood-ribbon-pill:hover {
+  background-color: #FEF3C7;
+  border-color: #D97706;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.15);
+}
+
+:root[data-theme="dark"] .fb-durood-ribbon-pill {
+  background-color: #1E293B;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+:root[data-theme="dark"] .fb-durood-ribbon-pill:hover {
+  background-color: #33270A;
+  border-color: #F59E0B;
+}
+
+.fb-durood-ribbon-pill__ar {
+  font-family: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  direction: rtl;
+  color: #92400E;
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .fb-durood-ribbon-pill__ar {
+  color: #FCD34D;
+}
+
+/* Replying Info Banner */
+.fb-comment-replying-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-brand-subtle);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12px;
+  color: var(--color-text-primary);
+}
+
+.fb-comment-replying-cancel {
+  background: none;
+  border: none;
+  color: #EF4444;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.fb-comment-replying-cancel:hover {
+  text-decoration: underline;
+}
+
+/* Comment Input Row */
+.fb-comment-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.fb-comment-input-wrap {
+  flex: 1;
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-full);
+  padding: 6px 10px 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border-secondary);
+  transition: border-color var(--duration-fast), background-color var(--duration-fast);
+}
+
+.fb-comment-input-wrap:focus-within {
+  border-color: var(--color-brand-primary);
+  background-color: var(--color-bg-surface);
+  box-shadow: 0 0 0 1px var(--color-brand-primary);
+}
+
+.fb-comment-input-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 13.5px;
+  color: var(--color-text-primary);
+}
+
+.fb-comment-send-btn {
+  color: var(--color-brand-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  transition: opacity var(--duration-fast), transform var(--duration-fast);
+}
+
+.fb-comment-send-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.fb-comment-send-btn:not(:disabled):hover {
+  transform: scale(1.1);
+}
+
+/* Comment Bubbles Stream */
+.fb-comment-bubble-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fb-comment-item-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.fb-comment-bubble-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.fb-comment-bubble-row--reply {
+  margin-top: 6px;
+}
+
+.fb-comment-bubble-content {
+  flex: 1;
+  max-width: calc(100% - 38px);
+}
+
+.fb-comment-bubble {
+  background-color: var(--color-bg-primary);
+  border-radius: 18px;
+  padding: 8px 14px;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.fb-comment-bubble--durood {
+  background-color: #FFFDF5;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-left: 3px solid #D97706;
+}
+
+:root[data-theme="dark"] .fb-comment-bubble--durood {
+  background-color: #241D09;
+  border-color: rgba(245, 195, 59, 0.25);
+  border-left-color: #F59E0B;
+}
+
+.fb-comment-bubble__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.fb-comment-bubble__author-name {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #065F46 !important;
+}
+
+:root[data-theme="dark"] .fb-comment-bubble__author-name {
+  color: #34D399 !important;
+}
+
+.fb-comment-bubble__text {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}
+
+:root[data-theme="dark"] .fb-comment-bubble__text {
+  color: #E2E8F0;
+}
+
+/* Harmonious Arabic Font Size in Comment Bubbles */
+.fb-comment-bubble__arabic-durood {
+  font-family: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 500 !important;
+  line-height: 1.6 !important;
+  direction: rtl !important;
+  text-align: right !important;
+  color: #92400E !important;
+  margin: 2px 0 0;
+}
+
+:root[data-theme="dark"] .fb-comment-bubble__arabic-durood {
+  color: #FCD34D !important;
+}
+
+/* Nested Threaded Replies (ইনডেন্ট ও থ্রেড লাইন) */
+.fb-comment-nested-replies {
+  margin-left: 36px;
+  padding-left: 10px;
+  border-left: 2px solid var(--color-border-secondary);
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Clean Action Row (জাযাকাল্লাহ • উত্তর • সময়) */
+.fb-comment-action-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 10px;
+  margin-top: 3px;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 12px;
+  color: #64748B;
+}
+
+.fb-comment-action-btn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748B;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--duration-fast);
+}
+
+.fb-comment-action-btn:hover {
+  color: var(--color-brand-primary);
+  text-decoration: underline;
+}
+
+.fb-comment-action-btn--jazakallah {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.fb-comment-action-count {
+  font-size: 11px;
+  background-color: var(--color-brand-subtle);
+  color: var(--color-brand-primary);
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+}
+
+.fb-comment-dot {
+  font-size: 10px;
+  color: #94A3B8;
+}
+
+.fb-comment-time {
+  color: #94A3B8;
+  font-size: 11.5px;
+}
+
+.fb-comment-bubble__actions button:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   SEERAH QUIZ INTERACTIVE CARD & CELEBRATION EFFECTS
+   ============================================================ */
+
+.seerah-quiz-container {
+  background: var(--color-bg-primary);
+  border: 1.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin: 12px 0 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal);
+}
+
+/* ============================================================
+   SEERAH QUIZ - INTERACTIVE 2-COLUMN PREMIUM CARDS
+   ============================================================ */
+
+.seerah-quiz-container {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--color-bg-surface) 65%);
+  border: 1.5px solid rgba(16, 185, 129, 0.28);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin: 6px 0 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .seerah-quiz-container {
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.25) 0%, #1E293B 70%);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.seerah-quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.seerah-quiz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  color: #FFFFFF;
+  font-family: var(--font-kalpurush);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.seerah-quiz-question {
+  font-family: var(--font-kalpurush);
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+/* Strictly 2 Options Per Row (2x2 Grid) */
+.seerah-quiz-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px 12px;
+}
+
+.seerah-quiz-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-secondary);
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-height: 54px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-kalpurush);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+:root[data-theme="dark"] .seerah-quiz-option-btn {
+  background-color: #1E293B;
+  border-color: #334155;
+}
+
+.seerah-quiz-option-btn:hover:not(:disabled) {
+  border-color: #10B981;
+  background: linear-gradient(180deg, var(--color-bg-surface) 0%, rgba(16, 185, 129, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(16, 185, 129, 0.15);
+}
+
+.seerah-quiz-option-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  border: 1.5px solid var(--color-border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-kalpurush);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: all 180ms ease;
+}
+
+.seerah-quiz-option-text {
+  flex: 1;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+/* Selecting / Locking State (During 3s Countdown) */
+.seerah-quiz-option-btn--selecting {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%) !important;
+  border-color: #2563EB !important;
+  color: #1E40AF !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+  animation: selectingPulse 1.2s infinite ease-in-out;
+}
+
+:root[data-theme="dark"] .seerah-quiz-option-btn--selecting {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%) !important;
+  border-color: #60A5FA !important;
+  color: #EFF6FF !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+@keyframes selectingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.35); }
+}
+
+.seerah-quiz-option-btn--selecting .seerah-quiz-option-letter {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border-color: #1D4ED8 !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* 3-Second Countdown Ribbon & Progress */
+.seerah-quiz-countdown-box {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+  border: 1.5px solid #BFDBFE;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  animation: fadeIn 200ms ease;
+}
+
+:root[data-theme="dark"] .seerah-quiz-countdown-box {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-color: #3B82F6;
+}
+
+.seerah-quiz-countdown-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.seerah-quiz-countdown-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-kalpurush);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1E40AF;
+}
+
+:root[data-theme="dark"] .seerah-quiz-countdown-label {
+  color: #93C5FD;
+}
+
+.seerah-quiz-countdown-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-kalpurush);
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+  animation: countdownDigitPop 1s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes countdownDigitPop {
+  0% { transform: scale(1.25); opacity: 0.8; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.seerah-quiz-countdown-progress-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(37, 99, 235, 0.15);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.seerah-quiz-countdown-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563EB, #60A5FA);
+  border-radius: var(--radius-full);
+  transition: width 1s linear;
+}
+
+.seerah-quiz-countdown-hint {
+  font-family: var(--font-kalpurush);
+  font-size: 11.5px;
+  color: #64748B;
+  text-align: center;
+}
+
+:root[data-theme="dark"] .seerah-quiz-countdown-hint {
+  color: #94A3B8;
+}
+
+/* Correct Selected State (Vibrant Emerald with Soft Glow) */
+.seerah-quiz-option-btn--correct {
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%) !important;
+  border-color: #10B981 !important;
+  color: #065F46 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+:root[data-theme="dark"] .seerah-quiz-option-btn--correct {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 100%) !important;
+  border-color: #34D399 !important;
+  color: #ECFDF5 !important;
+}
+
+.seerah-quiz-option-btn--correct .seerah-quiz-option-letter {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  border-color: #059669 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.45) !important;
+}
+
+/* Wrong Selected State */
+.seerah-quiz-option-btn--wrong {
+  background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%) !important;
+  border-color: #EF4444 !important;
+  color: #991B1B !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.22) !important;
+}
+
+:root[data-theme="dark"] .seerah-quiz-option-btn--wrong {
+  background: linear-gradient(135deg, #7F1D1D 0%, #991B1B 100%) !important;
+  border-color: #F87171 !important;
+  color: #FEF2F2 !important;
+}
+
+.seerah-quiz-option-btn--wrong .seerah-quiz-option-letter {
+  background-color: #EF4444 !important;
+  color: #FFFFFF !important;
+  border-color: #DC2626 !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Celebration & Welcome Sparkle Effect */
+.seerah-quiz-celebration-banner {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #ECFDF5 100%);
+  border: 2px solid #34D399;
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.2);
+  animation: quizCelebrationPop 380ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+:root[data-theme="dark"] .seerah-quiz-celebration-banner {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #064E3B 100%);
+  border-color: #10B981;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes quizCelebrationPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.seerah-quiz-sparkles-row {
+  font-size: 22px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  animation: sparkleRotate 2s infinite ease-in-out;
+}
+
+@keyframes sparkleRotate {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.12); }
+}
+
+.seerah-quiz-celebration-title {
+  font-family: var(--font-kalpurush);
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #065F46;
+  margin-bottom: 4px;
+}
+
+:root[data-theme="dark"] .seerah-quiz-celebration-title {
+  color: #A7F3D0;
+}
+
+.seerah-quiz-celebration-sub {
+  font-family: var(--font-kalpurush);
+  font-size: 13px;
+  color: #047857;
+  line-height: 1.6;
+}
+
+:root[data-theme="dark"] .seerah-quiz-celebration-sub {
+  color: #D1FAE5;
+}
+
+.seerah-quiz-reset-btn {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-full);
+  padding: 5px 14px;
+  font-family: var(--font-kalpurush);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.seerah-quiz-reset-btn:hover {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   FACEBOOK-STYLE COLORED BACKGROUND QUOTE POST
+   ============================================================ */
+
+.fb-colored-quote-card {
+  width: 100%;
+  min-height: 230px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  margin: 10px 0 14px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.fb-colored-quote-text {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  text-align: center;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  word-break: break-word;
+  white-space: pre-line;
+}
+
+.fb-colored-quote-ref {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-kalpurush);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
