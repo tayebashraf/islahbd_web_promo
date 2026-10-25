@@ -3,7 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { BkashError, createPayment, isBkashConfigured } from "@/lib/bkash";
-import { TIER_AMOUNTS, isBdPhone, isValidApplication, parseApplication } from "@/lib/lifetime-member";
+import { TIER_AMOUNTS, isBdPhone, isValidApplication, parseApplication, getBkashTotalAmount } from "@/lib/lifetime-member";
 import { SESSION_COOKIE, SESSION_MAX_AGE, encodeSession, type PaymentSession } from "../session";
 
 // Stay well under the browser's 4 KB per-cookie limit.
@@ -36,8 +36,9 @@ export async function POST(request: Request) {
       status: "payment_sent",
     });
     if (!isValidApplication(record)) return fail("invalid_data", 400);
-    // The amount is the tier's fixed contribution; the client never sets it.
-    amount = TIER_AMOUNTS[record.tierId];
+    // The amount is the tier's contribution plus bKash gateway service charge.
+    const baseAmount = TIER_AMOUNTS[record.tierId];
+    amount = getBkashTotalAmount(baseAmount);
     payerReference = record.phone;
     merchantInvoiceNumber = `LMN-${record.tierId.slice(0, 4).toUpperCase()}-${stamp}`;
     application = record;
@@ -47,10 +48,11 @@ export async function POST(request: Request) {
     const years = Array.isArray(body.years)
       ? body.years.filter((y): y is number => Number.isInteger(y) && y >= 2000 && y <= 2100).slice(0, 15)
       : [];
-    amount = Number(body.amount);
-    if (!memberId || !Number.isInteger(amount) || amount < 1 || amount > MAX_EXISTING_AMOUNT) {
+    const baseAmount = Number(body.amount);
+    if (!memberId || !Number.isInteger(baseAmount) || baseAmount < 1 || baseAmount > MAX_EXISTING_AMOUNT) {
       return fail("invalid_data", 400);
     }
+    amount = getBkashTotalAmount(baseAmount);
     payerReference = isBdPhone(phone) ? phone : `M${memberId}`;
     // Lets the accounts office match the bKash transaction to the member and years paid.
     merchantInvoiceNumber = `LMX-${memberId}-${years.length ? years.join(".") : "NA"}-${stamp}`.slice(0, 60);
