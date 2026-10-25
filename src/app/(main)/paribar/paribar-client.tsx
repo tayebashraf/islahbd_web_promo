@@ -19,6 +19,69 @@ const SECTIONS: { id: SectionId; bn: string; en: string }[] = [
   { id: "apply", bn: "আবেদন করুন", en: "Apply" },
 ];
 
+const SOCIAL_PLATFORMS = [
+  {
+    id: "youtube",
+    name: "YouTube",
+    bn: "ইউটিউব চ্যানেল",
+    en: "YouTube Channel",
+    subBn: "ভিডিও বয়ান ও সরাসরি লাইভ",
+    subEn: "Video Talks & Live Broadcasts",
+    handle: "@islahbd",
+    actionBn: "সাবস্ক্রাইব",
+    actionEn: "Subscribe",
+    url: "https://www.youtube.com/@islahbd",
+    iconBg: "bg-red-500/10 text-red-600 dark:bg-red-500/15 dark:text-red-400 group-hover:bg-red-600 group-hover:text-white",
+    borderHover: "hover:border-red-500/40 hover:shadow-[0_8px_30px_-12px_rgba(239,68,68,0.35)]",
+    path: "M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15V9l5.8 3-5.8 3Z",
+  },
+  {
+    id: "facebook",
+    name: "Facebook",
+    bn: "ফেসবুক পেইজ",
+    en: "Facebook Page",
+    subBn: "নিয়মিত পোস্ট, আপডেট ও লাইভ",
+    subEn: "Regular Posts, Updates & Live",
+    handle: "islahiboyanBD",
+    actionBn: "ফলো করুন",
+    actionEn: "Follow",
+    url: "https://www.facebook.com/islahiboyanBD",
+    iconBg: "bg-blue-500/10 text-[#1877F2] dark:bg-blue-500/15 dark:text-blue-400 group-hover:bg-[#1877F2] group-hover:text-white",
+    borderHover: "hover:border-blue-500/40 hover:shadow-[0_8px_30px_-12px_rgba(24,119,242,0.35)]",
+    path: "M13.5 21.9v-7.7h2.6l.4-3h-3V9.3c0-.9.3-1.5 1.5-1.5h1.6V5.1c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6v7.7h3.1Z",
+  },
+  {
+    id: "telegram",
+    name: "Telegram",
+    bn: "টেলিগ্রাম চ্যানেল",
+    en: "Telegram Channel",
+    subBn: "অডিও বয়ান ও কিতাবের পিডিএফ",
+    subEn: "Audio Talks & PDF Books",
+    handle: "@eslahiboyanbd",
+    actionBn: "জয়েন করুন",
+    actionEn: "Join",
+    url: "https://t.me/eslahiboyanbd",
+    iconBg: "bg-sky-500/10 text-[#229ED9] dark:bg-sky-500/15 dark:text-sky-400 group-hover:bg-[#229ED9] group-hover:text-white",
+    borderHover: "hover:border-sky-500/40 hover:shadow-[0_8px_30px_-12px_rgba(34,158,217,0.35)]",
+    path: "M21.4 4.2 2.9 11.3c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.4ZM9.2 14.1l9-5.7c.4-.3.8-.1.5.2l-7.7 7-.3 3.2-1.5-4.7Z",
+  },
+  {
+    id: "whatsapp",
+    name: "WhatsApp",
+    bn: "হোয়াটসঅ্যাপ গ্রুপ",
+    en: "WhatsApp Group",
+    subBn: "জরুরি নোটিশ ও দিকনির্দেশনা",
+    subEn: "Important Notices & Guidance",
+    handle: "Islah Community",
+    actionBn: "যুক্ত হন",
+    actionEn: "Join",
+    url: "https://chat.whatsapp.com/EneCvgXzrNtFFuHGz4ENzj",
+    iconBg: "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white",
+    borderHover: "hover:border-emerald-500/40 hover:shadow-[0_8px_30px_-12px_rgba(16,185,129,0.35)]",
+    path: "M12 2.2a9.8 9.8 0 0 0-8.4 14.8L2.2 21.8l4.9-1.3A9.8 9.8 0 1 0 12 2.2Zm5.7 13.8c-.2.7-1.4 1.3-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.3.1.2.1.7-.1 1.3Z",
+  },
+];
+
 export function ParibarClient({ initialTab }: { initialTab?: string }) {
   const { t } = useLang();
   const [activeSec, setActiveSec] = useState<SectionId>(
@@ -148,35 +211,66 @@ export function ParibarClient({ initialTab }: { initialTab?: string }) {
         </section>
       </div>
 
-      {/* Section 5: Official Social Channels (Moved to Bottom per user request) */}
-      <section className="rounded-3xl border border-line bg-panel p-6 sm:p-8 text-center">
-        <div className="mx-auto max-w-md">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-brand">
-            <Send className="h-5 w-5" />
-          </span>
-          <h2 className="mt-3 font-heading text-lg font-bold text-ink sm:text-xl">
+      {/* Section 5: Official Social Channels (Redesigned with brand icons & interactive cards) */}
+      <section className="rounded-3xl border border-line bg-panel p-5 sm:p-8">
+        <div className="mx-auto max-w-xl text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3.5 py-1 text-xs font-semibold text-brand">
+            <Send className="h-3.5 w-3.5" />
+            <span>{t("অফিসিয়াল যোগাযোগ", "Official Channels")}</span>
+          </div>
+          <h2 className="mt-3 font-heading text-xl font-bold text-ink sm:text-2xl">
             {t("অফিসিয়াল সোশ্যাল মিডিয়া ও চ্যানেল", "Official Social Media & Channels")}
           </h2>
-          <p className="mt-1 text-xs sm:text-sm text-ink-3">
+          <p className="mt-1.5 text-xs sm:text-sm text-ink-3">
             {t(
-              "শায়খের বয়ান, নসিহত ও আপডেট পেতে অফিসিয়াল চ্যানেলগুলোতে যুক্ত থাকুন।",
-              "Stay connected to receive talks, advice and updates."
+              "শায়খের বয়ান, নসিহত ও আপডেট সরাসরি পেতে অফিসিয়াল চ্যানেলগুলোতে যুক্ত থাকুন।",
+              "Connect with the official channels to receive talks, advice, and updates."
             )}
           </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2.5">
-            {SOCIAL.map((s) => (
-              <a
-                key={s.name}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel-2 px-4 text-xs sm:text-sm font-medium text-ink transition hover:border-brand/50 hover:bg-panel"
-              >
-                <span>{t(s.bn, s.name)}</span>
-                <ExternalLink className="h-3.5 w-3.5 text-brand" />
-              </a>
-            ))}
-          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-4">
+          {SOCIAL_PLATFORMS.map((s) => (
+            <a
+              key={s.id}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "group relative flex items-center justify-between gap-3 rounded-2xl border border-line bg-panel-2/60 p-3.5 sm:p-4 transition-all duration-300 hover:-translate-y-0.5 hover:bg-panel active:scale-[0.99]",
+                s.borderHover
+              )}
+            >
+              <div className="flex items-center gap-3.5 min-w-0">
+                <span
+                  className={cn(
+                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 shadow-xs",
+                    s.iconBg
+                  )}
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+                    <path d={s.path} />
+                  </svg>
+                </span>
+                <div className="min-w-0">
+                  <h3 className="truncate text-[15px] font-semibold text-ink group-hover:text-brand transition-colors">
+                    {t(s.bn, s.en)}
+                  </h3>
+                  <p className="truncate text-xs text-ink-3 mt-0.5">
+                    {t(s.subBn, s.subEn)}
+                  </p>
+                  <span className="font-num text-[11px] text-ink-3/80 font-medium">
+                    {s.handle}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0 rounded-full bg-panel border border-line/80 px-3 py-1.5 text-xs font-semibold text-ink-2 group-hover:border-brand/40 group-hover:bg-brand group-hover:text-white transition-all shadow-2xs">
+                <span>{t(s.actionBn, s.actionEn)}</span>
+                <ExternalLink className="h-3 w-3" />
+              </div>
+            </a>
+          ))}
         </div>
       </section>
     </div>
