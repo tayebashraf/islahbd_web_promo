@@ -11,8 +11,8 @@ export default function AboutPage() {
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
       <PageHeader
-        eyebrow="পরিচিতি ও রূপরেখা"
         title="আমাদের লক্ষ্য ও দর্শন"
+        muted="পরিচিতি ও রূপরেখা"
         description="রাসূলুল্লাহ ﷺ-এর পবিত্র সীরাত, তাযকিয়ায়ে নফস ও প্রামাণ্য ইসলামিক জ্ঞান চর্চার উন্মুক্ত আর্কাইভ।"
       />
 

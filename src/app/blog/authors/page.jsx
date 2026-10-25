@@ -35,8 +35,8 @@ export default function AuthorsPage() {
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
       <PageHeader
-        eyebrow="সম্মানিত লেখক ও গবেষকবৃন্দ"
         title="সিরাত গবেষক ও ওলামায়ে কেরাম"
+        muted="সম্মানিত লেখক ও গবেষকবৃন্দ"
         description="ইসলাহ ব্লগে নিয়মিত ও প্রামাণ্য তাহকিকমূলক প্রবন্ধ রচয়িতা এবং দ্বীনি গবেষকবৃন্দের সংক্ষিপ্ত পরিচিতি।"
       />
 

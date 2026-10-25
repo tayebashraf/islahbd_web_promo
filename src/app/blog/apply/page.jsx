@@ -9,8 +9,8 @@ export default function WriterApplicationPage() {
   return (
     <div className="w-full max-w-[640px] mx-auto py-8 px-4 font-kalpurush">
       <PageHeader
-        eyebrow="লেখক প্যানেল ও প্রকাশনা"
         title="লেখক নিবন্ধন ও প্রকাশনা ব্যবস্থাপনা"
+        muted="লেখক প্যানেল ও প্রকাশনা"
       />
 
       <div className="fb-card p-6 sm:p-8 text-center space-y-5 mt-4">

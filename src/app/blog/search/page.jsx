@@ -58,8 +58,8 @@ function SearchContent() {
     <div className="space-y-4">
       {/* Search Header Card */}
       <PageHeader
-        eyebrow="অনুসন্ধান"
         title="ব্লগ অনুসন্ধান"
+        muted="অনুসন্ধান"
         description="সিরাত, হাদীস ও ইসলামিক গবেষণার যেকোনো বিষয় বা কীওয়ার্ড দিয়ে খুঁজুন।"
       />
 
