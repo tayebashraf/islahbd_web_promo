@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useLang } from "@/components/providers/lang-provider";
-import { Navbar } from "@/components/layout/navbar";
+import { DashboardShell } from "@/components/dashboard/shell";
 import {
   Crown,
   Users,
@@ -1104,13 +1104,10 @@ export function LifetimeMemberClient() {
     return years;
   }, [foundMember]);
 
-  return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#0A0F1D] text-foreground font-kalpurush relative overflow-x-hidden selection:bg-gold/30 selection:text-foreground">
-      {/* ─── TOP HEADER (site navbar with theme + language toggle; the app webview has its own bar) ─── */}
-      {!isApp && <Navbar />}
-
-      {/* ─── MAIN CONTENT ─── */}
-      <main className={`flex-1 relative overflow-x-hidden py-4 sm:py-6 px-3.5 sm:px-4 ${isApp ? "pb-10" : "pt-20 sm:pt-22 pb-24 sm:pb-12"}`} id="main-content">
+  const page = (
+    <div className={`flex flex-col text-foreground font-kalpurush relative overflow-x-hidden selection:bg-gold/30 selection:text-foreground ${isApp ? "min-h-screen bg-[#F8FAFC] dark:bg-[#0A0F1D]" : ""}`}>
+      {/* ─── MAIN CONTENT (the site header/footer come from DashboardShell; the app webview has its own bar) ─── */}
+      <section className={`flex-1 relative overflow-x-hidden ${isApp ? "py-4 px-3.5 pb-10" : "pb-24 sm:pb-12"}`}>
         <div className="w-full max-w-[480px] mx-auto relative z-10 space-y-4">
           {/* 1. COMPACT ISLAMIC ELAN & COUNTDOWN CARD */}
           <div className="rounded-[22px] border-[1.5px] border-[#D4AF37]/80 dark:border-[#D4AF37]/60 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-4 sm:p-5 shadow-[0_4px_16px_rgba(212,175,55,0.18)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.15)] relative overflow-hidden text-center">
@@ -1315,11 +1312,11 @@ export function LifetimeMemberClient() {
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Only on standalone mobile web) ─── */}
+      {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Only on standalone mobile web) — sits above the bottom nav ─── */}
       {!isApp && (
-        <div className="sm:hidden fixed bottom-3 inset-x-3 z-40">
+        <div className="sm:hidden fixed inset-x-3 z-40" style={{ bottom: "calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px)" }}>
           <div className="backdrop-blur-xl bg-white/95 dark:bg-[#1E293B]/95 border border-[#D4AF37]/40 rounded-2xl p-2 shadow-2xl flex items-center gap-2">
             <button
               type="button"
@@ -2250,4 +2247,6 @@ export function LifetimeMemberClient() {
       />
     </div>
   );
+
+  return isApp ? page : <DashboardShell>{page}</DashboardShell>;
 }
