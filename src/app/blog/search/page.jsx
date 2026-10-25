@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
 import PostCard from '@/components/sirat/feed/PostCard';
 import { searchArticlesLocal, sampleTopics } from '@/lib/sirat/sampleData';
-import { Search as SearchIcon, X } from 'lucide-react';
+import { Search as SearchIcon, X, BookOpen } from 'lucide-react';
+import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import { cn } from '@/lib/utils';
 
 const popularKeywords = ['মাক্কী জীবন', 'মাদানী সনদ', 'তায়েফ', 'হিজরত', 'আখলাক', 'বদরের যুদ্ধ'];
 
@@ -55,123 +55,105 @@ function SearchContent() {
   };
 
   return (
-    <main className="fb-feed-container" aria-label="অনুসন্ধান ফলাফল">
+    <div className="space-y-4">
       {/* Search Header Card */}
-      <div className="fb-card" style={{ padding: 'var(--space-4)' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--space-2)',
-            backgroundColor: 'var(--color-bg-primary)',
-            borderRadius: 'var(--radius-full)',
-            padding: 'var(--space-2) var(--space-3)',
-            marginBottom: 'var(--space-3)',
-          }}
-        >
-          <SearchIcon size={18} color="var(--color-text-tertiary)" />
+      <PageHeader
+        eyebrow="অনুসন্ধান"
+        title="ব্লগ অনুসন্ধান"
+        description="সিরাত, হাদীস ও ইসলামিক গবেষণার যেকোনো বিষয় বা কীওয়ার্ড দিয়ে খুঁজুন।"
+      />
+
+      <div className="fb-card p-4 space-y-3">
+        <div className="relative">
+          <SearchIcon size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
-            type="search"
-            placeholder="শিরোনাম, হাদিস, লেখক বা বিষয়..."
+            type="text"
+            placeholder="প্রবন্ধের শিরোনাম, বিষয়বস্তু বা কীওয়ার্ড দিয়ে খুঁজুন..."
             value={query}
             onChange={handleInputChange}
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-              fontFamily: 'var(--font-kalpurush), Kalpurush, sans-serif',
-              fontSize: '13.5px',
-              color: 'var(--color-text-primary)',
-            }}
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-line bg-panel text-ink text-sm outline-none focus:border-brand transition"
+            autoFocus
           />
           {query && (
-            <button onClick={() => { setQuery(''); setResults([]); setSearched(false); }}>
-              <X size={16} color="var(--color-text-tertiary)" />
+            <button
+              onClick={() => {
+                setQuery('');
+                setResults([]);
+                setSearched(false);
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-ink"
+            >
+              <X size={15} />
             </button>
           )}
         </div>
 
         {/* Topic Filters */}
-        <div style={{ display: 'flex', gap: 'var(--space-2)', overflowX: 'auto', scrollbarWidth: 'none' }}>
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <button
             onClick={() => handleTopicFilter('all')}
-            style={{
-              padding: '3px 10px',
-              borderRadius: 'var(--radius-full)',
-              fontSize: 'var(--text-xs)',
-              fontWeight: '500',
-              border: 'none',
-              backgroundColor: selectedTopic === 'all' ? '#1877F2' : 'var(--color-bg-primary)',
-              color: selectedTopic === 'all' ? '#FFFFFF' : 'var(--color-text-secondary)',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
+            className={cn(
+              "shrink-0 px-3 py-1 rounded-xl text-xs font-semibold transition active:scale-95 cursor-pointer",
+              selectedTopic === 'all'
+                ? "bg-brand text-white shadow-sm"
+                : "border border-line bg-panel text-ink hover:border-brand/40"
+            )}
           >
-            সব
+            সব বিষয়
           </button>
-          {sampleTopics.map((t) => (
+          {sampleTopics.map((topic) => (
             <button
-              key={t.slug}
-              onClick={() => handleTopicFilter(t.slug)}
-              style={{
-                padding: '3px 10px',
-                borderRadius: 'var(--radius-full)',
-                fontSize: 'var(--text-xs)',
-                fontWeight: '500',
-                border: 'none',
-                backgroundColor: selectedTopic === t.slug ? '#1877F2' : 'var(--color-bg-primary)',
-                color: selectedTopic === t.slug ? '#FFFFFF' : 'var(--color-text-secondary)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
+              key={topic.id}
+              onClick={() => handleTopicFilter(topic.slug)}
+              className={cn(
+                "shrink-0 px-3 py-1 rounded-xl text-xs font-semibold transition active:scale-95 cursor-pointer",
+                selectedTopic === topic.slug
+                  ? "bg-brand text-white shadow-sm"
+                  : "border border-line bg-panel text-ink hover:border-brand/40"
+              )}
             >
-              {t.name}
+              {topic.name}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Results / Empty state */}
-      <div className="fb-posts-stream">
-        {searched && results.length > 0 && (
-          <>
-            <div style={{ padding: '0 var(--space-2) var(--space-2)', fontSize: 'var(--text-xs)', color: 'var(--color-text-tertiary)' }}>
-              "{query}" সংক্রান্ত {results.length} টি পোস্ট পাওয়া গেছে:
-            </div>
-            {results.map((article) => (
-              <PostCard key={article.id} article={article} />
-            ))}
-          </>
-        )}
-
-        {searched && results.length === 0 && (
-          <div className="fb-card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-            <p style={{ color: 'var(--color-text-secondary)' }}>
-              "{query}" এর জন্য কোনো পোস্ট পাওয়া যায়নি।
-            </p>
+      {/* Results Feed */}
+      <div>
+        {searched && (
+          <div className="mb-3 px-1 text-xs sm:text-sm font-semibold text-muted-foreground">
+            "{query}" অনুসন্ধান ফলাফল: <span className="text-brand font-bold">{results.length}</span> টি প্রবন্ধ
           </div>
         )}
 
+        <div className="fb-posts-stream space-y-4">
+          {results.map((article) => (
+            <PostCard key={article.id} article={article} />
+          ))}
+        </div>
+
+        {searched && results.length === 0 && (
+          <EmptyState
+            icon={BookOpen}
+            title="কোনো প্রবন্ধ পাওয়া যায়নি"
+            hint="ভিন্ন কীওয়ার্ড বা বিষয় দিয়ে আবার অনুসন্ধান করুন।"
+          />
+        )}
+
         {!searched && (
-          <div className="fb-card" style={{ padding: 'var(--space-4)' }}>
-            <h4 style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)' }}>
-              জনপ্রিয় অনুসন্ধান:
-            </h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
-              {popularKeywords.map((kw) => (
+          <div className="fb-card p-6 text-center space-y-3">
+            <span className="text-sm font-bold text-muted-foreground block">
+              জনপ্রিয় অনুসন্ধানের বিষয়সমূহ:
+            </span>
+            <div className="flex flex-wrap justify-center gap-2">
+              {popularKeywords.map((kw, idx) => (
                 <button
-                  key={kw}
-                  onClick={() => { setQuery(kw); performSearch(kw, selectedTopic); }}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-full)',
-                    backgroundColor: 'var(--color-bg-primary)',
-                    border: '1px solid var(--color-border-secondary)',
-                    fontSize: 'var(--text-xs)',
-                    color: 'var(--color-brand-primary)',
-                    cursor: 'pointer',
+                  key={idx}
+                  onClick={() => {
+                    setQuery(kw);
+                    performSearch(kw, selectedTopic);
                   }}
+                  className="px-3 py-1 rounded-full border border-line bg-canvas-2 text-xs font-semibold text-brand hover:border-brand/40 transition"
                 >
                   #{kw}
                 </button>
@@ -180,18 +162,16 @@ function SearchContent() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 
 export default function SearchPage() {
   return (
-    <div className="fb-layout fade-in">
-      <LeftSidebar />
-      <Suspense fallback={<div className="fb-feed-container">অনুসন্ধান লোড হচ্ছে...</div>}>
+    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      <Suspense fallback={<div className="text-center py-10 text-muted-foreground">অনুসন্ধান লোড হচ্ছে...</div>}>
         <SearchContent />
       </Suspense>
-      <RightSidebar />
     </div>
   );
 }

@@ -4,18 +4,19 @@
 
 .fb-post-card {
   background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--color-border-secondary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border-primary);
   margin-bottom: var(--space-4);
   overflow: visible;
   position: relative;
   animation: fadeIn 200ms ease-out;
-  transition: box-shadow var(--duration-fast);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
 
 .fb-post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-hover);
 }
 
 /* Post Header */
@@ -48,7 +49,7 @@
   gap: 5px;
 }
 
-:root[data-theme="dark"] .fb-post-author-name {
+:is(.dark, :root[data-theme="dark"]) .fb-post-author-name {
   color: #34D399 !important;
 }
 
@@ -57,7 +58,7 @@
   text-decoration: underline;
 }
 
-:root[data-theme="dark"] .fb-post-author-name:hover {
+:is(.dark, :root[data-theme="dark"]) .fb-post-author-name:hover {
   color: #6EE7B7 !important;
 }
 
@@ -176,7 +177,7 @@
   border: none;
 }
 
-:root[data-theme="dark"] .fb-post-divider-line {
+:is(.dark, :root[data-theme="dark"]) .fb-post-divider-line {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0%, var(--color-border-secondary) 15%, var(--color-border-secondary) 85%, rgba(255, 255, 255, 0.02) 100%);
 }
 
@@ -200,7 +201,7 @@
   transition: color var(--duration-fast);
 }
 
-:root[data-theme="dark"] .fb-post-title {
+:is(.dark, :root[data-theme="dark"]) .fb-post-title {
   color: #F8FAFC;
 }
 
@@ -237,7 +238,7 @@
   margin: 0;
 }
 
-:root[data-theme="dark"] .fb-post-text {
+:is(.dark, :root[data-theme="dark"]) .fb-post-text {
   color: #CBD5E1;
 }
 
@@ -291,7 +292,7 @@
   text-align-last: left;
 }
 
-:root[data-theme="dark"] .fb-post-hadith-translation {
+:is(.dark, :root[data-theme="dark"]) .fb-post-hadith-translation {
   color: #94A3B8;
 }
 
@@ -419,7 +420,7 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-:root[data-theme="dark"] .fb-post-action-btn--selected {
+:is(.dark, :root[data-theme="dark"]) .fb-post-action-btn--selected {
   background-color: rgba(255, 255, 255, 0.04);
 }
 
@@ -449,7 +450,7 @@
   background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
   color: #059669;
 }
-:root[data-theme="dark"] .rci-jazakallah {
+:is(.dark, :root[data-theme="dark"]) .rci-jazakallah {
   background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
   color: #34D399;
 }
@@ -458,7 +459,7 @@
   background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
   color: #2563EB;
 }
-:root[data-theme="dark"] .rci-mashaallah {
+:is(.dark, :root[data-theme="dark"]) .rci-mashaallah {
   background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
   color: #60A5FA;
 }
@@ -467,7 +468,7 @@
   background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);
   color: #0D9488;
 }
-:root[data-theme="dark"] .rci-alhamdulillah {
+:is(.dark, :root[data-theme="dark"]) .rci-alhamdulillah {
   background: linear-gradient(135deg, #134E4A 0%, #0F766E 100%);
   color: #2DD4BF;
 }
@@ -476,7 +477,7 @@
   background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
   color: #D97706;
 }
-:root[data-theme="dark"] .rci-subhanallah {
+:is(.dark, :root[data-theme="dark"]) .rci-subhanallah {
   background: linear-gradient(135deg, #78350F 0%, #92400E 100%);
   color: #FBBF24;
 }
@@ -485,7 +486,7 @@
   background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%);
   color: #BE123C;
 }
-:root[data-theme="dark"] .rci-salawat {
+:is(.dark, :root[data-theme="dark"]) .rci-salawat {
   background: linear-gradient(135deg, #881337 0%, #9F1239 100%);
   color: #FB7185;
 }
@@ -494,7 +495,7 @@
   background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
   color: #7C3AED;
 }
-:root[data-theme="dark"] .rci-barakallah {
+:is(.dark, :root[data-theme="dark"]) .rci-barakallah {
   background: linear-gradient(135deg, #581C87 0%, #6B21A8 100%);
   color: #A78BFA;
 }
@@ -657,12 +658,12 @@
   box-shadow: 0 2px 6px rgba(217, 119, 6, 0.15);
 }
 
-:root[data-theme="dark"] .fb-durood-ribbon-pill {
+:is(.dark, :root[data-theme="dark"]) .fb-durood-ribbon-pill {
   background-color: #1E293B;
   border-color: rgba(245, 158, 11, 0.3);
 }
 
-:root[data-theme="dark"] .fb-durood-ribbon-pill:hover {
+:is(.dark, :root[data-theme="dark"]) .fb-durood-ribbon-pill:hover {
   background-color: #33270A;
   border-color: #F59E0B;
 }
@@ -676,7 +677,7 @@
   pointer-events: none;
 }
 
-:root[data-theme="dark"] .fb-durood-ribbon-pill__ar {
+:is(.dark, :root[data-theme="dark"]) .fb-durood-ribbon-pill__ar {
   color: #FCD34D;
 }
 
@@ -809,7 +810,7 @@
   border-left: 3px solid #D97706;
 }
 
-:root[data-theme="dark"] .fb-comment-bubble--durood {
+:is(.dark, :root[data-theme="dark"]) .fb-comment-bubble--durood {
   background-color: #241D09;
   border-color: rgba(245, 195, 59, 0.25);
   border-left-color: #F59E0B;
@@ -829,7 +830,7 @@
   color: #065F46 !important;
 }
 
-:root[data-theme="dark"] .fb-comment-bubble__author-name {
+:is(.dark, :root[data-theme="dark"]) .fb-comment-bubble__author-name {
   color: #34D399 !important;
 }
 
@@ -842,7 +843,7 @@
   word-break: break-word;
 }
 
-:root[data-theme="dark"] .fb-comment-bubble__text {
+:is(.dark, :root[data-theme="dark"]) .fb-comment-bubble__text {
   color: #E2E8F0;
 }
 
@@ -858,7 +859,7 @@
   margin: 2px 0 0;
 }
 
-:root[data-theme="dark"] .fb-comment-bubble__arabic-durood {
+:is(.dark, :root[data-theme="dark"]) .fb-comment-bubble__arabic-durood {
   color: #FCD34D !important;
 }
 
@@ -960,7 +961,7 @@
   overflow: hidden;
 }
 
-:root[data-theme="dark"] .seerah-quiz-container {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-container {
   background: linear-gradient(180deg, rgba(6, 78, 59, 0.25) 0%, #1E293B 70%);
   border-color: rgba(16, 185, 129, 0.35);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -1028,7 +1029,7 @@
   box-sizing: border-box;
 }
 
-:root[data-theme="dark"] .seerah-quiz-option-btn {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-option-btn {
   background-color: #1E293B;
   border-color: #334155;
 }
@@ -1072,7 +1073,7 @@
   animation: selectingPulse 1.2s infinite ease-in-out;
 }
 
-:root[data-theme="dark"] .seerah-quiz-option-btn--selecting {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-option-btn--selecting {
   background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%) !important;
   border-color: #60A5FA !important;
   color: #EFF6FF !important;
@@ -1101,7 +1102,7 @@
   animation: fadeIn 200ms ease;
 }
 
-:root[data-theme="dark"] .seerah-quiz-countdown-box {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-countdown-box {
   background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   border-color: #3B82F6;
 }
@@ -1124,7 +1125,7 @@
   color: #1E40AF;
 }
 
-:root[data-theme="dark"] .seerah-quiz-countdown-label {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-countdown-label {
   color: #93C5FD;
 }
 
@@ -1173,7 +1174,7 @@
   text-align: center;
 }
 
-:root[data-theme="dark"] .seerah-quiz-countdown-hint {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-countdown-hint {
   color: #94A3B8;
 }
 
@@ -1187,7 +1188,7 @@
   transform: translateY(-1px);
 }
 
-:root[data-theme="dark"] .seerah-quiz-option-btn--correct {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-option-btn--correct {
   background: linear-gradient(135deg, #064E3B 0%, #065F46 100%) !important;
   border-color: #34D399 !important;
   color: #ECFDF5 !important;
@@ -1209,7 +1210,7 @@
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.22) !important;
 }
 
-:root[data-theme="dark"] .seerah-quiz-option-btn--wrong {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-option-btn--wrong {
   background: linear-gradient(135deg, #7F1D1D 0%, #991B1B 100%) !important;
   border-color: #F87171 !important;
   color: #FEF2F2 !important;
@@ -1235,7 +1236,7 @@
   animation: quizCelebrationPop 380ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-:root[data-theme="dark"] .seerah-quiz-celebration-banner {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-celebration-banner {
   background: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #064E3B 100%);
   border-color: #10B981;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
@@ -1268,7 +1269,7 @@
   margin-bottom: 4px;
 }
 
-:root[data-theme="dark"] .seerah-quiz-celebration-title {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-celebration-title {
   color: #A7F3D0;
 }
 
@@ -1279,7 +1280,7 @@
   line-height: 1.6;
 }
 
-:root[data-theme="dark"] .seerah-quiz-celebration-sub {
+:is(.dark, :root[data-theme="dark"]) .seerah-quiz-celebration-sub {
   color: #D1FAE5;
 }
 

@@ -1,182 +1,126 @@
 /* ============================================================
-   সীরাত.ব্লগ — Facebook News Feed Theme Tokens
+   ইসলাহ ব্লগ — Islah Design Tokens & Theme Mapping
    ============================================================ */
 
 :root {
   color-scheme: light dark;
 
   /* ============================================================
-     LIGHT MODE TOKENS (Facebook Classic News Feed)
+     LIGHT MODE TOKENS (Islah Mint & Sage Theme)
      ============================================================ */
-  --color-bg-primary: #F0F2F5;
-  --color-bg-secondary: #E4E6E9;
-  --color-bg-surface: #FFFFFF;
-  --color-bg-elevated: #FFFFFF;
-  --color-bg-inverse: #050505;
+  --color-bg-primary: var(--canvas, #FAFDF9);
+  --color-bg-secondary: var(--canvas-2, #F1F6F0);
+  --color-bg-surface: var(--panel, #FFFFFF);
+  --color-bg-elevated: var(--panel, #FFFFFF);
+  --color-bg-inverse: var(--ink, #1B2420);
 
   /* Text */
-  --color-text-primary: #050505;
-  --color-text-secondary: #65676B;
-  --color-text-tertiary: #8A8D91;
+  --color-text-primary: var(--ink, #1B2420);
+  --color-text-secondary: var(--ink-2, #4F5D55);
+  --color-text-tertiary: var(--ink-3, #85918A);
   --color-text-inverse: #FFFFFF;
-  --color-text-link: #1877F2;
+  --color-text-link: var(--brand, #417360);
 
-  /* Brand (Facebook Blue with Islamic Green Accents) */
-  --color-brand-primary: #1877F2;
-  --color-brand-hover: #166FE5;
-  --color-brand-subtle: #E7F3FF;
-  --color-brand-muted: #F0F7FF;
+  /* Brand (Islah Sage / Emerald) */
+  --color-brand-primary: var(--brand, #417360);
+  --color-brand-hover: var(--brand-strong, #355E4E);
+  --color-brand-subtle: var(--brand-soft, #E4EFE3);
+  --color-brand-muted: var(--canvas-2, #F1F6F0);
 
-  /* Islamic Accent (for special spiritual elements) */
-  --color-islamic-green: #2D8A4E;
-  --color-islamic-green-bg: #E8F5EC;
-  --color-islamic-gold: #C28B00;
-  --color-islamic-gold-bg: #FEF9E7;
+  /* Islamic Accent */
+  --color-islamic-green: #047857;
+  --color-islamic-green-bg: #ECFDF5;
+  --color-islamic-gold: #B45309;
+  --color-islamic-gold-bg: #FEF3C7;
 
   /* Borders */
-  --color-border-primary: #CED0D4;
-  --color-border-secondary: #E4E6EB;
-  --color-border-focus: #1877F2;
-  --color-border-strong: #BEC2C8;
+  --color-border-primary: var(--line, #E1EBE0);
+  --color-border-secondary: var(--line, #E1EBE0);
+  --color-border-focus: var(--brand, #417360);
+  --color-border-strong: #C4D6C2;
 
   /* Interactive */
-  --color-interactive-hover: #F2F2F2;
-  --color-interactive-active: #E4E6EB;
-  --color-icon-circle-bg: #E4E6EB;
-  --color-icon-circle-hover: #D8DADF;
+  --color-interactive-hover: var(--brand-soft, #E4EFE3);
+  --color-interactive-active: #D9E8D5;
+  --color-icon-circle-bg: var(--canvas-2, #F1F6F0);
+  --color-icon-circle-hover: var(--brand-soft, #E4EFE3);
 
   /* Semantic */
-  --color-success: #31A24C;
-  --color-success-bg: #E7F6EB;
-  --color-warning: #F5C33B;
-  --color-warning-bg: #FFF8E7;
-  --color-error: #FA383E;
-  --color-error-bg: #FEEBEB;
-  --color-info: #1877F2;
-  --color-info-bg: #E7F3FF;
+  --color-success: #059669;
+  --color-success-bg: #ECFDF5;
+  --color-warning: #D97706;
+  --color-warning-bg: #FFFBEB;
+  --color-error: #DC2626;
+  --color-error-bg: #FEF2F2;
+  --color-info: var(--brand, #417360);
+  --color-info-bg: var(--brand-soft, #E4EFE3);
 
-  /* Shadows */
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.1);
-  --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Shadows - Minimalist & Soft */
+  --shadow-card: 0 1px 2px rgba(27, 36, 32, 0.03);
+  --shadow-dropdown: 0 10px 25px -5px rgba(27, 36, 32, 0.1), 0 8px 10px -6px rgba(27, 36, 32, 0.1);
+  --shadow-hover: 0 4px 12px rgba(27, 36, 32, 0.06);
 
   /* Skeleton loading */
-  --color-skeleton-base: #E4E6EB;
-  --color-skeleton-shine: #F0F2F5;
+  --color-skeleton-base: var(--canvas-2, #F1F6F0);
+  --color-skeleton-shine: #E2ECE1;
 }
 
 /* ============================================================
-   DARK MODE TOKENS (Facebook Dark Theme)
+   DARK MODE TOKENS (Islah Forest Night Dark Theme)
    ============================================================ */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-bg-primary: #18191A;
-    --color-bg-secondary: #242526;
-    --color-bg-surface: #242526;
-    --color-bg-elevated: #3A3B3C;
-    --color-bg-inverse: #E4E6EB;
-
-    --color-text-primary: #E4E6EB;
-    --color-text-secondary: #B0B3B8;
-    --color-text-tertiary: #8A8D91;
-    --color-text-inverse: #050505;
-    --color-text-link: #4599FF;
-
-    --color-brand-primary: #2D88FF;
-    --color-brand-hover: #1877F2;
-    --color-brand-subtle: #263951;
-    --color-brand-muted: #1E2D40;
-
-    --color-islamic-green: #45B36B;
-    --color-islamic-green-bg: #1A3324;
-    --color-islamic-gold: #E5A812;
-    --color-islamic-gold-bg: #33270A;
-
-    --color-border-primary: #393A3B;
-    --color-border-secondary: #2F3031;
-    --color-border-focus: #2D88FF;
-    --color-border-strong: #4E4F50;
-
-    --color-interactive-hover: #3A3B3C;
-    --color-interactive-active: #4E4F50;
-    --color-icon-circle-bg: #3A3B3C;
-    --color-icon-circle-hover: #4E4F50;
-
-    --color-success: #45B36B;
-    --color-success-bg: #1A3324;
-    --color-warning: #F5C33B;
-    --color-warning-bg: #33270A;
-    --color-error: #FA383E;
-    --color-error-bg: #38181A;
-    --color-info: #2D88FF;
-    --color-info-bg: #1E2D40;
-
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
-
-    --color-skeleton-base: #3A3B3C;
-    --color-skeleton-shine: #4E4F50;
-  }
-}
-
-:root[data-theme="light"] {
-  color-scheme: light;
-}
-
 :root[data-theme="dark"],
 :root.dark,
 html.dark,
 .dark {
   color-scheme: dark;
 
-  --color-bg-primary: #18191A;
-  --color-bg-secondary: #242526;
-  --color-bg-surface: #242526;
-  --color-bg-elevated: #3A3B3C;
-  --color-bg-inverse: #E4E6EB;
+  --color-bg-primary: var(--canvas, #0B120E);
+  --color-bg-secondary: var(--canvas-2, #121A15);
+  --color-bg-surface: var(--panel, #141F19);
+  --color-bg-elevated: var(--panel-2, #1B2921);
+  --color-bg-inverse: var(--ink, #EDF3EE);
 
-  --color-text-primary: #E4E6EB;
-  --color-text-secondary: #B0B3B8;
-  --color-text-tertiary: #8A8D91;
-  --color-text-inverse: #050505;
-  --color-text-link: #4599FF;
+  --color-text-primary: var(--ink, #EDF3EE);
+  --color-text-secondary: var(--ink-2, #A8B5AC);
+  --color-text-tertiary: var(--ink-3, #6E7D73);
+  --color-text-inverse: #0B120E;
+  --color-text-link: var(--brand-tint, #8EC2A5);
 
-  --color-brand-primary: #2D88FF;
-  --color-brand-hover: #1877F2;
-  --color-brand-subtle: #263951;
-  --color-brand-muted: #1E2D40;
+  --color-brand-primary: var(--brand-tint, #8EC2A5);
+  --color-brand-hover: #A9C9B6;
+  --color-brand-subtle: rgba(65, 115, 96, 0.28);
+  --color-brand-muted: rgba(65, 115, 96, 0.16);
 
-  --color-islamic-green: #45B36B;
-  --color-islamic-green-bg: #1A3324;
-  --color-islamic-gold: #E5A812;
-  --color-islamic-gold-bg: #33270A;
+  --color-islamic-green: #34D399;
+  --color-islamic-green-bg: rgba(5, 150, 105, 0.22);
+  --color-islamic-gold: #FBBF24;
+  --color-islamic-gold-bg: rgba(217, 119, 6, 0.22);
 
-  --color-border-primary: #393A3B;
-  --color-border-secondary: #2F3031;
-  --color-border-focus: #2D88FF;
-  --color-border-strong: #4E4F50;
+  --color-border-primary: var(--line, #22342A);
+  --color-border-secondary: var(--line, #22342A);
+  --color-border-focus: var(--brand-tint, #8EC2A5);
+  --color-border-strong: #2F4538;
 
-  --color-interactive-hover: #3A3B3C;
-  --color-interactive-active: #4E4F50;
-  --color-icon-circle-bg: #3A3B3C;
-  --color-icon-circle-hover: #4E4F50;
+  --color-interactive-hover: #1B2921;
+  --color-interactive-active: #23372B;
+  --color-icon-circle-bg: #1B2921;
+  --color-icon-circle-hover: #23372B;
 
-  --color-success: #45B36B;
-  --color-success-bg: #1A3324;
-  --color-warning: #F5C33B;
-  --color-warning-bg: #33270A;
-  --color-error: #FA383E;
-  --color-error-bg: #38181A;
-  --color-info: #2D88FF;
-  --color-info-bg: #1E2D40;
+  --color-success: #34D399;
+  --color-success-bg: rgba(5, 150, 105, 0.2);
+  --color-warning: #FBBF24;
+  --color-warning-bg: rgba(217, 119, 6, 0.2);
+  --color-error: #F87171;
+  --color-error-bg: rgba(220, 38, 38, 0.2);
+  --color-info: var(--brand-tint, #8EC2A5);
+  --color-info-bg: rgba(65, 115, 96, 0.2);
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.4);
 
-  --color-skeleton-base: #3A3B3C;
-  --color-skeleton-shine: #4E4F50;
+  --color-skeleton-base: #1B2921;
+  --color-skeleton-shine: #23372B;
 }
 
 /* ============================================================
@@ -227,11 +171,11 @@ html.dark,
   --radius-xl: 12px;
   --radius-full: 9999px;
 
-  /* Facebook Layout Dimensions */
-  --header-height: 56px;
-  --fb-left-width: 360px;
-  --fb-right-width: 360px;
-  --fb-feed-width: 590px;
+  /* Layout Dimensions */
+  --header-height: 0px;
+  --fb-left-width: 0px;
+  --fb-right-width: 0px;
+  --fb-feed-width: 760px;
   --max-width-site: 100%;
 
   /* Z-Index */

@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
 import AuthorCard from '@/components/sirat/author/AuthorCard';
 import { sampleAuthors } from '@/lib/sirat/sampleData';
-import { Users, Sparkles, PenTool, Search, ShieldCheck } from 'lucide-react';
+import { Users, Search } from 'lucide-react';
+import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import { cn } from '@/lib/utils';
 
 const FILTER_TOPICS = ['সব গবেষক', 'সিরাত গবেষণা', 'হাদিস শাস্ত্র', 'নববী আখলাক', 'মক্কী জীবন', 'মাদানী জীবন', 'তাফসির'];
 
@@ -33,182 +33,61 @@ export default function AuthorsPage() {
   });
 
   return (
-    <div className="fb-layout fade-in">
-      <LeftSidebar />
+    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      <PageHeader
+        eyebrow="সম্মানিত লেখক ও গবেষকবৃন্দ"
+        title="সিরাত গবেষক ও ওলামায়ে কেরাম"
+        description="ইসলাহ ব্লগে নিয়মিত ও প্রামাণ্য তাহকিকমূলক প্রবন্ধ রচয়িতা এবং দ্বীনি গবেষকবৃন্দের সংক্ষিপ্ত পরিচিতি।"
+      />
 
-      <main className="fb-feed-container" aria-label="লেখক ও গবেষকবৃন্দ">
-        {/* 1. Header Card with Scholar Counter */}
-        <div className="fb-card" style={{ padding: '18px 20px', marginBottom: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: 'var(--color-brand-subtle)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-brand-primary)',
-                }}
-              >
-                <Users size={20} />
-              </div>
-              <div>
-                <h1 style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '1.25rem', fontWeight: 700, margin: 0, color: '#0F172A' }}>
-                  সিরাত লেখক ও গবেষকবৃন্দ
-                </h1>
-                <span style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '12px', color: '#64748B' }}>
-                  {toBanglaNum(sampleAuthors.length)} জন প্রামাণ্য আলেম ও সিরাত গবেষক নিবন্ধিত
-                </span>
-              </div>
-            </div>
+      {/* Search & Topic Filters */}
+      <div className="mb-4 space-y-3">
+        <div className="relative">
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="গবেষকের নাম বা গবেষণার ক্ষেত্র দিয়ে খুঁজুন..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-line bg-panel text-ink text-sm outline-none focus:border-brand transition"
+          />
+        </div>
 
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#ECFDF5', border: '1px solid #A7F3D0', padding: '3px 10px', borderRadius: 'var(--radius-full)', fontSize: '11.5px', color: '#065F46', fontWeight: 700, fontFamily: 'var(--font-kalpurush)' }}>
-              <ShieldCheck size={13} />
-              <span>১০০% তাহকিককৃত</span>
-            </div>
-          </div>
-
-          <p style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '13.5px', color: '#475569', lineHeight: 1.6, margin: '6px 0 14px' }}>
-            সীরাত.ব্লগে নিয়মিত গবেষণামূলক প্রবন্ধ রচনা করেন এমন বিশুদ্ধ আকিদা ও প্রামাণ্য সনদধারী আলেম-গবেষকদের তালিকা।
-          </p>
-
-          {/* Search Input */}
-          <div style={{ position: 'relative', marginBottom: '12px' }}>
-            <Search
-              size={15}
-              style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }}
-            />
-            <input
-              type="text"
-              placeholder="লেখকের নাম বা গবেষণার বিষয় লিখে খুঁজুন..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px 8px 36px',
-                borderRadius: 'var(--radius-full)',
-                border: '1px solid var(--color-border-secondary)',
-                backgroundColor: 'var(--color-bg-primary)',
-                fontFamily: 'var(--font-kalpurush)',
-                fontSize: '13px',
-                color: 'var(--color-text-primary)',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
-            />
-          </div>
-
-          {/* Filter Chips Ribbon */}
-          <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
-            {FILTER_TOPICS.map((topic) => (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {FILTER_TOPICS.map((topic) => {
+            const active = selectedTopic === topic;
+            return (
               <button
                 key={topic}
-                type="button"
                 onClick={() => setSelectedTopic(topic)}
-                style={{
-                  padding: '4px 12px',
-                  borderRadius: 'var(--radius-full)',
-                  border: '1px solid',
-                  borderColor: selectedTopic === topic ? 'var(--color-brand-primary)' : 'var(--color-border-secondary)',
-                  backgroundColor: selectedTopic === topic ? 'var(--color-brand-primary)' : 'var(--color-bg-primary)',
-                  color: selectedTopic === topic ? '#FFFFFF' : 'var(--color-text-primary)',
-                  fontFamily: 'var(--font-kalpurush)',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 150ms ease',
-                }}
+                className={cn(
+                  "inline-flex shrink-0 items-center rounded-xl px-3.5 py-1.5 text-xs font-semibold transition active:scale-95 cursor-pointer",
+                  active
+                    ? "bg-brand text-white shadow-sm"
+                    : "border border-line bg-panel text-ink hover:border-brand/40"
+                )}
               >
                 {topic}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
+      </div>
 
-        {/* 2. Scholar Onboarding CTA Card */}
-        <div
-          className="fb-card"
-          style={{
-            background: 'linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%)',
-            color: '#FFFFFF',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-full)',
-                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <PenTool size={20} color="#FBBF24" />
-            </div>
-            <div>
-              <h3 style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '15px', fontWeight: 700, margin: '0 0 2px', color: '#FFFFFF' }}>
-                আপনি কি সিরাত বিষয়ক গবেষক বা আলেম?
-              </h3>
-              <p style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '12.5px', color: '#CBD5E1', margin: 0 }}>
-                সীরাত.ব্লগের ভেরিফাইড লেখক হিসেবে অন্তর্ভুক্তি পেতে আবেদন করুন।
-              </p>
-            </div>
-          </div>
+      {/* Scholars Cards Stream */}
+      <div className="space-y-4">
+        {filteredAuthors.map((author) => (
+          <AuthorCard key={author.id} author={author} />
+        ))}
 
-          <Link
-            href="/blog/apply"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              backgroundColor: '#F59E0B',
-              color: '#0F172A',
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-full)',
-              fontFamily: 'var(--font-kalpurush)',
-              fontSize: '13px',
-              fontWeight: 700,
-              textDecoration: 'none',
-              transition: 'all 150ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <span>লেখক হিসেবে আবেদন করুন</span>
-            <span>→</span>
-          </Link>
-        </div>
-
-        {/* 3. Scholars Cards Stream */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          {filteredAuthors.map((author) => (
-            <AuthorCard key={author.id} author={author} />
-          ))}
-
-          {filteredAuthors.length === 0 && (
-            <div className="fb-card" style={{ padding: '36px 16px', textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '14px', color: '#64748B' }}>
-                এই ক্যাটাগরিতে কোনো লেখকের সন্ধান পাওয়া যায়নি।
-              </p>
-            </div>
-          )}
-        </div>
-      </main>
-
-      <RightSidebar />
+        {filteredAuthors.length === 0 && (
+          <EmptyState
+            icon={Users}
+            title="কোনো লেখকের সন্ধান পাওয়া যায়নি"
+            hint="অন্য কোনো বিষয় বা নাম দিয়ে অনুসন্ধান করুন।"
+          />
+        )}
+      </div>
     </div>
   );
 }

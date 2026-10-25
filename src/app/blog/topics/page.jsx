@@ -2,8 +2,6 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
 import { sampleTopics, sampleAuthors } from '@/lib/sirat/sampleData';
 import {
   Layers,
@@ -48,13 +46,8 @@ export default function TopicsPage() {
   }, [activeTab, searchQuery]);
 
   return (
-    <div className="fb-layout fade-in">
-      {/* 1. Left Sidebar Navigation */}
-      <LeftSidebar />
-
-      {/* 2. Main Content Stream */}
-      <main className="fb-feed-container" aria-label="সিরাত বিষয়শ্রেণী ও গবেষণার ক্ষেত্র">
-        <div className="topics-hub">
+    <div className="w-full max-w-[800px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      <div className="topics-hub">
           {/* 1. Islamic Hero Banner Card */}
           <div className="topics-hero">
             <div className="topics-hero__banner">
@@ -247,26 +240,8 @@ export default function TopicsPage() {
             </div>
           )}
 
-          {/* 5. Bottom Writer Invitation CTA */}
-          <div className="topics-writer-cta">
-            <div className="topics-writer-cta__text">
-              <h4 className="topics-writer-cta__title">
-                আপনার পছন্দের বিষয়ে গবেষণা ও লেখালেখি করতে চান?
-              </h4>
-              <p className="topics-writer-cta__sub">
-                সিরাত.ব্লগ-এ নিয়মিত বা অতিথি লেখক হিসেবে যুক্ত হয়ে বিশুদ্ধ দ্বীনি খেদমত আঞ্জাম দিন।
-              </p>
-            </div>
-            <Link href="/blog/apply" className="topics-writer-cta__btn">
-              <PenTool size={14} />
-              <span>লেখক আবেদন করুন</span>
-            </Link>
-          </div>
         </div>
-      </main>
-
-      {/* 3. Right Sidebar */}
-      <RightSidebar />
+      </div>
     </div>
   );
 }

@@ -5,43 +5,43 @@
 /* --- Harmonious Heading Hierarchy in Kalpurush --- */
 
 h1, .h1 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 1.25rem; /* ~20px — 1-2 sizes above body */
   font-weight: 700;
   line-height: 1.55;
-  color: #1E293B;
+  color: var(--color-text-primary);
   margin: 0 0 10px;
 }
 
 h2, .h2 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 1.15rem; /* ~18.4px — 1 size above body */
   font-weight: 700;
   line-height: 1.55;
-  color: #1E293B;
+  color: var(--color-text-primary);
   margin: 18px 0 8px;
 }
 
 h3, .h3 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 1.08rem; /* ~17.2px */
   font-weight: 700;
   line-height: 1.55;
-  color: #1E293B;
+  color: var(--color-text-primary);
   margin: 14px 0 6px;
 }
 
 h4, .h4 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.5;
-  color: #1E293B;
+  color: var(--color-text-primary);
   margin: 12px 0 4px;
 }
 
 h5, .h5 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1.4;
@@ -50,7 +50,7 @@ h5, .h5 {
 }
 
 h6, .h6 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   line-height: 1.4;
@@ -58,17 +58,18 @@ h6, .h6 {
   margin: 0;
 }
 
-:root[data-theme="dark"] h1,
-:root[data-theme="dark"] h2,
-:root[data-theme="dark"] h3,
-:root[data-theme="dark"] h4 {
-  color: #F8FAFC;
+:is(.dark, :root[data-theme="dark"]) h1,
+:is(.dark, :root[data-theme="dark"]) h2,
+:is(.dark, :root[data-theme="dark"]) h3,
+:is(.dark, :root[data-theme="dark"]) h4 {
+  color: var(--color-text-primary);
 }
 
 /* --- Body Text (100% Justified in Kalpurush) --- */
 
-p {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+.sirat-shell p,
+.fb-post-card p {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   text-align: justify;
   text-justify: inter-character;
   text-align-last: left;
@@ -76,23 +77,24 @@ p {
   overflow-wrap: break-word;
   line-height: 1.85;
   margin-bottom: 12px;
-  color: #334155;
+  color: var(--color-text-secondary);
 }
 
-:root[data-theme="dark"] p {
-  color: #CBD5E1;
+:is(.dark, :root[data-theme="dark"]) .sirat-shell p,
+:is(.dark, :root[data-theme="dark"]) .fb-post-card p {
+  color: var(--color-text-secondary);
 }
 
 .text-body {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.85;
-  color: #334155;
+  color: var(--color-text-secondary);
 }
 
 .text-body-sm {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.6;
@@ -103,21 +105,21 @@ p {
 
 .article-body,
 .article-body-content {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.85;
-  color: #334155;
+  color: var(--color-text-primary);
 }
 
-:root[data-theme="dark"] .article-body,
-:root[data-theme="dark"] .article-body-content {
-  color: #CBD5E1;
+:is(.dark, :root[data-theme="dark"]) .article-body,
+:is(.dark, :root[data-theme="dark"]) .article-body-content {
+  color: var(--color-text-primary);
 }
 
 .article-body p,
 .article-body-content p {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
   text-align: justify;
   text-justify: inter-character;
   text-align-last: left;
@@ -129,36 +131,36 @@ p {
 
 .article-body-content h2,
 .article-body h2 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif !important;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
   font-size: 1.15rem !important; /* Exactly 1 size larger than body */
   font-weight: 700 !important;
   line-height: 1.55 !important;
-  color: #1E293B !important;
+  color: var(--color-text-primary) !important;
   margin-top: 20px !important;
   margin-bottom: 8px !important;
   padding-bottom: 2px !important;
   border-bottom: 1px solid var(--color-border-secondary) !important;
 }
 
-:root[data-theme="dark"] .article-body-content h2,
-:root[data-theme="dark"] .article-body h2 {
-  color: #F8FAFC !important;
+:is(.dark, :root[data-theme="dark"]) .article-body-content h2,
+:is(.dark, :root[data-theme="dark"]) .article-body h2 {
+  color: var(--color-text-primary) !important;
 }
 
 .article-body-content h3,
 .article-body h3 {
-  font-family: 'Kalpurush', var(--font-bengali-ui), sans-serif !important;
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
   font-size: 1.08rem !important;
   font-weight: 700 !important;
   line-height: 1.55 !important;
-  color: #1E293B !important;
+  color: var(--color-text-primary) !important;
   margin-top: 16px !important;
   margin-bottom: 6px !important;
 }
 
-:root[data-theme="dark"] .article-body-content h3,
-:root[data-theme="dark"] .article-body h3 {
-  color: #F8FAFC !important;
+:is(.dark, :root[data-theme="dark"]) .article-body-content h3,
+:is(.dark, :root[data-theme="dark"]) .article-body h3 {
+  color: var(--color-text-primary) !important;
 }
 
 /* ============================================================
@@ -200,4 +202,3 @@ html[data-font-size="large"] h2, html[data-font-size="large"] .h2 { font-size: 1
 html[data-font-size="large"] h3, html[data-font-size="large"] .h3 { font-size: 1.2rem !important; }
 html[data-font-size="large"] .fb-post-author-name { font-size: 16px !important; }
 html[data-font-size="large"] .fb-author-card__bio { font-size: 14.5px !important; }
-

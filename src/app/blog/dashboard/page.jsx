@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
 import PostCard from '@/components/sirat/feed/PostCard';
 import Avatar from '@/components/sirat/ui/Avatar';
 import Button from '@/components/sirat/ui/Button';
@@ -107,10 +105,8 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="fb-layout fade-in">
-      <LeftSidebar />
-
-      <main className="fb-feed-container" aria-label="লেখক প্রোফাইল ও ড্যাশবোর্ড">
+    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
+      <div className="space-y-4">
         {/* User Cover / Profile Card */}
         <div className="fb-card" style={{ padding: 'var(--space-5)', marginBottom: 'var(--space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
@@ -353,9 +349,7 @@ export default function DashboardPage() {
           {/* Advice & Consultation Widget */}
           <FeedbackConsultationBox />
         </div>
-      </main>
-
-      <RightSidebar />
+      </div>
     </div>
   );
 }

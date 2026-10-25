@@ -40,11 +40,8 @@ body:has(.sirat-shell),
   font-family: var(--font-kalpurush), 'Kalpurush', sans-serif !important;
   font-size: var(--text-base);
   color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
-  min-height: 100vh;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
   position: relative;
 }
 
@@ -94,7 +91,8 @@ ol {
   border-radius: var(--radius-full);
 }
 
-:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -104,35 +102,34 @@ ol {
   outline-offset: 2px;
 }
 
-/* Base Card Style (Facebook Post / Container Card) */
+/* Base Card Style */
 .fb-card {
   background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
-  border: 1px solid var(--color-border-secondary);
+  border: 1px solid var(--color-border-primary);
   overflow: hidden;
   margin-bottom: var(--space-4);
   width: 100%;
   max-width: 100%;
 }
 
-/* Main 3-Column Facebook Layout Container */
+/* Main Layout Container */
 .fb-layout {
   display: flex;
   justify-content: center;
   width: 100%;
   max-width: 100%;
-  min-height: calc(100vh - var(--header-height));
-  padding-top: var(--header-height);
+  padding-top: 0;
   overflow-x: hidden;
 }
 
 .fb-feed-container {
   width: 100%;
-  max-width: var(--fb-feed-width);
-  min-width: 0; /* Critical: Allows flex item to shrink properly on mobile without overflowing */
+  max-width: var(--fb-feed-width, 760px);
+  min-width: 0; /* Allows flex item to shrink properly without overflowing */
   margin: 0 auto;
-  padding: 8px 8px 64px;
+  padding: 4px 0 64px;
   flex: 1;
 }
 

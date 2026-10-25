@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/sirat/auth";
 import { ToastProvider } from "@/components/sirat/ui/ToastContext";
-import Header from "@/components/sirat/layout/Header";
-import Footer from "@/components/sirat/layout/Footer";
+import { DashboardShell } from "@/components/dashboard/shell";
 import ScrollToTop from "@/components/sirat/ui/ScrollToTop";
 
 import "@/styles/sirat/tokens.css";
@@ -29,20 +28,15 @@ export const metadata: Metadata = {
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="sirat-shell font-kalpurush min-h-screen" style={{ width: "100%", maxWidth: "100%" }}>
-      <AuthProvider>
-        <ToastProvider>
-          <a href="#main-content" className="skip-to-content">
-            মূল বিষয়বস্তুতে যান
-          </a>
-          <Header />
-          <main id="main-content">
+    <AuthProvider>
+      <ToastProvider>
+        <DashboardShell>
+          <div className="sirat-shell font-kalpurush w-full min-h-[calc(100vh-220px)]">
             {children}
-          </main>
-          <Footer />
+          </div>
           <ScrollToTop />
-        </ToastProvider>
-      </AuthProvider>
-    </div>
+        </DashboardShell>
+      </ToastProvider>
+    </AuthProvider>
   );
 }

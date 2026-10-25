@@ -1,45 +1,56 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
-import StoryCarousel from '@/components/sirat/feed/StoryCarousel';
-import CreatePostBox from '@/components/sirat/feed/CreatePostBox';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { sampleArticles } from '@/lib/sirat/sampleData';
+import { sampleArticles, sampleTopics } from '@/lib/sirat/sampleData';
+import { PageHeader, EmptyState } from '@/components/dashboard/ui';
+import { BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-import Link from 'next/link';
-import { ShieldCheck, ChevronRight } from 'lucide-react';
-import { useAuth } from '@/lib/sirat/auth';
-
-const INITIAL_BATCH_SIZE = 3;
+const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
 
+const BLOG_CATEGORIES = [
+  { slug: 'all', name: 'সব প্রবন্ধ' },
+  { slug: 'sirat', name: 'সিরাত চর্চা' },
+  { slug: 'akhlaq', name: 'আখলাক ও শামায়েল' },
+  { slug: 'hadith', name: 'হাদিস ও সুন্নাহ' },
+  { slug: 'makki-jiban', name: 'মক্কী জীবন' },
+  { slug: 'madani-jiban', name: 'মাদানী জীবন' },
+  { slug: 'tafsir', name: 'তাফসির ও আয়াত' },
+  { slug: 'islamic-history', name: 'ইতিহাস ও ঐতিহ্য' },
+];
+
 export default function HomePage() {
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [feedPosts, setFeedPosts] = useState(sampleArticles);
   const [displayedCount, setDisplayedCount] = useState(INITIAL_BATCH_SIZE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [streamCycle, setStreamCycle] = useState(1);
   const sentinelRef = useRef(null);
-  const { isWriter } = useAuth();
 
-  const handleNewPost = (newPost) => {
-    setFeedPosts((prev) => [newPost, ...prev]);
-    setDisplayedCount((prev) => prev + 1);
+  // Filter posts based on selected category
+  const filteredPosts = useMemo(() => {
+    if (selectedCategory === 'all') return feedPosts;
+    return feedPosts.filter((art) => art.topicSlug === selectedCategory);
+  }, [feedPosts, selectedCategory]);
+
+  // Reset displayed count when category changes
+  const handleSelectCategory = (slug) => {
+    setSelectedCategory(slug);
+    setDisplayedCount(INITIAL_BATCH_SIZE);
   };
 
-  // Continuous infinite stream: As user scrolls, seamlessly stream previous & popular posts
+  // Continuous infinite stream: As reader scrolls, stream earlier archive
   const loadMorePosts = useCallback(() => {
     if (isLoadingMore) return;
     setIsLoadingMore(true);
 
     setTimeout(() => {
       setFeedPosts((prev) => {
-        // If we've displayed all current posts, seamlessly append from popular & earlier archive
         if (displayedCount >= prev.length) {
           const nextCycle = streamCycle + 1;
           setStreamCycle(nextCycle);
-          // Sort by engagement / popularity for the continuous stream
           const archivedBatch = [...sampleArticles]
             .sort((a, b) => (b.jazakallahCount || 0) - (a.jazakallahCount || 0))
             .map((art) => ({
@@ -53,7 +64,7 @@ export default function HomePage() {
 
       setDisplayedCount((prev) => prev + LOAD_MORE_BATCH_SIZE);
       setIsLoadingMore(false);
-    }, 400);
+    }, 350);
   }, [isLoadingMore, displayedCount, streamCycle]);
 
   useEffect(() => {
@@ -73,104 +84,76 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, [loadMorePosts, isLoadingMore]);
 
-  const visiblePosts = feedPosts.slice(0, displayedCount);
+  const visiblePosts = filteredPosts.slice(0, displayedCount);
 
   return (
-    <div className="fb-layout fade-in">
-      {/* 1. Left Sidebar (Sticky Shortcuts & Navigation) */}
-      <LeftSidebar />
+    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush">
+      {/* 1. Official Islah Page Header */}
+      <PageHeader
+        title="ইসলাহ ব্লগ"
+        muted="জ্ঞানভিত্তিক ইসলামিক নিবন্ধ ও সীরাত চর্চা"
+        description="রাসূলুল্লাহ ﷺ-এর সীরাত, তাযকিয়ায়ে নফস, হাদীস ও প্রামাণ্য ইসলামিক গবেষণাধর্মী উন্মুক্ত ডিজিটাল আর্কাইভ।"
+      />
 
-      {/* 2. Center News Feed */}
-      <main className="fb-feed-container" aria-label="নিউজ ফিড">
-        {/* Top: Facebook Story Highlights Carousel */}
-        <StoryCarousel />
-
-        {/* Create Post Box - ONLY for Approved Writers; Readers see application invitation */}
-        {isWriter ? (
-          <CreatePostBox onNewPost={handleNewPost} />
-        ) : (
-          <div style={{
-            backgroundColor: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-border-primary)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-            fontFamily: 'var(--font-kalpurush)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#ECFDF5', color: '#047857', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ShieldCheck size={22} />
-              </div>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--color-text-primary)' }}>
-                  সীরাত.ব্লগে তাহকিক লেখক ও গবেষক হতে চান?
-                </div>
-                <div style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>
-                  সাধারণ পাঠকদের জন্য লেখালেখি উন্মুক্ত নয়; আবেদন করে অনুমোদিত লেখক হয়ে সিরাত চর্চায় অংশ নিন।
-                </div>
-              </div>
-            </div>
-            <Link
-              href="/blog/apply"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                backgroundColor: '#047857',
-                color: '#FFFFFF',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: 700,
-                textDecoration: 'none',
-                transition: 'background 0.2s',
-              }}
+      {/* 2. Sleek Horizontal Category Filters */}
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-none">
+        {BLOG_CATEGORIES.map((cat) => {
+          const active = selectedCategory === cat.slug;
+          return (
+            <button
+              key={cat.slug}
+              type="button"
+              onClick={() => handleSelectCategory(cat.slug)}
+              className={cn(
+                "inline-flex shrink-0 items-center rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition active:scale-95 cursor-pointer",
+                active
+                  ? "bg-brand text-white shadow-sm"
+                  : "border border-line bg-panel text-ink hover:border-brand/40"
+              )}
             >
-              <span>লেখক হিসেবে আবেদন করুন</span>
-              <ChevronRight size={14} />
-            </Link>
-          </div>
-        )}
+              {cat.name}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Endless Facebook Feed Posts Stream */}
-        <div className="fb-posts-stream">
+      {/* 3. Feed Posts Stream */}
+      {visiblePosts.length === 0 ? (
+        <EmptyState
+          icon={BookOpen}
+          title="এই বিভাগে কোনো প্রবন্ধ পাওয়া যায়নি"
+          hint="অন্য কোনো বিষয় বা 'সব প্রবন্ধ' নির্বাচন করে পড়ুন।"
+        />
+      ) : (
+        <div className="fb-posts-stream space-y-4">
           {visiblePosts.map((article) => (
             <PostCard key={article.id} article={article} />
           ))}
         </div>
+      )}
 
-        {/* Loading Shimmer Skeleton when streaming older / popular posts */}
-        {isLoadingMore && (
-          <div className="fb-feed-skeleton-card fade-in" aria-live="polite">
-            <div className="fb-skeleton-header">
-              <div className="fb-skeleton-pulse fb-skeleton-avatar" />
-              <div className="fb-skeleton-meta">
-                <div className="fb-skeleton-pulse fb-skeleton-line" style={{ width: '40%' }} />
-                <div className="fb-skeleton-pulse fb-skeleton-line" style={{ width: '25%' }} />
-              </div>
-            </div>
-            <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--title" />
-            <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--full" />
-            <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--full" />
-            <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--short" />
-            <div className="fb-skeleton-loading-text">
-              <span>✨ পূর্ববর্তী ও জনপ্রিয় সিরাত প্রবন্ধ লোড হচ্ছে...</span>
+      {/* 4. Loading Shimmer Skeleton */}
+      {isLoadingMore && (
+        <div className="fb-feed-skeleton-card fade-in mt-4" aria-live="polite">
+          <div className="fb-skeleton-header">
+            <div className="fb-skeleton-pulse fb-skeleton-avatar" />
+            <div className="fb-skeleton-meta">
+              <div className="fb-skeleton-pulse fb-skeleton-line" style={{ width: '40%' }} />
+              <div className="fb-skeleton-pulse fb-skeleton-line" style={{ width: '25%' }} />
             </div>
           </div>
-        )}
+          <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--title" />
+          <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--full" />
+          <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--full" />
+          <div className="fb-skeleton-pulse fb-skeleton-line fb-skeleton-line--short" />
+          <div className="fb-skeleton-loading-text">
+            <span>পূর্ববর্তী ও জনপ্রিয় সিরাত প্রবন্ধ লোড হচ্ছে...</span>
+          </div>
+        </div>
+      )}
 
-        {/* Always-Active Infinite Scroll Sentinel */}
-        <div ref={sentinelRef} className="fb-feed-sentinel" />
-      </main>
-
-      {/* 3. Right Sidebar (Daily Hadith & Active Scholars / Contacts) */}
-      <RightSidebar />
+      {/* 5. Infinite Scroll Sentinel */}
+      <div ref={sentinelRef} className="fb-feed-sentinel" />
     </div>
   );
 }

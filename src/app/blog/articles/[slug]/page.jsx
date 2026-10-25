@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { sampleArticles, getAuthorById } from '@/lib/sirat/sampleData';
 import { getArticleBySlug } from '@/lib/sirat/firestore';
-import LeftSidebar from '@/components/sirat/layout/LeftSidebar';
-import RightSidebar from '@/components/sirat/layout/RightSidebar';
 import ReadingProgressBar from '@/components/sirat/ui/ReadingProgressBar';
 import ArticleHeader from '@/components/sirat/article/ArticleHeader';
 import ArticleBody from '@/components/sirat/article/ArticleBody';
@@ -38,29 +36,18 @@ export default function ArticlePage() {
 
   if (!article) {
     return (
-      <div className="fb-layout">
-        <LeftSidebar />
-        <main className="fb-feed-container" style={{ textAlign: 'center', paddingTop: 'var(--space-16)' }}>
-          <div className="fb-card" style={{ padding: 'var(--space-8)' }}>
-            <h1
-              style={{
-                fontFamily: 'var(--font-bengali-body)',
-                fontSize: 'var(--text-2xl)',
-                fontWeight: 'var(--weight-bold)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              প্রবন্ধটি পাওয়া যায়নি
-            </h1>
-            <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)' }}>
-              আপনি যে লেখাটি খুঁজছেন সেটি সরানো হয়েছে অথবা লিংকটি সঠিক নয়।
-            </p>
-            <Button variant="primary" href="/blog">
-              হোম ফিডে ফিরে যান
-            </Button>
-          </div>
-        </main>
-        <RightSidebar />
+      <div className="w-full max-w-[760px] mx-auto text-center py-16 px-4 font-kalpurush">
+        <div className="fb-card p-8">
+          <h1 className="font-kalpurush text-2xl font-bold mb-3 text-ink">
+            প্রবন্ধটি পাওয়া যায়নি
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            আপনি যে লেখাটি খুঁজছেন সেটি সরানো হয়েছে অথবা লিংকটি সঠিক নয়।
+          </p>
+          <Button variant="primary" href="/blog">
+            ব্লগ হোমে ফিরে যান
+          </Button>
+        </div>
       </div>
     );
   }
@@ -75,67 +62,53 @@ export default function ArticlePage() {
     .slice(0, 2);
 
   return (
-    <div className="fb-layout fade-in">
+    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
       <ReadingProgressBar />
-      {/* 1. Left Sidebar */}
-      <LeftSidebar />
 
-      {/* 2. Center Reading Feed Card */}
-      <main className="fb-feed-container" aria-label="প্রবন্ধ পাঠ">
-        <div className="fb-card" style={{ padding: 'var(--space-6)' }}>
-          {/* Header */}
-          <ArticleHeader article={article} author={author} />
+      {/* Main Reading Card */}
+      <div className="fb-card p-4 sm:p-7">
+        {/* Header */}
+        <ArticleHeader article={article} author={author} />
 
-          {/* Body */}
-          <ArticleBody content={article.content} fontSize={fontSize} />
+        {/* Body */}
+        <ArticleBody content={article.content} fontSize={fontSize} />
 
-          {/* References */}
-          <ArticleReferences references={article.references} />
+        {/* References */}
+        <ArticleReferences references={article.references} />
 
-          {/* Actions Bar */}
-          <ArticleActions
-            articleId={article.id}
-            initialJazakallah={article.jazakallahCount || 24}
-            fontSize={fontSize}
-            onFontSizeChange={setFontSize}
-            commentCount={2}
-          />
+        {/* Actions Bar */}
+        <ArticleActions
+          articleId={article.id}
+          initialJazakallah={article.jazakallahCount || 24}
+          fontSize={fontSize}
+          onFontSizeChange={setFontSize}
+          commentCount={2}
+        />
 
-          {/* Author Card Footer */}
-          {author && (
-            <div style={{ marginTop: 'var(--space-8)', paddingTop: 'var(--space-6)', borderTop: '1px solid var(--color-border-secondary)' }}>
-              <AuthorCard author={author} />
-            </div>
-          )}
+        {/* Author Card Footer */}
+        {author && (
+          <div style={{ marginTop: 'var(--space-8)', paddingTop: 'var(--space-6)', borderTop: '1px solid var(--color-border-secondary)' }}>
+            <AuthorCard author={author} />
+          </div>
+        )}
 
-          {/* In-feed Comments Section */}
-          <CommentSection articleId={article.id} />
-        </div>
+        {/* In-feed Comments Section */}
+        <CommentSection articleId={article.id} />
+      </div>
 
-        {/* Related Posts in Feed */}
-        {relatedArticles.length > 0 && (
-          <div style={{ marginTop: 'var(--space-6)' }}>
-            <h3
-              style={{
-                fontFamily: 'var(--font-bengali-ui)',
-                fontSize: 'var(--text-base)',
-                fontWeight: 'var(--weight-bold)',
-                color: 'var(--color-text-secondary)',
-                marginBottom: 'var(--space-3)',
-                paddingLeft: 'var(--space-2)',
-              }}
-            >
-              সম্পর্কিত আরও পোস্ট
-            </h3>
+      {/* Related Posts */}
+      {relatedArticles.length > 0 && (
+        <div className="mt-6">
+          <h3 className="font-kalpurush text-base font-bold text-muted-foreground mb-3 px-2">
+            সম্পর্কিত আরও পোস্ট
+          </h3>
+          <div className="space-y-4">
             {relatedArticles.map((rel) => (
               <PostCard key={rel.id} article={rel} />
             ))}
           </div>
-        )}
-      </main>
-
-      {/* 3. Right Sidebar */}
-      <RightSidebar />
+        </div>
+      )}
     </div>
   );
 }
