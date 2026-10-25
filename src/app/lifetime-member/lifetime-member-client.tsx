@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useLang } from "@/components/providers/lang-provider";
 import { DashboardShell } from "@/components/dashboard/shell";
+import { num } from "@/lib/format";
 import {
   Crown,
   Users,
@@ -14,7 +14,6 @@ import {
   HeartHandshake,
   HeartPulse,
   BookOpenCheck,
-  Sparkles,
   Star,
   MapPin,
   X,
@@ -427,20 +426,41 @@ function useCountdown(target: Date) {
   return left;
 }
 
-function CountdownBox({ value, label }: { value: number; label: string }) {
+function CountdownBox({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[62px] h-[46px] flex items-center justify-center rounded-[12px] bg-white dark:bg-[#0F172A] border-[1.2px] border-[#D4AF37]/70 shadow-[0_2px_6px_rgba(212,175,55,0.15)]">
-        <span className="text-[18px] font-extrabold text-[#B45309] leading-none">{value}</span>
+      <div className="flex h-[68px] w-[72px] items-center justify-center rounded-2xl border border-line bg-panel shadow-[0_6px_18px_-12px_rgba(65,115,96,0.45)] sm:h-20 sm:w-24">
+        <span className="font-num text-[28px] leading-none font-semibold text-brand sm:text-[34px]">{value}</span>
       </div>
-      <span className="mt-1 text-[10.5px] font-semibold text-[#64748B] dark:text-white/60">{label}</span>
+      <span className="mt-1.5 text-[13px] text-ink-2">{label}</span>
     </div>
   );
 }
 
 function CountdownSeparator() {
-  return <div className="px-2 pb-4 text-[18px] font-bold text-[#B45309]/50 dark:text-white/38">:</div>;
+  return <div className="px-1.5 pb-6 text-2xl font-semibold text-brand-tint sm:px-3">:</div>;
 }
+
+/** Mosque skyline + moon, drawn in the theme's tint so it works in light and dark. */
+function HeroSkyline({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 400 140" className={className} fill="currentColor" aria-hidden preserveAspectRatio="xMidYMax meet">
+      <g opacity="0.5">
+        <rect x="40" y="58" width="7" height="82" />
+        <path d="M43.5 38 l6 20 h-12z" />
+        <rect x="352" y="52" width="7" height="88" />
+        <path d="M355.5 30 l6 22 h-12z" />
+        <path d="M130 140 v-46 q70 -64 140 0 v46z" />
+        <path d="M197 50 l3 -12 l3 12z" />
+        <path d="M80 140 v-28 q26 -26 52 0 v28z" />
+        <path d="M268 140 v-28 q26 -26 52 0 v28z" />
+        <rect x="56" y="128" width="290" height="12" />
+      </g>
+    </svg>
+  );
+}
+
+const VENUE = { line1: "গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স", line2: "পাইটি, ডেমরা, ঢাকা", q: "Paiti, Demra, Dhaka" };
 
 // ─────────────────────────────────────────────
 // Shared field components (mirrors app TextField/PhoneField)
@@ -542,7 +562,6 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ clas
 
 export function LifetimeMemberClient() {
   const { t, lang } = useLang();
-  const { setTheme } = useTheme();
 
   const router = useRouter();
   const [portalOpen, setPortalOpen] = useState(false);
@@ -558,15 +577,6 @@ export function LifetimeMemberClient() {
       setIsApp(isAppParam || isAppUA);
     }
   }, []);
-
-  // Light by default on first visit; afterwards the header toggle (saved by next-themes) decides.
-  useEffect(() => {
-    try {
-      if (!localStorage.getItem("theme")) setTheme("light");
-    } catch {
-      setTheme("light");
-    }
-  }, [setTheme]);
 
   const { days, hours, minutes } = useCountdown(TARGET_DATE);
 
@@ -1104,53 +1114,69 @@ export function LifetimeMemberClient() {
     return years;
   }, [foundMember]);
 
+  const two = (v: number) => num(String(v).padStart(2, "0"), lang);
+
   const page = (
-    <div className={`flex flex-col text-foreground font-kalpurush relative overflow-x-hidden selection:bg-gold/30 selection:text-foreground ${isApp ? "min-h-screen bg-[#F8FAFC] dark:bg-[#0A0F1D]" : ""}`}>
+    <div className={`relative flex flex-col overflow-x-hidden font-kalpurush text-ink ${isApp ? "min-h-screen bg-canvas" : ""}`}>
       {/* ─── MAIN CONTENT (the site header/footer come from DashboardShell; the app webview has its own bar) ─── */}
-      <section className={`flex-1 relative overflow-x-hidden ${isApp ? "py-4 px-3.5 pb-10" : "pb-24 sm:pb-12"}`}>
-        <div className="w-full max-w-[480px] mx-auto relative z-10 space-y-4">
-          {/* 1. COMPACT ISLAMIC ELAN & COUNTDOWN CARD */}
-          <div className="rounded-[22px] border-[1.5px] border-[#D4AF37]/80 dark:border-[#D4AF37]/60 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-4 sm:p-5 shadow-[0_4px_16px_rgba(212,175,55,0.18)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.15)] relative overflow-hidden text-center">
-            {/* Announcement Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#B45309] via-[#D97706] to-[#F59E0B] shadow-[0_2px_6px_rgba(180,83,9,0.35)] mb-3">
-              <Megaphone className="w-3.5 h-3.5 text-white" />
-              <span className="text-white text-xs font-bold tracking-[0.3px]">
-                ★ বিশেষ এলান ও দাওয়াত ★
+      <section className={`relative flex-1 ${isApp ? "px-3.5 py-4 pb-10" : "pb-24 sm:pb-12"}`}>
+        <div className="relative z-10 mx-auto w-full max-w-[760px] space-y-5">
+          {/* 1. HERO — invitation, countdown, then the venue */}
+          <div className="relative overflow-hidden rounded-3xl border border-line bg-[linear-gradient(180deg,var(--canvas-2),var(--panel))] px-5 pt-7 pb-6 text-center sm:px-10 sm:pt-10 sm:pb-8">
+            <HeroSkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-28 w-full text-brand-tint sm:h-36" />
+            <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.03] invert dark:opacity-[0.05] dark:invert-0" />
+
+            <div className="relative">
+              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-soft px-4 py-1.5 text-[13px] font-semibold text-gold">
+                <Megaphone className="h-4 w-4" />
+                বিশেষ এলান ও দাওয়াত
               </span>
-            </div>
 
-            {/* Event Heading */}
-            <h1 className="text-[20px] sm:text-[22px] font-extrabold text-[#B45309] tracking-[0.2px] leading-tight">
-              ৫ই ডিসেম্বর ২০২৬ (শনিবার)
-            </h1>
-            <p className="mt-1 text-[16px] font-bold text-[#92400E] dark:text-[#FBBF24]">
-              চলতি বছর আজীবন সদস্য সম্মেলন
-            </p>
-            <p className="mt-0.5 text-[13.5px] font-semibold text-[#0369A1] dark:text-[#38BDF8]">
-              অনুষ্ঠিত হবে ইনশাআল্লাহ
-            </p>
+              <p className="mt-5 text-[15px] text-ink-2">চলতি বছর</p>
+              <h1 className="font-heading text-[30px] leading-tight font-bold text-ink sm:text-[40px]">আজীবন সদস্য সম্মেলন</h1>
+              <p className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-brand px-4 py-2 text-[17px] font-semibold text-white sm:text-lg">
+                ৫ই ডিসেম্বর ২০২৬ · শনিবার
+              </p>
+              <p className="mt-2 text-[15px] text-brand">অনুষ্ঠিত হবে ইনশাআল্লাহ</p>
 
-            {/* Venue Pill */}
-            <div className="mt-3 inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-[12px] bg-white/90 dark:bg-[#0F172A]/60 border border-[#D4AF37]/35 max-w-full">
-              <MapPin className="w-3.5 h-3.5 text-[#FA5A1E] shrink-0" />
-              <span className="text-[11.5px] font-semibold text-[#334155] dark:text-white/70 text-center leading-snug">
-                স্থান: গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স, পাইটি, ডেমরা, ঢাকা।
-              </span>
-            </div>
+              {/* Countdown — panel colours follow the light / dark theme */}
+              <div className="mt-6 flex items-center justify-center" dir="ltr">
+                <CountdownBox value={two(days)} label="দিন" />
+                <CountdownSeparator />
+                <CountdownBox value={two(hours)} label="ঘণ্টা" />
+                <CountdownSeparator />
+                <CountdownBox value={two(minutes)} label="মিনিট" />
+              </div>
 
-            {/* Countdown */}
-            <div className="mt-3.5 flex items-center justify-center">
-              <CountdownBox value={days} label="দিন বাকি" />
-              <CountdownSeparator />
-              <CountdownBox value={hours} label="ঘণ্টা" />
-              <CountdownSeparator />
-              <CountdownBox value={minutes} label="মিনিট" />
+              {/* Venue — under the countdown, opens in Maps */}
+              <a
+                href={`https://www.google.com/maps/search/${encodeURIComponent(VENUE.q)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group mx-auto mt-6 flex max-w-md items-center gap-3 rounded-2xl border border-line bg-panel/90 p-3 text-start shadow-sm backdrop-blur transition hover:border-brand/50 hover:shadow-md active:scale-[0.99]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-icon-bg text-brand">
+                  <MapPin className="h-5 w-5" />
+                </span>
+                <span className="min-w-0 flex-1 leading-snug">
+                  <span className="block text-xs text-ink-3">স্থান</span>
+                  <span className="block text-[15px] font-semibold text-ink">{VENUE.line1}</span>
+                  <span className="block text-[14px] text-ink-2">{VENUE.line2}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1 rounded-full bg-brand-soft px-3 py-1.5 text-xs font-medium text-brand transition group-hover:bg-brand group-hover:text-white">
+                  ম্যাপ <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </a>
             </div>
           </div>
 
           {/* 2. ABOUT LIFETIME MEMBERSHIP */}
-          <div className="rounded-[20px] border-[1.2px] border-[#D4AF37]/45 dark:border-[#D4AF37]/35 bg-white dark:bg-[#1E293B] p-5 shadow-[0_3px_12px_rgba(212,175,55,0.05)] dark:shadow-[0_3px_12px_rgba(212,175,55,0.08)]">
-            <p className="text-[14.5px] font-semibold leading-[1.65] text-[#1E293B] dark:text-[#F1F5F9] whitespace-pre-line text-left">
+          <div className="rounded-2xl border border-line bg-panel p-5 sm:p-7">
+            <div className="mb-3 flex items-center gap-3">
+              <span className="h-7 w-1 rounded-full bg-gradient-to-b from-gold to-brand" />
+              <h2 className="font-heading text-xl font-bold text-ink">আজীবন সদস্য কারা?</h2>
+            </div>
+            <p className="text-[16px] leading-[1.9] whitespace-pre-line text-ink-2">
               {`আমাদের পরম শ্রদ্ধেয় শায়েখ হযরত মাওলানা শাহ তৈয়্যেব আশরাফ সাহেব (দামাত বারাকাতুহুম) এর প্রতিষ্ঠিত ও পরিচালিত দ্বীনি প্রতিষ্ঠান "জামেআ মারকাযুল ইহসান ঢাকা (গুলশানে আল্লামা শাহ আব্দুল মতীন কমপ্লেক্স)"।
 
 প্রতিষ্ঠানটির সামগ্রিক উন্নতি-অগ্রগতি এবং শত শত তালিবুল ইলম ও কুরআনের হাফেজদের আর্থিক খেদমতের সহযোগিতাকে বেগবান করার লক্ষ্যে যাঁরা বাৎসরিক নির্দিষ্ট অনুদান প্রদানের অঙ্গীকার করেন, তাঁরাই হলেন এই জামেআর সম্মানিত আজীবন সদস্য। এটি দুনিয়া ও আখেরাতের এক চিরন্তন সদকায়ে জারিয়া।`}
@@ -1158,184 +1184,133 @@ export function LifetimeMemberClient() {
           </div>
 
           {/* 3. MEMBER PORTAL ACTION CARD */}
-          <div className="rounded-[24px] border-[1.5px] border-[#D4AF37]/65 dark:border-[#D4AF37]/45 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#0F172A] p-5 shadow-[0_4px_16px_rgba(212,175,55,0.15)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.12)]">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-[#B45309]/15 flex items-center justify-center shrink-0">
-                <HeartHandshake className="w-6 h-6 text-[#B45309]" />
-              </div>
-              <div className="min-w-0 text-left">
-                <h3 className="font-bold text-base text-[#1E293B] dark:text-white leading-tight">
-                  আজীবন সদস্য সেবা ও অনুদান পোর্টাল
-                </h3>
-                <p className="text-[11.5px] text-[#78350F] dark:text-white/60 mt-0.5">
-                  নতুন আবেদন অথবা বিদ্যমান সদস্যের অনুদান ও রসিদ
-                </p>
+          <div className="hero-surface relative overflow-hidden rounded-2xl p-5 sm:p-7">
+            <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.08]" />
+            <div className="relative flex items-center gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15">
+                <HeartHandshake className="h-6 w-6 text-gold-light" />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-lg leading-tight font-semibold text-white">আজীবন সদস্য সেবা ও অনুদান পোর্টাল</h3>
+                <p className="mt-0.5 text-[13px] text-white/75">নতুন আবেদন অথবা বিদ্যমান সদস্যের অনুদান ও রসিদ</p>
               </div>
             </div>
-
-            <p className="mt-3.5 text-[13px] leading-[1.5] text-[#334155] dark:text-white/70 text-left">
+            <p className="relative mt-4 text-[15px] leading-relaxed text-white/85">
               আপনি কি জামেআর নতুন আজীবন সদস্য হতে চান অথবা ইতোমধ্যেই একজন সম্মানিত সদস্য হিসেবে আপনার বাৎসরিক অনুদান হিসেব দেখতে ও পরিশোধ করতে চান?
             </p>
-
-            <div className="mt-4.5 space-y-2.5">
+            <div className="relative mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => openPortal(0)}
-                className="w-full flex items-center justify-center gap-2 h-[46px] rounded-[14px] bg-[#FA5A1E] hover:bg-[#E04810] text-white font-bold text-sm shadow-[0_2px_8px_rgba(250,90,30,0.25)] active:scale-[0.99] transition-all cursor-pointer"
+                className="flex h-12 items-center justify-center gap-2 rounded-xl bg-white text-[15px] font-semibold text-brand-strong transition hover:bg-white/90 active:scale-[0.99]"
               >
-                <UserPlus className="w-[19px] h-[19px]" />
-                <span>নতুন আজীবন সদস্য হতে আবেদন করুন</span>
+                <UserPlus className="h-5 w-5" />
+                নতুন সদস্য হতে আবেদন
               </button>
               <button
                 type="button"
                 onClick={() => openPortal(1)}
-                className="w-full flex items-center justify-center gap-2 h-[46px] rounded-[14px] border-[1.4px] border-[#D4AF37] bg-white dark:bg-[#0F172A]/50 text-[#B45309] font-bold text-[13.5px] shadow-sm hover:bg-[#D4AF37]/5 active:scale-[0.99] transition-all cursor-pointer"
+                className="flex h-12 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 text-[15px] font-semibold text-white transition hover:bg-white/15 active:scale-[0.99]"
               >
-                <UserCheck className="w-[19px] h-[19px] text-[#B45309]" />
-                <span>পুরাতন সদস্য (হিসাব ও অনুদান প্রদান)</span>
+                <UserCheck className="h-5 w-5" />
+                পুরাতন সদস্য (হিসাব ও অনুদান)
               </button>
             </div>
           </div>
 
-
-          {/* 4. 8 DIVINE BENEFITS */}
-          <div className="rounded-[20px] border border-black/6 dark:border-white/10 bg-white dark:bg-[#1E293B] p-[18px] shadow-[0_3px_12px_rgba(0,0,0,0.04)]">
-            <div className="flex items-center gap-2 mb-3.5">
-              <Sparkles className="w-[22px] h-[22px] text-[#D4AF37]" />
-              <h3 className="font-bold text-base text-[#1E293B] dark:text-white">
-                আজীবন সদস্য হওয়ার ফায়দা ও উপকারিতা
-              </h3>
+          {/* 4. HELPLINE & DIRECT SUPPORT */}
+          <div className="rounded-2xl border border-line bg-panel p-5 sm:p-7">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-icon-bg text-brand">
+                <PhoneCall className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-lg leading-snug font-semibold text-ink">জরুরি হেল্পলাইন ও যোগাযোগ</h3>
+                <p className="text-[13px] text-ink-3">যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন (WhatsApp রিকমেন্ডেড)</p>
+              </div>
             </div>
-
-            <div className="space-y-3">
-              {BENEFITS.map((b, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3.5 px-3.5 py-3.5 rounded-[16px] transition-colors"
-                  style={{
-                    backgroundColor: `${b.color}0f`,
-                    border: `1px solid ${b.color}40`,
-                  }}
-                >
-                  <div
-                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0 shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
-                    style={{ backgroundColor: b.color }}
+            <div className="grid grid-cols-1 gap-2.5">
+              {CONTACTS.map((c) => (
+                <div key={c.raw} className="flex items-center gap-3 rounded-xl border border-line bg-panel-2 px-3.5 py-3">
+                  <button onClick={() => copyToClipboard(c.display)} className="group min-w-0 flex-1 text-start" title="ক্লিক করে কপি করুন">
+                    <span className="flex items-center gap-1.5">
+                      <span className="font-num text-[15.5px] font-semibold tracking-[0.3px] text-ink group-hover:text-brand" dir="ltr">
+                        {c.display}
+                      </span>
+                      {copiedNumber === c.display && <span className="rounded bg-brand-soft px-1.5 py-0.5 text-[10px] font-semibold text-brand">কপি হয়েছে!</span>}
+                    </span>
+                    <span className="block text-[12.5px] text-ink-3">{c.noteBn}</span>
+                  </button>
+                  <a
+                    href={`https://wa.me/${c.raw}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন ২০২৬ সম্পর্কে জানতে আগ্রহী।")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition active:scale-95"
+                    aria-label="হোয়াটসঅ্যাপে বার্তা পাঠান"
                   >
-                    <b.icon className="w-[18px] h-[18px] text-white" />
-                  </div>
-                  <p className="text-[13.5px] font-semibold leading-[1.45] text-[#1E293B] dark:text-white text-left">
-                    {b.bn}
-                  </p>
+                    <WhatsAppIcon className="h-5 w-5" />
+                  </a>
+                  <a href={`tel:+${c.raw}`} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-icon-bg text-brand transition active:scale-95" aria-label="কল করুন">
+                    <PhoneCall className="h-[18px] w-[18px]" />
+                  </a>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* 5. OUR ASPIRATION & DUA */}
-          <div className="rounded-[20px] border border-[#D4AF37]/50 bg-gradient-to-br from-[#FFFBEB] to-[#FEF3C7] dark:from-[#1E293B] dark:to-[#162033] p-[18px] text-center shadow-sm">
-            <HeartHandshake className="w-7 h-7 text-[#B45309] mx-auto mb-2.5" />
-            <h3 className="font-bold text-base text-[#B45309] mb-2">
-              আমাদের ফিকির ও দোয়া
-            </h3>
-            <p className="text-[13.5px] leading-[1.6] text-[#334155] dark:text-white/70 max-w-2xl mx-auto whitespace-pre-line text-center">
-              {`দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
+          {/* 5. OUR ASPIRATION & DUA — above the benefits */}
+          <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-gold-soft p-6 text-center sm:p-8">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-panel text-gold shadow-sm">
+              <HeartHandshake className="h-6 w-6" />
+            </span>
+            <h3 className="mt-3 font-heading text-xl font-bold text-ink">আমাদের ফিকির ও দোয়া</h3>
+            <p className="mx-auto mt-3 max-w-xl text-[16px] leading-[1.9] whitespace-pre-line text-ink-2">
+              {`দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
 
-সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`}
+সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`}
             </p>
           </div>
 
-          {/* 6. HELPLINE & DIRECT SUPPORT */}
-          <div className="rounded-[20px] border border-black/6 dark:border-white/10 bg-white dark:bg-[#1E293B] p-[18px] shadow-[0_3px_12px_rgba(0,0,0,0.04)]">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-full bg-[#25D366]/15 flex items-center justify-center shrink-0">
-                <PhoneCall className="w-[18px] h-[18px] text-[#16A34A]" />
-              </div>
-              <div className="text-left">
-                <h3 className="font-bold text-base text-[#1E293B] dark:text-white leading-snug">
-                  জরুরি হেল্পলাইন ও যোগাযোগ
-                </h3>
-                <p className="text-[11.5px] text-[#64748B] dark:text-white/60">
-                  যেকোনো তথ্যের জন্য সরাসরি যোগাযোগ করুন (WhatsApp রিকমেন্ডেড)
-                </p>
-              </div>
+          {/* 6. BENEFITS — last */}
+          <div className="rounded-2xl border border-line bg-panel p-5 sm:p-7">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-7 w-1 rounded-full bg-gradient-to-b from-gold to-brand" />
+              <h3 className="font-heading text-xl font-bold text-ink">আজীবন সদস্য হওয়ার ফায়দা ও উপকারিতা</h3>
             </div>
-
-            <div className="space-y-3">
-              {CONTACTS.map((c) => (
-                <div
-                  key={c.raw}
-                  className="flex items-center gap-3 px-3.5 py-3 rounded-[16px] border border-black/6 dark:border-white/10 bg-[#F8FAFC] dark:bg-[#0F172A]"
-                >
-                  <div className="w-9 h-9 rounded-[10px] bg-[#FA5A1E]/10 flex items-center justify-center shrink-0">
-                    <PhoneCall className="w-5 h-5 text-[#FA5A1E]" />
-                  </div>
-                  <div
-                    onClick={() => copyToClipboard(c.display)}
-                    className="flex-1 min-w-0 text-left cursor-pointer group"
-                    title="ক্লিক করে কপি করুন"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <p className="font-bold text-[#1E293B] dark:text-white text-[15px] tracking-[0.3px] group-hover:text-primary transition-colors">
-                        {c.display}
-                      </p>
-                      {copiedNumber === c.display && (
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded">
-                          কপি হয়েছে!
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-[#64748B] dark:text-white/50">{c.noteBn}</p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <a
-                      href={`https://wa.me/${c.raw}?text=${encodeURIComponent(
-                        "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন ২০২৬ সম্পর্কে জানতে আগ্রহী।"
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-[0_2px_8px_rgba(37,211,102,0.35)] active:scale-95 transition-all shrink-0"
-                      aria-label="হোয়াটসঅ্যাপে বার্তা পাঠান"
-                    >
-                      <WhatsAppIcon className="w-5 h-5" />
-                    </a>
-                    <a
-                      href={`tel:+${c.raw}`}
-                      style={{ backgroundColor: "rgba(250, 90, 30, 0.12)", color: "#FA5A1E" }}
-                      className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all shrink-0"
-                      aria-label="কল করুন"
-                    >
-                      <PhoneCall className="w-[18px] h-[18px]" />
-                    </a>
-                  </div>
-                </div>
+            <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {BENEFITS.map((b, i) => (
+                <li key={i} className="flex items-start gap-3 rounded-xl border border-line bg-panel-2 p-3.5">
+                  <span className="tone flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ ["--tone" as string]: b.color }}>
+                    <b.icon className="h-5 w-5" />
+                  </span>
+                  <p className="pt-1 text-[15px] leading-relaxed text-ink">{b.bn}</p>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </section>
 
       {/* ─── MOBILE STICKY FLOATING BOTTOM BAR (Only on standalone mobile web) — sits above the bottom nav ─── */}
       {!isApp && (
-        <div className="sm:hidden fixed inset-x-3 z-40" style={{ bottom: "calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px)" }}>
-          <div className="backdrop-blur-xl bg-white/95 dark:bg-[#1E293B]/95 border border-[#D4AF37]/40 rounded-2xl p-2 shadow-2xl flex items-center gap-2">
+        <div className="fixed inset-x-3 z-40 sm:hidden" style={{ bottom: "calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px)" }}>
+          <div className="flex items-center gap-2 rounded-2xl border border-line bg-panel/95 p-2 shadow-[var(--shadow-float)] backdrop-blur-xl">
             <button
               type="button"
               onClick={() => openPortal(0)}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#FA5A1E] text-white font-bold text-xs shadow-md active:scale-95 transition-all"
+              className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition active:scale-95"
             >
-              <Crown className="w-4 h-4" />
+              <Crown className="h-4 w-4" />
               <span>সদস্য পোর্টাল খুলুন</span>
             </button>
             <a
-              href={`https://wa.me/8801916387935?text=${encodeURIComponent(
-                "আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন সম্পর্কে জানতে চাই।"
-              )}`}
+              href={`https://wa.me/8801916387935?text=${encodeURIComponent("আসসালামু আলাইকুম, আমি জামেআ মারকাযুল ইহসানের আজীবন সদস্য সম্মেলন সম্পর্কে জানতে চাই।")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-11 h-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shrink-0 shadow-md"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white transition active:scale-95"
               aria-label="WhatsApp"
             >
-              <WhatsAppIcon className="w-5 h-5" />
+              <WhatsAppIcon className="h-5 w-5" />
             </a>
           </div>
         </div>

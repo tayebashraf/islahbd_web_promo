@@ -14,11 +14,17 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   async rewrites() {
-    // Proxy HLS stream same-origin to eliminate browser CORS on cdn.islahbd.com.
+    // Proxy HLS streams same-origin to eliminate browser CORS problems
+    // (cdn2 currently answers with a duplicated Access-Control-Allow-Origin,
+    // which browsers reject). Same-origin also lets the visualiser read audio.
     return [
       {
         source: "/hls/:path*",
         destination: "https://cdn.islahbd.com/live/:path*",
+      },
+      {
+        source: "/hls2/:path*",
+        destination: "https://cdn2.islahbd.com/live/:path*",
       },
     ];
   },

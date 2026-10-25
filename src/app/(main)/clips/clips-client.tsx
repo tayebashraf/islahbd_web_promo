@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Clock, Headphones, Sparkles, Video } from "lucide-react";
+import { Clock, Headphones, Play, Sparkles, Video } from "lucide-react";
 import type { Clip } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
 import { usePlayer } from "@/components/player/player-provider";
 import { AudioRow, useInitialPlay } from "@/components/dashboard/audio-row";
 import { VideoGrid } from "@/components/dashboard/video-grid";
-import { EmptyState, PageHeader, Panel, SearchInput, Segmented } from "@/components/dashboard/ui";
+import { EmptyState, HeaderIconButton, MediaHeader } from "@/components/dashboard/ui";
 import { clipTrack } from "@/lib/tracks";
 import { num, timeAgo } from "@/lib/format";
 
@@ -31,38 +31,33 @@ export function ClipsClient({ clips, initialPlay }: { clips: Clip[]; initialPlay
 
   return (
     <div>
-      <PageHeader
-        eyebrow={t("ছোট নসীহত", "Short reminders")}
+      <MediaHeader
         title={t("শর্ট ক্লিপ", "Short Clips")}
-        muted={t(`${num(clips.length, lang)}টি`, `${clips.length}`)}
-        description={t("এক-দুই মিনিটের নসীহত — চলতে ফিরতে শুনুন।", "One or two minute reminders — listen on the go.")}
+        count={num(clips.length, lang)}
+        query={q}
+        onQuery={setQ}
+        placeholder={t("ক্লিপ খুঁজুন…", "Search clips…")}
         actions={
-          <>
-            <SearchInput value={q} onChange={setQ} placeholder={t("ক্লিপ খুঁজুন…", "Search clips…")} />
-            <button
-              onClick={() => queue[0] && player.play(queue[0], queue)}
-              className="flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-medium text-white hover:bg-brand-strong"
-            >
-              <Headphones className="h-4 w-4" /> {t("সব চালান", "Play all")}
-            </button>
-          </>
+          tab === "audio" && queue.length > 0 ? (
+            <HeaderIconButton label={t("সব চালান", "Play all")} onClick={() => player.play(queue[0], queue)}>
+              <Play className="h-3.5 w-3.5 fill-current" />
+              <span>{t("সব চালান", "Play all")}</span>
+            </HeaderIconButton>
+          ) : null
         }
+        tab={tab}
+        onTab={setTab}
+        tabs={[
+          { value: "audio", label: t("অডিও", "Audio"), count: num(audios.length, lang), icon: Headphones },
+          { value: "video", label: t("ভিডিও", "Video"), count: num(videos.length, lang), icon: Video },
+        ]}
       />
 
-      <Panel>
-        <Segmented
-          value={tab}
-          onChange={setTab}
-          options={[
-            { value: "audio", label: t(`অডিও (${num(audios.length, lang)})`, `Audio (${audios.length})`) },
-            { value: "video", label: t(`ভিডিও (${num(videos.length, lang)})`, `Video (${videos.length})`) },
-          ]}
-        />
-        <div className="mt-5">
+      <div>
           {tab === "audio" ? (
             shown.length ? (
               <>
-                <ul className="grid gap-1 lg:grid-cols-2 lg:gap-x-4">
+                <ul className="grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-x-4">
                   {shown.slice(0, limit).map((c, i) => (
                     <AudioRow
                       key={c.id}
@@ -99,8 +94,7 @@ export function ClipsClient({ clips, initialPlay }: { clips: Clip[]; initialPlay
           ) : (
             <EmptyState icon={Video} title={t("কোনো ভিডিও নেই", "No videos yet")} />
           )}
-        </div>
-      </Panel>
+      </div>
     </div>
   );
 }

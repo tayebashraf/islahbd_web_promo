@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalendarDays, Clock, Headphones, Layers, MapPin, Mic2, Shuffle } from "lucide-react";
+import { ArrowDownUp, Clock, MapPin, Mic2, Play } from "lucide-react";
 import type { Boyan, BoyanCategory } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
 import { usePlayer } from "@/components/player/player-provider";
 import { AudioRow, useInitialPlay } from "@/components/dashboard/audio-row";
-import { Chip, EmptyState, PageHeader, Panel, SearchInput, Segmented, StatTile } from "@/components/dashboard/ui";
+import { Chip, EmptyState, HeaderIconButton, MediaHeader } from "@/components/dashboard/ui";
 import { boyanTrack } from "@/lib/tracks";
-import { formatDate, num, shortSpeaker, timeAgo } from "@/lib/format";
+import { formatDate, num, shortSpeaker } from "@/lib/format";
 
 const PAGE = 30;
 const norm = (s: string) => (s || "General").replace(/\s+/g, " ").trim();
@@ -53,81 +53,60 @@ export function BoyanClient({
   const initial = initialPlay ? allQueue.find((tr) => tr.id === `boyan-${initialPlay}`) : undefined;
   useInitialPlay(initial, allQueue);
 
-  const monthKey = boyans[0]?.uploadDate.slice(0, 7);
-  const thisMonth = boyans.filter((b) => b.uploadDate.startsWith(monthKey ?? "-")).length;
-  const locations = new Set(boyans.map((b) => b.location).filter(Boolean)).size;
+  const pickCat = (c: string) => {
+    setCat(c);
+    setLimit(PAGE);
+  };
 
   return (
     <div>
-      <PageHeader
-        eyebrow={t("অডিও আর্কাইভ", "Audio archive")}
+      <MediaHeader
         title={t("বয়ান", "Boyan")}
-        muted={t(`${num(boyans.length, lang)}টি`, `${boyans.length} talks`)}
-        description={t("ইসলাহী মজলিস, জুমার বয়ান, মাসিক ইজতেমা ও সফরের বয়ান — সরাসরি ব্রাউজারে শুনুন।", "Islahi majlis, Friday talks, monthly ijtema and travel talks — right in your browser.")}
+        count={num(boyans.length, lang)}
+        query={q}
+        onQuery={(v) => {
+          setQ(v);
+          setLimit(PAGE);
+        }}
+        placeholder={t("বয়ান, স্থান বা বক্তা খুঁজুন…", "Search talks, places or speakers…")}
         actions={
-          <>
-            <SearchInput value={q} onChange={(v) => { setQ(v); setLimit(PAGE); }} placeholder={t("বয়ান খুঁজুন…", "Search talks…")} />
-            <button
-              onClick={() => queue[0] && player.play(queue[0], queue)}
-              className="flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-medium text-white hover:bg-brand-strong"
-            >
-              <Headphones className="h-4 w-4" /> {t("সব চালান", "Play all")}
-            </button>
-            <button
-              onClick={() => {
-                const shuffled = [...queue].sort(() => Math.random() - 0.5);
-                if (shuffled[0]) player.play(shuffled[0], shuffled);
-              }}
-              aria-label={t("এলোমেলো", "Shuffle")}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-panel text-ink-2 hover:text-ink"
-            >
-              <Shuffle className="h-4 w-4" />
-            </button>
-          </>
+          queue.length > 0 ? (
+            <HeaderIconButton label={t("সব চালান", "Play all")} onClick={() => player.play(queue[0], queue)}>
+              <Play className="h-3.5 w-3.5 fill-current" />
+              <span>{t("সব চালান", "Play all")}</span>
+            </HeaderIconButton>
+          ) : null
         }
-      />
-
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <StatTile icon={Mic2} label={t("মোট বয়ান", "Total talks")} value={num(boyans.length, lang)} />
-        <StatTile icon={Layers} label={t("বিভাগ", "Categories")} value={num(catList.length, lang)} />
-        <StatTile icon={CalendarDays} label={t("এই মাসে নতুন", "New this month")} value={num(thisMonth, lang)} />
-        <StatTile
-          icon={MapPin}
-          label={t("স্থান", "Locations")}
-          value={num(locations, lang)}
-          hint={boyans[0] ? t(`সর্বশেষ ${timeAgo(boyans[0].uploadDate, lang)}`, `latest ${timeAgo(boyans[0].uploadDate, lang)}`) : undefined}
-        />
-      </div>
-
-      <Panel className="mt-4 sm:mt-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="scroll-hide -mx-1 flex gap-2 overflow-x-auto px-1">
-            <Chip active={cat === "all"} onClick={() => { setCat("all"); setLimit(PAGE); }} count={num(boyans.length, lang)}>
+        below={
+          <div className="scroll-hide -mx-4 flex items-center gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-wrap lg:px-0">
+            <button
+              onClick={() => setSort((s) => (s === "new" ? "old" : "new"))}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-medium text-ink transition hover:border-brand/40"
+              title={sort === "new" ? t("নতুন আগে", "Newest first") : t("পুরাতন আগে", "Oldest first")}
+            >
+              <ArrowDownUp className="h-3.5 w-3.5 text-brand" />
+              <span>{sort === "new" ? t("নতুন আগে", "Newest") : t("পুরাতন আগে", "Oldest")}</span>
+            </button>
+            <div className="h-4 w-px shrink-0 bg-line" />
+            <Chip active={cat === "all"} onClick={() => pickCat("all")} count={num(boyans.length, lang)}>
               {t("সব", "All")}
             </Chip>
             {catList.map(([name, n]) => (
-              <Chip key={name} active={cat === name} onClick={() => { setCat(name); setLimit(PAGE); }} count={num(n, lang)}>
+              <Chip key={name} active={cat === name} onClick={() => pickCat(name)} count={num(n, lang)}>
                 {name}
               </Chip>
             ))}
           </div>
-          <Segmented
-            size="sm"
-            value={sort}
-            onChange={setSort}
-            options={[
-              { value: "new", label: t("নতুন আগে", "Newest") },
-              { value: "old", label: t("পুরাতন আগে", "Oldest") },
-            ]}
-          />
-        </div>
+        }
+      />
 
+      <div>
         {filtered.length === 0 ? (
-          <div className="mt-5">
+          <div>
             <EmptyState icon={Mic2} title={t("কোনো বয়ান পাওয়া যায়নি", "No talks found")} hint={t("অন্য শব্দ দিয়ে খুঁজে দেখুন", "Try a different search")} />
           </div>
         ) : (
-          <ul className="mt-4 space-y-2">
+          <ul className="space-y-2">
             {filtered.slice(0, limit).map((b, i) => (
               <AudioRow
                 key={b.id}
@@ -163,7 +142,7 @@ export function BoyanClient({
             </button>
           </div>
         )}
-      </Panel>
+      </div>
     </div>
   );
 }

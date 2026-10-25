@@ -188,6 +188,32 @@ export const getFatwas = () => getJSON<Fatwa[]>("/api/fatwa/", []);
 export const getFatwaCategories = () => getJSON<FatwaCategory[]>("/api/fatwa-categories/", [], 3600);
 export const getLiveStatus = () => getJSON<LiveStatus | null>("/api/live/status/", null, 15);
 
+export interface MajlisDetail {
+  id: number;
+  time: string;
+  location: string;
+  route: string;
+  contact: string;
+  map: string;
+  is_active: boolean;
+  order: number;
+}
+
+export interface RecurringMajlis {
+  id: number;
+  title: string;
+  /** Dart weekday convention: Mon=1 … Sun=7. */
+  dayOfWeek: number;
+  /** Nth occurrence(s) of that weekday in the month; empty = every week. */
+  weekNumbers: number[];
+  is_active: boolean;
+  order: number;
+  details: MajlisDetail[];
+  cancellations: { date: string; detailId?: number | null }[];
+}
+
+export const getRecurringMajlis = () => getJSON<RecurringMajlis[]>("/api/live/recurring-majlis/", [], 600);
+
 export async function getAmalCategories(): Promise<AmalCategory[]> {
   const rows = await getJSON<AmalCategory[]>("/api/amal-categories/?ordering=order", [], 600);
   return rows

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ListenClient } from "./listen-client";
+import { getBoyans, getRecurringMajlis } from "@/lib/api";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -14,6 +15,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ListenPage() {
-  return <ListenClient />;
+export const revalidate = 120;
+
+export default async function ListenPage() {
+  const [boyans, majlis] = await Promise.all([getBoyans(), getRecurringMajlis()]);
+  return (
+    <ListenClient
+      recentBoyans={boyans.slice(0, 3)}
+      majlis={majlis.filter((m) => m.is_active).sort((a, b) => a.order - b.order)}
+    />
+  );
 }

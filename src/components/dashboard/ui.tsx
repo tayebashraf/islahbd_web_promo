@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, ChevronRight, House, Loader2, Pause, Play, type LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, ChevronRight, House, Loader2, Pause, Play, Search, X, type LucideIcon } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 import { sectionFor } from "@/lib/nav";
 import { cn } from "@/lib/utils";
@@ -332,5 +333,123 @@ export function SearchInput({ value, onChange, placeholder }: { value: string; o
         type="search"
       />
     </label>
+  );
+}
+
+/**
+ * Compact, app-style header for the media pages: title + count on one line,
+ * icon actions and a search toggle on the right, an optional two-way switch
+ * (audio / video) underneath. Sticks under the site header while scrolling.
+ */
+export function MediaHeader<T extends string>({
+  title,
+  count,
+  query,
+  onQuery,
+  placeholder,
+  actions,
+  tabs,
+  tab,
+  onTab,
+  below,
+}: {
+  title: React.ReactNode;
+  count?: React.ReactNode;
+  query: string;
+  onQuery: (v: string) => void;
+  placeholder: string;
+  actions?: React.ReactNode;
+  tabs?: { value: T; label: React.ReactNode; count?: React.ReactNode; icon?: LucideIcon }[];
+  tab?: T;
+  onTab?: (v: T) => void;
+  /** Extra row under the switch, e.g. category chips and sort. */
+  below?: React.ReactNode;
+}) {
+  const { t } = useLang();
+
+  return (
+    <div className="sticky top-16 z-20 -mx-4 mb-4 space-y-2.5 border-b border-line/60 bg-canvas/95 px-4 pt-2 pb-3.5 backdrop-blur-xl sm:top-[72px] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      {/* Top Row: Title + Count + Primary Actions (e.g. Play All pill) */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <h1 className="truncate font-heading text-xl font-bold text-ink sm:text-2xl">{title}</h1>
+          {count !== undefined && (
+            <span className="shrink-0 rounded-full bg-brand-soft px-2.5 py-0.5 font-num text-xs font-semibold text-brand">
+              {count}
+            </span>
+          )}
+        </div>
+        {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      </div>
+
+      {/* Second Row: Seamless Integrated Search Bar */}
+      <div className="relative">
+        <label className="flex h-10 w-full items-center gap-2.5 rounded-2xl border border-line bg-panel px-3.5 text-sm shadow-xs transition-colors focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/15">
+          <Search className="h-4 w-4 shrink-0 text-ink-3" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => onQuery(e.target.value)}
+            placeholder={placeholder}
+            className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-ink-3 text-sm"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => onQuery("")}
+              aria-label={t("মুছে ফেলুন", "Clear")}
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-ink"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          )}
+        </label>
+      </div>
+
+      {/* Tabs Row (if audio/video tabs exist) */}
+      {tabs && tab && onTab && (
+        <div role="tablist" className="grid grid-cols-2 rounded-2xl border border-line bg-panel-2 p-1 sm:inline-grid sm:min-w-[320px]">
+          {tabs.map((o) => {
+            const on = o.value === tab;
+            const Icon = o.icon;
+            return (
+              <button
+                key={o.value}
+                role="tab"
+                aria-selected={on}
+                onClick={() => onTab(o.value)}
+                className={cn(
+                  "flex h-9 items-center justify-center gap-2 rounded-xl text-xs font-medium transition",
+                  on ? "bg-brand font-semibold text-white shadow-xs" : "text-ink-2 hover:text-ink",
+                )}
+              >
+                {Icon && <Icon className="h-3.5 w-3.5" />}
+                {o.label}
+                {o.count !== undefined && (
+                  <span className={cn("rounded-full px-1.5 font-num text-[11px]", on ? "bg-white/20" : "bg-panel text-ink-3")}>{o.count}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Bottom Row: Filter chips / extra controls */}
+      {below}
+    </div>
+  );
+}
+
+/** Prominent pill action button with clear icon and label text. */
+export function HeaderIconButton({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="inline-flex h-8 sm:h-9 items-center gap-1.5 rounded-full bg-brand px-3 sm:px-3.5 text-xs font-semibold text-white shadow-xs transition hover:bg-brand-strong active:scale-95"
+    >
+      {children}
+    </button>
   );
 }

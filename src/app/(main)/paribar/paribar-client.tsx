@@ -1,94 +1,189 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { CheckCircle2, Copy, ExternalLink, HeartHandshake, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CheckCircle2, Copy, ExternalLink, Loader2, Send } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 import { Panel, Segmented } from "@/components/dashboard/ui";
 import { Blocks } from "@/components/book/blocks";
 import { BAIYAT, BIO, DONATION, MISSION, SHAYKH, SOCIAL } from "@/data/paribar";
 import { applyParibar, type ParibarApplication } from "@/lib/api";
-import { LINKS } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
-type Tab = "bio" | "mission" | "baiyat" | "apply";
-const TABS: Tab[] = ["bio", "mission", "baiyat", "apply"];
+type SectionId = "bio" | "mission" | "baiyat" | "apply";
+
+const SECTIONS: { id: SectionId; bn: string; en: string }[] = [
+  { id: "bio", bn: "পরিচিতি ও জীবনী", en: "Biography" },
+  { id: "mission", bn: "লক্ষ্য ও উদ্দেশ্য", en: "Mission" },
+  { id: "baiyat", bn: "বায়আত দিকনির্দেশনা", en: "On Bay'ah" },
+  { id: "apply", bn: "আবেদন করুন", en: "Apply" },
+];
 
 export function ParibarClient({ initialTab }: { initialTab?: string }) {
   const { t } = useLang();
-  const [tab, setTab] = useState<Tab>(TABS.includes(initialTab as Tab) ? (initialTab as Tab) : "bio");
+  const [activeSec, setActiveSec] = useState<SectionId>(
+    SECTIONS.some((s) => s.id === initialTab) ? (initialTab as SectionId) : "bio"
+  );
 
-  const choose = (v: Tab) => {
-    setTab(v);
-    const url = new URL(window.location.href);
-    url.searchParams.set("tab", v);
-    window.history.replaceState(null, "", url);
+  const scrollTo = (id: SectionId) => {
+    setActiveSec(id);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
+  useEffect(() => {
+    if (initialTab && SECTIONS.some((s) => s.id === initialTab)) {
+      const el = document.getElementById(initialTab);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 200);
+      }
+    }
+  }, [initialTab]);
+
   return (
-    <div>
-      {/* Welcome card, like the app's Paribar tab */}
+    <div className="mx-auto max-w-4xl space-y-8 pb-16">
+      {/* Welcome Card: Shaykh's Profile (Social links moved to bottom per user request) */}
       <section className="relative overflow-hidden rounded-3xl border border-line bg-[linear-gradient(180deg,var(--canvas-2),var(--panel))] px-5 py-8 text-center sm:py-12">
-        <Image src="/icon-192.png" alt="" width={72} height={72} className="mx-auto h-16 w-16 rounded-2xl ring-4 ring-brand-soft" />
-        <p className="mt-4 text-[15px] text-brand">{SHAYKH.welcome}</p>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink-2">{SHAYKH.line}</p>
-        <h1 className="mt-2 font-heading text-[28px] text-ink sm:text-[36px]">{SHAYKH.name}</h1>
+        <Image
+          src="/icon-192.png"
+          alt=""
+          width={72}
+          height={72}
+          className="mx-auto h-16 w-16 rounded-2xl ring-4 ring-brand-soft"
+        />
+        <p className="mt-4 text-[15px] font-medium text-brand">{SHAYKH.welcome}</p>
+        <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-ink-2">{SHAYKH.line}</p>
+        <h1 className="mt-2 font-heading text-[28px] font-bold text-ink sm:text-[36px]">{SHAYKH.name}</h1>
         <p className="mt-1 text-[15px] text-gold">{SHAYKH.honor}</p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          {SOCIAL.map((s) => (
-            <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="flex h-10 items-center gap-1.5 rounded-full border border-line bg-panel px-4 text-sm text-ink hover:border-brand/40">
-              {t(s.bn, s.name)} <ExternalLink className="h-3.5 w-3.5 text-brand" />
-            </a>
-          ))}
-        </div>
       </section>
 
-      <div className="scroll-hide -mx-4 my-5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <Segmented
-          value={tab}
-          onChange={choose}
-          options={[
-            { value: "bio", label: t("পরিচিতি ও জীবনী", "Biography") },
-            { value: "mission", label: t("লক্ষ্য ও উদ্দেশ্য", "Mission") },
-            { value: "baiyat", label: t("বায়আত দিকনির্দেশনা", "On bay'ah") },
-            { value: "apply", label: t("আবেদন করুন", "Apply") },
-          ]}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px]">
-        <Panel className="p-5 sm:p-8">
-          {tab === "bio" && <Blocks blocks={BIO} />}
-          {tab === "mission" && <Blocks blocks={MISSION} />}
-          {tab === "baiyat" && (
-            <>
-              <Blocks blocks={BAIYAT} />
-              <button onClick={() => choose("apply")} className="mt-6 h-12 rounded-2xl bg-brand px-6 text-[15px] font-medium text-white">
-                {t("বায়আত হতে আবেদন করুন", "Apply for bay'ah")}
+      {/* Sticky Navigation Pills for Smooth-scrolling across sections */}
+      <nav aria-label={t("সেকশনসমূহ", "Sections")} className="sticky top-16 z-20 -mx-4 border-y border-line/60 bg-canvas/95 px-4 py-2.5 backdrop-blur-xl sm:top-[72px] sm:mx-0 sm:rounded-2xl sm:border sm:px-3">
+        <div className="scroll-hide flex items-center justify-start gap-1.5 overflow-x-auto sm:justify-center">
+          {SECTIONS.map((s) => {
+            const active = activeSec === s.id;
+            return (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className={cn(
+                  "shrink-0 rounded-full px-4 py-2 text-xs sm:text-sm font-medium transition",
+                  active
+                    ? "bg-brand font-semibold text-white shadow-xs"
+                    : "bg-panel text-ink-2 hover:bg-panel-2 hover:text-ink"
+                )}
+              >
+                {t(s.bn, s.en)}
               </button>
-            </>
-          )}
-          {tab === "apply" && <ApplyForms />}
-        </Panel>
+            );
+          })}
+        </div>
+      </nav>
 
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:h-fit">
-          <DonationCard />
-          <Link href={LINKS.member.href} className="flex items-center gap-3 rounded-2xl border border-line bg-panel p-4 hover:border-brand/40">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-icon-bg text-brand">
-              <HeartHandshake className="h-5 w-5" />
-            </span>
-            <span>
-              <span className="block text-[15.5px] font-semibold text-ink">{t("আজীবন সদস্য হোন", "Become a lifetime member")}</span>
-              <span className="block text-sm text-ink-3">{t("জামেআর স্থায়ী খেদমতে শরিক হোন", "Join the Jamia's lasting service")}</span>
-            </span>
-          </Link>
-        </aside>
+      {/* Sequential Flow: All 4 Sections rendered vertically in continuous reading order */}
+      <div className="space-y-8">
+        {/* Section 1: Biography */}
+        <section id="bio" className="scroll-mt-32">
+          <Panel className="p-5 sm:p-8">
+            <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+              <span className="h-5 w-1.5 rounded-full bg-brand" />
+              <h2 className="font-heading text-xl font-bold text-ink sm:text-2xl">
+                {t("পরিচিতি ও জীবনী", "Biography")}
+              </h2>
+            </div>
+            <Blocks blocks={BIO} />
+          </Panel>
+        </section>
+
+        {/* Section 2: Mission */}
+        <section id="mission" className="scroll-mt-32">
+          <Panel className="p-5 sm:p-8">
+            <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+              <span className="h-5 w-1.5 rounded-full bg-brand" />
+              <h2 className="font-heading text-xl font-bold text-ink sm:text-2xl">
+                {t("লক্ষ্য ও উদ্দেশ্য", "Mission & Goals")}
+              </h2>
+            </div>
+            <Blocks blocks={MISSION} />
+          </Panel>
+        </section>
+
+        {/* Section 3: Bay'ah Guidelines */}
+        <section id="baiyat" className="scroll-mt-32">
+          <Panel className="p-5 sm:p-8">
+            <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+              <span className="h-5 w-1.5 rounded-full bg-brand" />
+              <h2 className="font-heading text-xl font-bold text-ink sm:text-2xl">
+                {t("বায়আত সংক্রান্ত দিকনির্দেশনা", "Guidelines on Bay'ah")}
+              </h2>
+            </div>
+            <Blocks blocks={BAIYAT} />
+            <div className="mt-8 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
+              <p className="text-sm text-ink-3">
+                {t("বায়আত হতে ইচ্ছুক হলে নিচের আবেদন ফরম পূরণ করুন।", "Fill out the form below to apply for bay'ah.")}
+              </p>
+              <button
+                onClick={() => scrollTo("apply")}
+                className="inline-flex h-11 items-center gap-2 rounded-xl bg-brand px-5 text-sm font-semibold text-white shadow-xs transition hover:bg-brand-strong"
+              >
+                <span>{t("বায়আত হতে আবেদন করুন ↓", "Apply for Bay'ah ↓")}</span>
+              </button>
+            </div>
+          </Panel>
+        </section>
+
+        {/* Section 4: Application Forms */}
+        <section id="apply" className="scroll-mt-32">
+          <Panel className="p-5 sm:p-8">
+            <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+              <span className="h-5 w-1.5 rounded-full bg-brand" />
+              <h2 className="font-heading text-xl font-bold text-ink sm:text-2xl">
+                {t("আবেদন ফরম", "Application Forms")}
+              </h2>
+            </div>
+            <ApplyForms />
+          </Panel>
+        </section>
       </div>
+
+      {/* Section 5: Official Social Channels (Moved to Bottom per user request) */}
+      <section className="rounded-3xl border border-line bg-panel p-6 sm:p-8 text-center">
+        <div className="mx-auto max-w-md">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-brand">
+            <Send className="h-5 w-5" />
+          </span>
+          <h2 className="mt-3 font-heading text-lg font-bold text-ink sm:text-xl">
+            {t("অফিসিয়াল সোশ্যাল মিডিয়া ও চ্যানেল", "Official Social Media & Channels")}
+          </h2>
+          <p className="mt-1 text-xs sm:text-sm text-ink-3">
+            {t(
+              "শায়খের বয়ান, নসিহত ও আপডেট পেতে অফিসিয়াল চ্যানেলগুলোতে যুক্ত থাকুন।",
+              "Stay connected to receive talks, advice and updates."
+            )}
+          </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+            {SOCIAL.map((s) => (
+              <a
+                key={s.name}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-panel-2 px-4 text-xs sm:text-sm font-medium text-ink transition hover:border-brand/50 hover:bg-panel"
+              >
+                <span>{t(s.bn, s.name)}</span>
+                <ExternalLink className="h-3.5 w-3.5 text-brand" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
 
+/** Retained for use in About page and anywhere else donation info is legitimately displayed. */
 export function DonationCard() {
   const { t } = useLang();
   const [copied, setCopied] = useState<string | null>(null);
