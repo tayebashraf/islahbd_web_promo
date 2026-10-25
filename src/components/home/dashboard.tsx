@@ -8,10 +8,13 @@ import {
   BookOpen,
   CalendarDays,
   ChevronsUpDown,
+  Download,
+  ExternalLink,
   Grid2x2,
   HandHeart,
   HeartHandshake,
   Landmark,
+  Library,
   MapPin,
   Mic2,
   Moon,
@@ -31,7 +34,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import type { Boyan, Clip, LiveStatus, Malfuz, Nasheed } from "@/lib/api";
+import type { Book, Boyan, Clip, LiveStatus, Malfuz, Nasheed } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
 import { usePlayer, type Track } from "@/components/player/player-provider";
 import { FeatureLink, ToneIcon, useShell } from "@/components/dashboard/shell";
@@ -51,7 +54,8 @@ export interface HomeData {
   nasheeds: Nasheed[];
   clips: Clip[];
   malfuz: Malfuz[];
-  counts: Record<"boyan" | "nasheed" | "clip", number>;
+  books?: Book[];
+  counts: Record<"boyan" | "nasheed" | "clip" | "book", number>;
 }
 
 /** Fades a block in as it scrolls into view. */
@@ -85,38 +89,8 @@ export function Dashboard({ data }: { data: HomeData }) {
     <div>
       <Hero live={data.live} />
 
-      {/* Boyan categories */}
-      <section className="py-14 sm:py-20">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              title={t("বয়ানের বিভাগসমূহ", "Boyan categories")}
-              subtitle={t(`মোট ${num(data.counts.boyan, lang)}টি বয়ান — বিভাগ বেছে নিয়ে শুনুন`, `${data.counts.boyan} talks — pick a category and listen`)}
-            />
-          </Reveal>
-          <CategoryGrid
-            items={data.boyanCats.slice(0, 9).map((c, i) => ({
-              key: c.name,
-              href: `/boyan?category=${encodeURIComponent(c.name)}`,
-              title: c.name,
-              meta: t(`মোট ${num(c.count, lang)}টি বয়ান`, `${c.count} talks`),
-              icon: CAT_ICONS[i % CAT_ICONS.length],
-              tone: CAT_TONES[i % CAT_TONES.length],
-            }))}
-          />
-          <ViewAll href={LINKS.boyan.href} label={t("সব বয়ান দেখুন", "View all talks")} />
-        </Container>
-      </section>
-
-      {/* Recent talks + player */}
-      <section className="bg-canvas-2 py-14 sm:py-20">
-        <Container>
-          <Reveal>
-            <SectionHeading title={t("সাম্প্রতিক বয়ান", "Recent talks")} subtitle={t("সর্বশেষ আপলোড হওয়া বয়ান — এক ক্লিকে শুনুন", "The latest uploads — one tap to listen")} />
-          </Reveal>
-          <RecentWithPlayer boyans={data.boyans} />
-        </Container>
-      </section>
+      {/* Unified Multimedia Section (Boyan, Short Clips, Hamd-Naat, Books) */}
+      <MultimediaSection data={data} />
 
       {/* Duas */}
       <section className="py-14 sm:py-20">
@@ -149,23 +123,6 @@ export function Dashboard({ data }: { data: HomeData }) {
           </Container>
         </section>
       )}
-
-      {/* Nasheed + clips */}
-      <section className="py-14 sm:py-20">
-        <Container>
-          <Reveal>
-            <SectionHeading title={t("হামদ, নাত ও নসীহত", "Hamd, naat & reminders")} subtitle={t("হৃদয় ছোঁয়া নাশিদ আর ছোট ছোট নসীহত", "Heart-touching nasheeds and short reminders")} />
-          </Reveal>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            <AudioCard
-              title={t("হামদ ও নাত", "Hamd & Naat")}
-              link={LINKS.nasheed}
-              items={data.nasheeds.map((n) => ({ track: nasheedTrack(n), meta: n.artist || n.lyricist || "" }))}
-            />
-            <AudioCard title={t("শর্ট ক্লিপ", "Short clips")} link={LINKS.clips} items={data.clips.map((c) => ({ track: clipTrack(c), meta: formatDate(c.createdAt, lang) }))} />
-          </div>
-        </Container>
-      </section>
 
       <AppSection />
       <SupportSection />
@@ -663,44 +620,409 @@ function QuoteCarousel({ malfuz }: { malfuz: Malfuz[] }) {
   );
 }
 
-/* ── Audio cards (nasheed / clips) ────────────────────────────── */
+/* ── Multimedia Section (Boyan, Short Clips, Hamd & Naat, Books) ── */
 
-function AudioCard({ title, link, items }: { title: string; link: NavLink; items: { track: Track; meta: string }[] }) {
-  const { t } = useLang();
-  const player = usePlayer();
-  const queue = items.map((i) => i.track);
+type MediaTab = "boyan" | "clips" | "nasheed" | "book";
+
+interface MediaTabItem {
+  id: MediaTab;
+  bn: string;
+  en: string;
+  icon: LucideIcon;
+  countKey: keyof HomeData["counts"];
+}
+
+const MEDIA_TABS: MediaTabItem[] = [
+  { id: "boyan", bn: "বয়ান", en: "Boyans", icon: Mic2, countKey: "boyan" },
+  { id: "clips", bn: "সংক্ষিপ্ত ক্লিপ", en: "Short Clips", icon: Sparkles, countKey: "clip" },
+  { id: "nasheed", bn: "হামদ ও নাত", en: "Hamd & Naat", icon: Music2, countKey: "nasheed" },
+  { id: "book", bn: "বই ও কিতাব", en: "Books & Kitab", icon: BookOpen, countKey: "book" },
+];
+
+function MultimediaSection({ data }: { data: HomeData }) {
+  const { t, lang } = useLang();
+  const [tab, setTab] = useState<MediaTab>("boyan");
+
   return (
-    <div className="rounded-2xl border border-line bg-panel p-4 sm:p-5">
-      <div className="mb-3 flex items-center gap-3">
-        <ToneIcon link={link} />
-        <h3 className="flex-1 text-lg font-semibold text-ink">{title}</h3>
-        <Link href={link.href} className="text-sm font-medium text-brand hover:underline">
-          {t("সব দেখুন", "See all")}
-        </Link>
+    <section className="bg-canvas-2 py-12 sm:py-16">
+      <Container>
+        {/* Header with App-like Gold/Primary Gradient Accent Bar */}
+        <Reveal>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="h-8 w-1.5 rounded-full bg-gradient-to-b from-[#EAB308] to-brand" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+                    {t("মিডিয়া", "Media")}
+                  </h2>
+                  <span className="rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-semibold text-brand">
+                    {t("মাল্টিমিডিয়া", "Multimedia")}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-ink-2">
+                  {t(
+                    "বয়ান, সংক্ষিপ্ত ক্লিপ, হামদ-নাত ও ইসলামী কিতাব একসাথে",
+                    "Talks, short clips, nasheeds & Islamic books all in one place"
+                  )}
+                </p>
+              </div>
+            </div>
+
+            {/* Segmented Tab Controls (like Flutter mobile app) */}
+            <div className="flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-line bg-panel p-1.5 shadow-sm scrollbar-none">
+              {MEDIA_TABS.map((tItem) => {
+                const active = tab === tItem.id;
+                const count = data.counts?.[tItem.countKey] ?? 0;
+                const Icon = tItem.icon;
+                return (
+                  <button
+                    key={tItem.id}
+                    onClick={() => setTab(tItem.id)}
+                    className={cn(
+                      "relative flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition whitespace-nowrap",
+                      active ? "text-white" : "text-ink-2 hover:bg-panel-2 hover:text-ink"
+                    )}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="activeMediaPill"
+                        className="absolute inset-0 rounded-xl bg-brand shadow-sm"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Icon className={cn("h-4 w-4", active ? "text-white" : "text-brand")} />
+                      <span>{t(tItem.bn, tItem.en)}</span>
+                      {count > 0 && (
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-[11px] font-semibold font-num",
+                            active ? "bg-white/20 text-white" : "bg-panel-2 text-ink-3"
+                          )}
+                        >
+                          {num(count, lang)}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Tab Content Panels */}
+        <div className="mt-8 sm:mt-10">
+          {tab === "boyan" && (
+            <motion.div
+              key="tab-boyan"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="space-y-8"
+            >
+              {/* Category Chips - Compact 8-9 items */}
+              <div>
+                <div className="mb-3.5 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold tracking-wide text-ink-3 uppercase">
+                    {t("বয়ানের বিভাগসমূহ", "Boyan Categories")}
+                  </h3>
+                  <Link href={LINKS.boyan.href} className="text-xs font-medium text-brand hover:underline">
+                    {t("সব বিভাগ দেখুন", "Browse all categories")} →
+                  </Link>
+                </div>
+                <CategoryGrid
+                  items={data.boyanCats.slice(0, 9).map((c, i) => ({
+                    key: c.name,
+                    href: `/boyan?category=${encodeURIComponent(c.name)}`,
+                    title: c.name,
+                    meta: t(`মোট ${num(c.count, lang)}টি বয়ান`, `${c.count} talks`),
+                    icon: CAT_ICONS[i % CAT_ICONS.length],
+                    tone: CAT_TONES[i % CAT_TONES.length],
+                  }))}
+                />
+              </div>
+
+              {/* Recent Talks Audio Player */}
+              <div>
+                <h3 className="mb-3.5 text-sm font-semibold tracking-wide text-ink-3 uppercase">
+                  {t("সাম্প্রতিক বয়ান — এক ক্লিকে শুনুন", "Recent Talks — One Tap Listen")}
+                </h3>
+                <RecentWithPlayer boyans={data.boyans} />
+              </div>
+
+              <ViewAll href={LINKS.boyan.href} label={t("সব বয়ান শুনুন ও ডাউনলোড করুন", "View all talks")} />
+            </motion.div>
+          )}
+
+          {tab === "clips" && (
+            <motion.div
+              key="tab-clips"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <ClipsGrid clips={data.clips} />
+              <ViewAll href={LINKS.clips.href} label={t("সব সংক্ষিপ্ত ক্লিপ দেখুন", "View all short clips")} />
+            </motion.div>
+          )}
+
+          {tab === "nasheed" && (
+            <motion.div
+              key="tab-nasheed"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <NasheedsGrid nasheeds={data.nasheeds} />
+              <ViewAll href={LINKS.nasheed.href} label={t("সব হামদ ও নাত শুনুন", "Listen to all nasheeds")} />
+            </motion.div>
+          )}
+
+          {tab === "book" && (
+            <motion.div
+              key="tab-book"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <BooksGrid books={data.books ?? []} />
+              <ViewAll href={LINKS.library.href} label={t("লাইব্রেরির সব বই দেখুন", "View all books in library")} />
+            </motion.div>
+          )}
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+/* ── Clips Grid ───────────────────────────────────────────────── */
+
+function ClipsGrid({ clips }: { clips: Clip[] }) {
+  const { t, lang } = useLang();
+  const player = usePlayer();
+  const queue = useMemo(() => clips.filter((c) => c.audioUrl).map(clipTrack), [clips]);
+
+  if (clips.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
+        <Sparkles className="mb-2 h-6 w-6 text-brand" />
+        {t("কোনো সংক্ষিপ্ত ক্লিপ পাওয়া যায়নি", "No short clips available")}
       </div>
-      <ul className="space-y-1">
-        {items.map(({ track, meta }) => {
-          const current = player.isCurrent(track.id);
-          const playing = current && player.playing;
-          return (
-            <li key={track.id}>
-              <button
-                onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                className={cn("flex w-full items-center gap-3 rounded-xl p-2 text-start transition", current ? "bg-brand-soft" : "hover:bg-panel-2")}
-              >
-                <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full", playing ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
-                  {playing ? <Equalizer active /> : link === LINKS.nasheed ? <Music2 className="h-4 w-4" /> : <Play className="ms-0.5 h-4 w-4" fill="currentColor" />}
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      {clips.map((clip) => {
+        const track = clipTrack(clip);
+        const current = player.isCurrent(track.id);
+        const playing = current && player.playing;
+        return (
+          <li key={clip.id} className="group">
+            <div
+              className={cn(
+                "flex h-full flex-col justify-between rounded-2xl border p-4 transition-all duration-300",
+                current
+                  ? "border-brand bg-brand-soft/70 shadow-sm"
+                  : "border-line bg-panel hover:border-brand/40 hover:shadow-md"
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <button
+                  type="button"
+                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
+                  aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
+                  className={cn(
+                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition active:scale-95",
+                    playing
+                      ? "bg-brand text-white shadow-md shadow-brand/25"
+                      : "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white"
+                  )}
+                >
+                  {playing ? <Equalizer active /> : <Play className="ms-0.5 h-4 w-4" fill="currentColor" />}
+                </button>
+                <div className="min-w-0 flex-1">
+                  <h4 className="line-clamp-2 text-sm font-semibold text-ink group-hover:text-brand transition">
+                    {clip.title}
+                  </h4>
+                  <p className="mt-1 text-xs text-ink-3">
+                    {formatDate(clip.createdAt, lang)}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between border-t border-line/60 pt-3 text-xs text-ink-3">
+                <span className="inline-flex items-center gap-1 font-medium text-brand">
+                  <Sparkles className="h-3 w-3" />
+                  {t("সংক্ষিপ্ত নসীহত", "Short Reminder")}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] text-ink">{track.title}</span>
-                  {meta && <span className="block truncate text-xs text-ink-3">{meta}</span>}
+                <button
+                  type="button"
+                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
+                  className="font-medium text-ink hover:text-brand"
+                >
+                  {playing ? t("চলছে...", "Playing...") : t("শুনুন", "Listen")}
+                </button>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/* ── Nasheeds Grid ────────────────────────────────────────────── */
+
+function NasheedsGrid({ nasheeds }: { nasheeds: Nasheed[] }) {
+  const { t, lang } = useLang();
+  const player = usePlayer();
+  const queue = useMemo(() => nasheeds.filter((n) => n.audioUrl).map(nasheedTrack), [nasheeds]);
+
+  if (nasheeds.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
+        <Music2 className="mb-2 h-6 w-6 text-brand" />
+        {t("কোনো হামদ ও নাত পাওয়া যায়নি", "No nasheeds available")}
+      </div>
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {nasheeds.map((n) => {
+        const track = nasheedTrack(n);
+        const current = player.isCurrent(track.id);
+        const playing = current && player.playing;
+        return (
+          <li key={n.id} className="group">
+            <div
+              className={cn(
+                "flex h-full flex-col justify-between rounded-2xl border p-4 transition-all duration-300",
+                current
+                  ? "border-brand bg-brand-soft/70 shadow-sm"
+                  : "border-line bg-panel hover:border-brand/40 hover:shadow-md"
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <button
+                  type="button"
+                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
+                  aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
+                  className={cn(
+                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition active:scale-95",
+                    playing
+                      ? "bg-brand text-white shadow-md shadow-brand/25"
+                      : "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white"
+                  )}
+                >
+                  {playing ? <Equalizer active /> : <Music2 className="h-4 w-4" />}
+                </button>
+                <div className="min-w-0 flex-1">
+                  <h4 className="line-clamp-2 text-sm font-semibold text-ink group-hover:text-brand transition">
+                    {n.title}
+                  </h4>
+                  <p className="mt-1 truncate text-xs text-ink-3">
+                    {n.artist || n.lyricist || t("হামদ ও নাত", "Hamd & Naat")}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between border-t border-line/60 pt-3 text-xs text-ink-3">
+                <span className="text-[11px] text-ink-3">
+                  {n.writingPlace || formatDate(n.createdAt, lang)}
                 </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+                <button
+                  type="button"
+                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
+                  className="font-medium text-brand hover:underline"
+                >
+                  {playing ? t("চলছে", "Playing") : t("বাজান", "Play")}
+                </button>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/* ── Books Grid ───────────────────────────────────────────────── */
+
+function BooksGrid({ books }: { books: Book[] }) {
+  const { t } = useLang();
+
+  if (books.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
+        <BookOpen className="mb-2 h-6 w-6 text-brand" />
+        {t("কোনো বই পাওয়া যায়নি", "No books available")}
+      </div>
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+      {books.map((b) => (
+        <li
+          key={b.id}
+          className="group flex flex-col justify-between rounded-2xl border border-line bg-panel p-3.5 transition hover:border-brand/40 hover:shadow-lg"
+        >
+          <div>
+            <a
+              href={b.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative block aspect-[3/4] overflow-hidden rounded-xl bg-panel-2 shadow-sm"
+            >
+              {b.coverUrl ? (
+                <Image
+                  src={b.coverUrl}
+                  alt={b.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                  unoptimized
+                />
+              ) : (
+                <span className="flex h-full flex-col items-center justify-center gap-2 text-ink-3">
+                  <BookOpen className="h-8 w-8 text-brand/60" />
+                  <span className="line-clamp-2 px-2 text-center text-[11px] font-medium text-ink-3">
+                    {b.title}
+                  </span>
+                </span>
+              )}
+            </a>
+            <h4 className="mt-3 line-clamp-2 px-1 text-sm font-semibold text-ink transition group-hover:text-brand">
+              {b.title}
+            </h4>
+            {b.author && b.author !== b.title && (
+              <p className="mt-0.5 truncate px-1 text-xs text-ink-3">{b.author}</p>
+            )}
+          </div>
+          <div className="mt-3.5 grid grid-cols-2 gap-1.5 border-t border-line/60 pt-2">
+            <a
+              href={b.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-8 items-center justify-center gap-1 rounded-xl bg-brand text-xs font-medium text-white transition hover:bg-brand-strong"
+            >
+              <ExternalLink className="h-3 w-3" />
+              {t("পড়ুন", "Read")}
+            </a>
+            <a
+              href={b.pdfUrl}
+              download
+              className="flex h-8 items-center justify-center gap-1 rounded-xl bg-panel-2 text-xs font-medium text-ink transition hover:bg-brand-soft hover:text-brand"
+            >
+              <Download className="h-3 w-3" />
+              {t("PDF", "PDF")}
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Dashboard, type HomeData } from "@/components/home/dashboard";
-import { getBoyanCategories, getBoyans, getClips, getLiveStatus, getMalfuzat, getNasheeds } from "@/lib/api";
+import { getBooks, getBoyanCategories, getBoyans, getClips, getLiveStatus, getMalfuzat, getNasheeds } from "@/lib/api";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
 import duaBook from "@/data/dua.json";
 
@@ -13,13 +13,14 @@ export const metadata: Metadata = {
 const norm = (s: string) => (s || "General").replace(/\s+/g, " ").trim();
 
 export default async function HomePage() {
-  const [live, boyans, categories, nasheeds, clips, malfuzat] = await Promise.all([
+  const [live, boyans, categories, nasheeds, clips, malfuzat, books] = await Promise.all([
     getLiveStatus(),
     getBoyans(),
     getBoyanCategories(),
     getNasheeds(),
     getClips(),
     getMalfuzat(),
+    getBooks(),
   ]);
 
   // Boyan categories with their counts, in the admin's order.
@@ -44,10 +45,11 @@ export default async function HomePage() {
     })),
     boyanCats,
     duaCats: duaBook.categories.map((c) => ({ id: c.id, title: c.title, count: c.items.length })),
-    nasheeds: nasheeds.filter((n) => n.type === "audio" && n.audioUrl).slice(0, 6),
-    clips: clips.filter((c) => c.audioUrl).slice(0, 6),
+    nasheeds: nasheeds.filter((n) => n.type === "audio" && n.audioUrl).slice(0, 8),
+    clips: clips.filter((c) => c.audioUrl).slice(0, 8),
     malfuz: malfuzat.slice(0, 6),
-    counts: { boyan: boyans.length, nasheed: nasheeds.length, clip: clips.length },
+    books: books.slice(0, 8),
+    counts: { boyan: boyans.length, nasheed: nasheeds.length, clip: clips.length, book: books.length },
   };
 
   return <Dashboard data={data} />;
