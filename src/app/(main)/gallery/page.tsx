@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/gallery` },
 };
 
-export default async function GalleryPage() {
-  const [albums, wallpapers] = await Promise.all([getGalleryAlbums(), getWallpapers()]);
-  return <GalleryClient albums={albums.filter((a) => a.photos.length)} wallpapers={wallpapers} />;
+export default async function GalleryPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const [{ tab }, albums, wallpapers] = await Promise.all([searchParams, getGalleryAlbums(), getWallpapers()]);
+  return <GalleryClient albums={albums.filter((a) => a.photos.length)} wallpapers={wallpapers} initialTab={tab === "wallpapers" ? "wallpapers" : undefined} />;
 }

@@ -46,7 +46,7 @@ export function PrayerTimesClient() {
       />
 
       <div className="grid gap-4 sm:gap-5 xl:grid-cols-12">
-        <section className="relative overflow-hidden rounded-[28px] bg-brand p-6 text-white sm:p-8 xl:col-span-5">
+        <section className="relative overflow-hidden rounded-3xl hero-surface p-6 sm:p-8 xl:col-span-5">
           <div className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-white/10" />
           <div className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-black/10" />
           <p className="relative text-sm opacity-75">{t("পরবর্তী নামাজ", "Next prayer")}</p>
@@ -65,7 +65,7 @@ export function PrayerTimesClient() {
               { v: m, bn: "মিনিট", en: "min" },
               { v: s, bn: "সেকেন্ড", en: "sec" },
             ].map(({ v, bn, en }) => (
-              <div key={en} className="flex-1 rounded-[20px] bg-white/12 p-4 text-center">
+              <div key={en} className="flex-1 rounded-2xl bg-white/12 p-4 text-center">
                 <p className="text-4xl font-semibold tabular-nums sm:text-5xl">{num(String(v).padStart(2, "0"), lang)}</p>
                 <p className="mt-1 text-xs opacity-75">{t(bn, en)}</p>
               </div>
@@ -90,7 +90,7 @@ export function PrayerTimesClient() {
               const isCur = current === name;
               const isNext = next?.name === name;
               return (
-                <li key={name} className={cn("rounded-[22px] p-4 transition", isCur ? "bg-brand text-white" : "bg-panel-2")}>
+                <li key={name} className={cn("rounded-2xl p-4 transition", isCur ? "bg-brand text-white" : "bg-panel-2")}>
                   <div className="flex items-center justify-between">
                     <span className={cn("flex h-9 w-9 items-center justify-center rounded-full", isCur ? "bg-white/20" : "bg-panel text-brand")}>
                       <Icon className="h-4 w-4" />
@@ -117,7 +117,7 @@ export function PrayerTimesClient() {
               <button
                 key={c.name}
                 onClick={() => setCity(c)}
-                className={cn("rounded-[20px] p-3.5 text-left transition", on ? "bg-brand-soft ring-1 ring-brand/40" : "bg-panel-2 hover:ring-1 hover:ring-brand/20")}
+                className={cn("rounded-2xl p-3.5 text-start transition", on ? "bg-brand-soft ring-1 ring-brand/40" : "bg-panel-2 hover:ring-1 hover:ring-brand/20")}
               >
                 <p className="text-sm font-semibold text-ink">{t(c.nameBn, c.name)}</p>
                 <p className="mt-0.5 text-xs text-ink-3">

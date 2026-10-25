@@ -5,7 +5,7 @@ import { Check, Download, Share2 } from "lucide-react";
 import type { Track } from "@/components/player/player-provider";
 import { usePlayer } from "@/components/player/player-provider";
 import { useLang } from "@/components/providers/lang-provider";
-import { Equalizer, PlayButton } from "./ui";
+import { Equalizer, NumberBadge, PlayButton } from "./ui";
 import { SITE_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { num } from "@/lib/format";
@@ -52,15 +52,13 @@ export function AudioRow({
     <li
       ref={ref}
       className={cn(
-        "group flex items-center gap-3 rounded-[20px] p-2.5 transition sm:gap-4 sm:p-3",
-        current ? "bg-brand-soft" : "hover:bg-panel-2",
+        "group flex items-center gap-3 rounded-2xl border p-2.5 transition sm:gap-4 sm:p-3",
+        current ? "border-brand/40 bg-brand-soft" : "border-line bg-panel hover:border-brand/40",
         highlight && !current && "ring-2 ring-brand/40",
       )}
     >
       {index !== undefined && (
-        <span className="hidden w-7 shrink-0 text-center font-num text-xs text-ink-3 sm:block">
-          {current ? <Equalizer active={playing} /> : num(index + 1, lang)}
-        </span>
+        <NumberBadge className="hidden sm:flex" n={current ? <Equalizer active={playing} /> : num(index + 1, lang)} />
       )}
       <PlayButton
         playing={playing}
@@ -69,7 +67,7 @@ export function AudioRow({
         label={playing ? t("থামান", "Pause") : t("শুনুন", "Play")}
       />
       <div className="min-w-0 flex-1">
-        <p className="line-clamp-2 text-sm font-medium text-ink sm:line-clamp-1 sm:text-[15px]">{track.title}</p>
+        <p className="line-clamp-2 text-[15px] text-ink sm:line-clamp-1">{track.title}</p>
         {meta && <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-ink-3">{meta}</div>}
       </div>
       {aside && <div className="hidden shrink-0 lg:block">{aside}</div>}

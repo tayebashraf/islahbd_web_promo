@@ -25,7 +25,7 @@ export default async function LibraryPage() {
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 2xl:grid-cols-6">
           {books.map((b) => (
             <li key={b.id} className="panel flex flex-col p-3">
-              <a href={b.pdfUrl} target="_blank" rel="noopener noreferrer" className="relative block aspect-[3/4] overflow-hidden rounded-[20px] bg-panel-2">
+              <a href={b.pdfUrl} target="_blank" rel="noopener noreferrer" className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-panel-2">
                 {b.coverUrl ? (
                   <Image src={b.coverUrl} alt={b.title} fill sizes="(max-width: 640px) 50vw, 20vw" className="object-cover transition duration-500 hover:scale-105" unoptimized />
                 ) : (

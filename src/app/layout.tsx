@@ -1,5 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display, Amiri, Hind_Siliguri, Urbanist } from "next/font/google";
+// Fonts are self-hosted (no Google Fonts request at build or run time):
+// Poppins for Latin, Kalpurush for Bangla (globals.css), Noto Naskh Arabic
+// for Arabic UI, Noto Nastaliq Urdu for Urdu, Amiri for Quranic text.
+import "@fontsource/poppins/300.css";
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
+import "@fontsource/noto-naskh-arabic/400.css";
+import "@fontsource/noto-naskh-arabic/600.css";
+import "@fontsource/amiri/400.css";
+import "@fontsource/amiri/700.css";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
@@ -7,39 +18,6 @@ import { SmartAppBanner } from "@/components/smart-app-banner";
 import { PlayerProvider } from "@/components/player/player-provider";
 
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const urbanist = Urbanist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-urbanist",
-  display: "swap",
-});
-
-const hindSiliguri = Hind_Siliguri({
-  subsets: ["bengali", "latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-bengali",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const amiri = Amiri({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  variable: "--font-amiri",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -81,16 +59,17 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ECEEEB" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0F0C" },
+    { media: "(prefers-color-scheme: light)", color: "#FAFDF9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0D0B" },
   ],
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" suppressHydrationWarning className={`${inter.variable} ${urbanist.variable} ${hindSiliguri.variable} ${playfair.variable} ${amiri.variable}`}>
+    <html lang="bn" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>

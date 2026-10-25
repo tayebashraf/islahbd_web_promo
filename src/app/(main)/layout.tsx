@@ -1,5 +1,11 @@
 import { DashboardShell } from "@/components/dashboard/shell";
+import { SplashScreen } from "@/components/ui/splash-screen";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  return <DashboardShell>{children}</DashboardShell>;
+  return (
+    <>
+      <SplashScreen minDuration={850} />
+      <DashboardShell>{children}</DashboardShell>
+    </>
+  );
 }

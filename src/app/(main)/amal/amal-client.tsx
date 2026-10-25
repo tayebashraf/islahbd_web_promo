@@ -82,7 +82,7 @@ export function AmalClient({
                 setQ("");
                 sync(s.id);
               }}
-              className={cn("panel p-4 text-left transition sm:p-5", on ? "bg-brand text-white" : "hover:ring-2 hover:ring-brand/20")}
+              className={cn("panel p-4 text-start transition sm:p-5", on ? "bg-brand text-white" : "hover:ring-2 hover:ring-brand/20")}
             >
               <p className={cn("text-xs", on ? "text-white/75" : "text-ink-3")}>{t(s.descBn, `${cats.length} collections`)}</p>
               <p className="mt-1 flex items-baseline justify-between gap-2">
@@ -108,7 +108,7 @@ export function AmalClient({
           </div>
         </Panel>
       ) : (
-        <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-12">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-12">
           <Panel className="h-fit p-3 sm:p-3 xl:sticky xl:top-5 xl:col-span-4">
             <ul className="scroll-hide flex gap-2 overflow-x-auto xl:max-h-[70vh] xl:flex-col xl:gap-1 xl:overflow-y-auto">
               {inSection.map((c) => {
@@ -121,7 +121,7 @@ export function AmalClient({
                         sync(section, c.id);
                       }}
                       className={cn(
-                        "flex w-full items-center gap-3 rounded-full p-2 pr-4 text-left text-sm transition xl:rounded-[18px]",
+                        "flex w-full items-center gap-3 rounded-full p-2 pe-4 text-start text-sm transition xl:rounded-[18px]",
                         on ? "bg-brand text-white" : "bg-panel-2 text-ink hover:bg-brand-soft xl:bg-transparent",
                       )}
                     >
@@ -192,7 +192,7 @@ function TextBlock({ b }: { b: AmalText }) {
   // Arabic already rendered inline by the fazilat text is common in sunnat
   // items; the dedicated block keeps the copyable version.
   return (
-    <div className="rounded-[20px] border border-line bg-panel p-4">
+    <div className="rounded-2xl border border-line bg-panel p-4">
       {(b.name || b.recite_count) && (
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           {b.name && <p className="text-sm font-semibold text-ink">{b.name}</p>}
@@ -237,7 +237,7 @@ function ItemCard({ item, index, context }: { item: AmalItem; index?: number; co
   };
 
   return (
-    <article className="rounded-[24px] bg-panel-2 p-4 sm:p-5">
+    <article className="rounded-2xl bg-panel-2 p-4 sm:p-5">
       <header className="flex items-start gap-3">
         {index !== undefined && (
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand font-num text-xs font-semibold text-white">{num(index + 1, lang)}</span>

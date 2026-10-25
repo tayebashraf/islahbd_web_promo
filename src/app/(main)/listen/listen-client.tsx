@@ -164,6 +164,9 @@ export function ListenClient() {
     };
   }, [status?.isLive]);
 
+  // Lets the HLS retry timer call the latest `play` without referencing it before declaration.
+  const playRef = useRef<(url?: string) => void>(() => {});
+
   const play = useCallback(
     async (url?: string) => {
       const rawUrl = url ?? status?.streamUrl;
@@ -233,7 +236,7 @@ export function ListenClient() {
           setError(t("স্ট্রিম লোড হচ্ছে, একটু অপেক্ষা করুন…", "Stream is starting, please wait…"));
           retryTimerRef.current = setTimeout(() => {
             retryTimerRef.current = null;
-            play(rawUrl); // pass original url; play() will re-proxy it
+            playRef.current(rawUrl); // pass original url; play() will re-proxy it
           }, 3000);
         } else {
           setError(t("স্ট্রিম লোড করা যায়নি", "Couldn't load the stream"));
@@ -245,6 +248,9 @@ export function ListenClient() {
     },
     [status?.streamUrl, teardownMedia, t, globalPlayer],
   );
+  useEffect(() => {
+    playRef.current = play;
+  }, [play]);
 
   const toggleRecording = useCallback(() => {
     const audio = recAudioRef.current;
@@ -263,7 +269,7 @@ export function ListenClient() {
   const live = status?.isLive ?? false;
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] bg-panel py-12 sm:py-16">
+    <div className="relative overflow-hidden rounded-3xl bg-panel py-12 sm:py-16">
       {/* Ambient glow orbs, matching the hero */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
@@ -334,7 +340,7 @@ export function ListenClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className={cn(
-            "relative overflow-hidden rounded-[28px] border bg-panel-2 p-8 text-center transition-colors duration-500 sm:p-10",
+            "relative overflow-hidden rounded-3xl border bg-panel-2 p-8 text-center transition-colors duration-500 sm:p-10",
             live ? "border-red-500/25" : "border-line",
           )}
         >
@@ -396,7 +402,7 @@ export function ListenClient() {
                 ) : playing ? (
                   <Pause className="h-9 w-9" fill="currentColor" />
                 ) : (
-                  <Play className="ml-1 h-9 w-9" fill="currentColor" />
+                  <Play className="ms-1 h-9 w-9" fill="currentColor" />
                 )}
               </button>
             </div>
@@ -438,7 +444,7 @@ export function ListenClient() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-6 rounded-[28px] bg-panel-2 p-6"
+              className="mt-6 rounded-3xl bg-panel-2 p-6"
             >
               <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand">
                 <Radio className="h-3.5 w-3.5" />
@@ -454,11 +460,11 @@ export function ListenClient() {
                   {recPlaying ? (
                     <Pause className="h-6 w-6" fill="currentColor" />
                   ) : (
-                    <Play className="ml-0.5 h-6 w-6" fill="currentColor" />
+                    <Play className="ms-0.5 h-6 w-6" fill="currentColor" />
                   )}
                 </button>
 
-                <div className="min-w-0 flex-1 text-left">
+                <div className="min-w-0 flex-1 text-start">
                   <p className="truncate text-lg font-bold text-card-foreground">
                     {recording.title || t("সরাসরি সম্প্রচার", "Live Broadcast")}
                   </p>

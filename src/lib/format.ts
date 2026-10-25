@@ -1,18 +1,18 @@
-const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+import { INTL_LOCALE, localDigits, type Lang } from "./i18n";
 
 export function bnNum(value: number | string): string {
-  return String(value).replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
+  return localDigits(value, "bn");
 }
 
-/** Localized digits: Bangla numerals for `bn`, Latin otherwise. */
-export function num(value: number | string, lang: "bn" | "en"): string {
-  return lang === "bn" ? bnNum(value) : String(value);
+/** Localized digits: Bangla, Arabic-Indic or Urdu numerals; Latin for English. */
+export function num(value: number | string, lang: Lang): string {
+  return localDigits(value, lang);
 }
 
-export function formatDate(iso: string, lang: "bn" | "en", opts?: Intl.DateTimeFormatOptions): string {
+export function formatDate(iso: string, lang: Lang, opts?: Intl.DateTimeFormatOptions): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-GB", {
+  return new Intl.DateTimeFormat(INTL_LOCALE[lang], {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -21,10 +21,10 @@ export function formatDate(iso: string, lang: "bn" | "en", opts?: Intl.DateTimeF
   }).format(d);
 }
 
-export function formatTime(iso: string, lang: "bn" | "en"): string {
+export function formatTime(iso: string, lang: Lang): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-US", {
+  return new Intl.DateTimeFormat(lang === "en" ? "en-US" : INTL_LOCALE[lang], {
     hour: "numeric",
     minute: "2-digit",
     timeZone: "Asia/Dhaka",
@@ -32,9 +32,11 @@ export function formatTime(iso: string, lang: "bn" | "en"): string {
 }
 
 /** Hijri date without the trailing era marker ("যুগ" / "AH"). */
-export function formatHijri(date: Date, lang: "bn" | "en"): string {
+export function formatHijri(date: Date, lang: Lang): string {
   try {
-    const parts = new Intl.DateTimeFormat(`${lang === "bn" ? "bn-BD" : "en-US"}-u-ca-islamic-umalqura`, {
+    const base = lang === "en" ? "en-US" : INTL_LOCALE[lang].split("-u-")[0];
+    const nu = lang === "ur" ? "-nu-arabext" : "";
+    const parts = new Intl.DateTimeFormat(`${base}-u-ca-islamic-umalqura${nu}`, {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -60,19 +62,29 @@ export function clock(seconds: number): string {
   return h ? `${h}:${String(m).padStart(2, "0")}:${ss}` : `${m}:${ss}`;
 }
 
-export function timeAgo(iso: string | null | undefined, lang: "bn" | "en"): string {
+export function timeAgo(iso: string | null | undefined, lang: Lang): string {
   if (!iso) return "";
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  const t = (bn: string, en: string) => (lang === "bn" ? bn : en);
-  if (mins < 1) return t("এইমাত্র", "just now");
-  if (mins < 60) return t(`${bnNum(mins)} মিনিট আগে`, `${mins} min ago`);
+  if (lang === "bn") {
+    if (mins < 1) return "এইমাত্র";
+    if (mins < 60) return `${bnNum(mins)} মিনিট আগে`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${bnNum(hours)} ঘণ্টা আগে`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${bnNum(days)} দিন আগে`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${bnNum(months)} মাস আগে`;
+    return `${bnNum(Math.floor(months / 12))} বছর আগে`;
+  }
+  const rtf = new Intl.RelativeTimeFormat(INTL_LOCALE[lang], { numeric: "auto", style: lang === "en" ? "short" : "long" });
+  if (mins < 60) return rtf.format(-Math.max(mins, 0), "minute");
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return t(`${bnNum(hours)} ঘণ্টা আগে`, `${hours}h ago`);
+  if (hours < 24) return rtf.format(-hours, "hour");
   const days = Math.floor(hours / 24);
-  if (days < 30) return t(`${bnNum(days)} দিন আগে`, `${days}d ago`);
+  if (days < 30) return rtf.format(-days, "day");
   const months = Math.floor(days / 30);
-  if (months < 12) return t(`${bnNum(months)} মাস আগে`, `${months}mo ago`);
-  return t(`${bnNum(Math.floor(months / 12))} বছর আগে`, `${Math.floor(months / 12)}y ago`);
+  if (months < 12) return rtf.format(-months, "month");
+  return rtf.format(-Math.floor(months / 12), "year");
 }
 
 /** Speaker strings carry several spellings of the same honorific — show one. */

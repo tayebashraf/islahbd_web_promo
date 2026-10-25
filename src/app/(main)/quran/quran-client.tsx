@@ -50,7 +50,7 @@ export function QuranClient() {
       />
 
       <div className="grid gap-4 sm:gap-5 xl:grid-cols-12">
-        <section className="relative overflow-hidden rounded-[28px] bg-brand p-6 text-white xl:col-span-4">
+        <section className="relative overflow-hidden rounded-3xl hero-surface p-6 xl:col-span-4">
           <div className="pointer-events-none absolute -top-20 -right-14 h-56 w-56 rounded-full bg-white/10" />
           <p className="relative font-arabic text-3xl leading-loose opacity-90" dir="rtl">
             بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
@@ -60,7 +60,7 @@ export function QuranClient() {
             <select
               value={qari.id}
               onChange={(e) => setQari(e.target.value)}
-              className="h-12 w-full cursor-pointer appearance-none rounded-full bg-white/15 pr-10 pl-4 text-sm font-medium text-white outline-none ring-1 ring-white/25 [&>option]:text-ink"
+              className="h-12 w-full cursor-pointer appearance-none rounded-full bg-white/15 pe-10 ps-4 text-sm font-medium text-white outline-none ring-1 ring-white/25 [&>option]:text-ink"
             >
               {QARIS.map((x) => (
                 <option key={x.id} value={x.id}>
@@ -78,7 +78,7 @@ export function QuranClient() {
               <Headphones className="h-4 w-4" /> {t("ধারাবাহিক শুনুন", "Play in order")}
             </button>
             <span className="text-xs opacity-75">
-              <Mic className="mr-1 inline h-3.5 w-3.5" />
+              <Mic className="me-1 inline h-3.5 w-3.5" />
               {t(`${num(QARIS.length, lang)} জন ক্বারী`, `${QARIS.length} reciters`)}
             </span>
           </div>
@@ -100,13 +100,13 @@ export function QuranClient() {
               ]}
             />
           </div>
-          <ul className="mt-4 grid max-h-[560px] gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2">
+          <ul className="mt-4 grid max-h-[560px] grid-cols-1 gap-1.5 overflow-y-auto pe-1 sm:grid-cols-2">
             {surahs.map((s, i) => {
               const track = queue[i];
               const current = player.isCurrent(track.id);
               const playing = current && player.playing;
               return (
-                <li key={s.number} className={cn("flex items-center gap-3 rounded-[20px] p-2.5 transition", current ? "bg-brand-soft" : "bg-panel-2/60 hover:bg-panel-2")}>
+                <li key={s.number} className={cn("flex items-center gap-3 rounded-2xl p-2.5 transition", current ? "bg-brand-soft" : "bg-panel-2/60 hover:bg-panel-2")}>
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-panel font-num text-sm font-semibold text-brand">
                     {current ? <Equalizer active={playing} /> : num(s.number, lang)}
                   </span>

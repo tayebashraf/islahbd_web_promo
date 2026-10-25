@@ -2,749 +2,834 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
-  AudioLines,
+  BookOpen,
   CalendarDays,
-  ChevronDown,
-  Clock,
-  Download,
-  Headphones,
+  ChevronsUpDown,
+  Grid2x2,
+  HandHeart,
+  HeartHandshake,
+  Landmark,
   MapPin,
-  Megaphone,
   Mic2,
+  Moon,
   Music2,
-  Quote,
+  Pause,
+  Play,
   Radio,
-  ScrollText,
-  Smartphone,
+  RotateCcw,
+  RotateCw,
+  ShieldCheck,
+  SkipBack,
+  SkipForward,
   Sparkles,
+  Sun,
+  Sunrise,
+  Sunset,
   Users,
+  type LucideIcon,
 } from "lucide-react";
-import type { AmalSection, Boyan, Clip, GalleryAlbum, LiveStatus, Malfuz, Nasheed, Notice } from "@/lib/api";
+import type { Boyan, Clip, LiveStatus, Malfuz, Nasheed } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
-import { usePlayer } from "@/components/player/player-provider";
-import { Equalizer, Panel, PanelHeader, Pill, PlayButton, Segmented } from "@/components/dashboard/ui";
-import { AreaChart, PillBarChart } from "@/components/dashboard/charts";
-import { ALL_LINKS, LINKS } from "@/lib/nav";
-import { boyanTrack, clipTrack, nasheedTrack, recordingTrack } from "@/lib/tracks";
-import { formatDate, formatHijri, formatTime, num, shortSpeaker, timeAgo, youtubeThumb } from "@/lib/format";
+import { usePlayer, type Track } from "@/components/player/player-provider";
+import { FeatureLink, ToneIcon, useShell } from "@/components/dashboard/shell";
+import { Equalizer, NumberBadge, SectionHeading, ViewAll } from "@/components/dashboard/ui";
+import { LINKS, QUICK_LINKS, type NavLink } from "@/lib/nav";
+import { boyanTrack, clipTrack, nasheedTrack } from "@/lib/tracks";
+import { clock, formatDate, formatHijri, formatTime, num, shortSpeaker } from "@/lib/format";
 import { PRAYER_BN, to12h, useNow, usePrayer } from "@/lib/use-prayer";
-import { BD_CITIES, APP_STORE_URL, PLAY_STORE_URL } from "@/lib/constants";
+import { APP_STORE_URL, BD_CITIES, PLAY_STORE_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export interface HomeData {
   live: LiveStatus | null;
   boyans: Boyan[];
+  boyanCats: { name: string; count: number }[];
+  duaCats: { id: string; title: string; count: number }[];
   nasheeds: Nasheed[];
-  videoNasheeds: Nasheed[];
   clips: Clip[];
   malfuz: Malfuz[];
-  notices: Notice[];
-  amal: { id: number; section: AmalSection; title: string; itemCount: number }[];
-  albums: GalleryAlbum[];
-  counts: Record<"boyan" | "nasheed" | "clip" | "malfuz" | "amal" | "books" | "wallpapers" | "photos" | "notices", number>;
-  growth: { month: string; total: number }[];
+  counts: Record<"boyan" | "nasheed" | "clip", number>;
 }
 
-const rise = (i: number) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.45, delay: 0.05 * i, ease: [0.22, 1, 0.36, 1] as const },
-});
+/** Fades a block in as it scrolls into view. */
+function Reveal({ className, children, delay = 0 }: { className?: string; children: React.ReactNode; delay?: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      initial={reduce ? false : { opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const Container = ({ className, children }: { className?: string; children: React.ReactNode }) => (
+  <div className={cn("mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8", className)}>{children}</div>
+);
+
+const CAT_ICONS: LucideIcon[] = [Mic2, BookOpen, Users, Landmark, Moon, Sparkles, Radio, HeartHandshake, CalendarDays];
+const DUA_ICONS: LucideIcon[] = [ShieldCheck, HandHeart, Sun, Moon, Sparkles, BookOpen, HeartHandshake];
+const CAT_TONES = ["#417360", "#D97706", "#0284C7", "#BE185D", "#7C3AED", "#0F766E", "#DC2626", "#A16207", "#4F46E5"];
 
 export function Dashboard({ data }: { data: HomeData }) {
   const { t, lang } = useLang();
-  const now = useNow(60_000);
 
   return (
     <div>
-      {/* Greeting row */}
-      <div className="mb-5 flex flex-col gap-4 sm:mb-6 lg:flex-row lg:items-center lg:justify-between">
-        <motion.h1 {...rise(0)} className="text-[30px] leading-tight font-semibold tracking-tight text-ink sm:text-[40px]">
-          {t("আসসালামু আলাইকুম,", "Assalamu Alaikum,")} <span className="font-normal text-ink-3">{t("স্বাগতম", "welcome")}</span>
-        </motion.h1>
-        <motion.div {...rise(1)} className="flex flex-wrap items-center gap-2.5">
-          <span className="inline-flex h-11 items-center gap-2.5 rounded-full bg-panel px-4 text-sm text-ink">
-            <CalendarDays className="h-4 w-4 text-ink-2" />
-            {now ? (
-              <>
-                <span className="font-medium">{formatHijri(now, lang)}</span>
-                <span className="text-ink-3">·</span>
-                <span className="text-ink-2">{formatDate(now.toISOString(), lang, { weekday: "short", month: "long", year: undefined })}</span>
-              </>
-            ) : (
-              <span className="skeleton h-4 w-48" />
-            )}
-          </span>
-          <Link href={LINKS.live.href} className="inline-flex h-11 items-center gap-2 rounded-full bg-panel px-4 text-sm font-medium text-ink transition hover:bg-brand hover:text-white">
-            <Radio className="h-4 w-4" />
-            {t("লাইভ শুনুন", "Listen live")}
-          </Link>
-        </motion.div>
-      </div>
+      <Hero live={data.live} />
 
-      {/* Row 1 */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-12">
-        <motion.div {...rise(2)} className="flex flex-col gap-4 sm:gap-5 xl:col-span-3">
-          <LiveCard live={data.live} />
-          <NextPrayerCard />
-        </motion.div>
-        <motion.div {...rise(3)} className="md:col-span-2 xl:col-span-5 xl:order-none">
-          <UploadChart boyans={data.boyans} />
-        </motion.div>
-        <motion.div {...rise(4)} className="md:col-span-2 xl:col-span-4">
-          <LibraryCard data={data} />
-        </motion.div>
-      </div>
-
-      {/* Row 2 */}
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-12">
-        <motion.div {...rise(5)} className="xl:col-span-8">
-          <RecentBoyans boyans={data.boyans} />
-        </motion.div>
-        <motion.div {...rise(6)} className="xl:col-span-4">
-          <MalfuzCard malfuz={data.malfuz} notices={data.notices} total={data.counts.notices} />
-        </motion.div>
-      </div>
-
-      {/* Feature grid */}
-      <FeatureGrid counts={data.counts} />
-
-      {/* Row 3 */}
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:gap-5 md:grid-cols-2 xl:grid-cols-12">
-        <div className="xl:col-span-4">
-          <PrayerPanel />
-        </div>
-        <div className="xl:col-span-4">
-          <AudioListPanel
-            title={t("হামদ ও নাত", "Hamd & Naat")}
-            subtitle={t(`${num(data.counts.nasheed, lang)}টি নাশিদ`, `${data.counts.nasheed} nasheeds`)}
-            icon={Music2}
-            href={LINKS.nasheed.href}
-            items={data.nasheeds.map((n) => ({ track: nasheedTrack(n), meta: n.composer || n.lyricist || "" }))}
+      {/* Boyan categories */}
+      <section className="py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              title={t("বয়ানের বিভাগসমূহ", "Boyan categories")}
+              subtitle={t(`মোট ${num(data.counts.boyan, lang)}টি বয়ান — বিভাগ বেছে নিয়ে শুনুন`, `${data.counts.boyan} talks — pick a category and listen`)}
+            />
+          </Reveal>
+          <CategoryGrid
+            items={data.boyanCats.slice(0, 9).map((c, i) => ({
+              key: c.name,
+              href: `/boyan?category=${encodeURIComponent(c.name)}`,
+              title: c.name,
+              meta: t(`মোট ${num(c.count, lang)}টি বয়ান`, `${c.count} talks`),
+              icon: CAT_ICONS[i % CAT_ICONS.length],
+              tone: CAT_TONES[i % CAT_TONES.length],
+            }))}
           />
-        </div>
-        <div className="md:col-span-2 xl:col-span-4">
-          <AudioListPanel
-            title={t("শর্ট ক্লিপ", "Short Clips")}
-            subtitle={t(`${num(data.counts.clip, lang)}টি ছোট নসীহত`, `${data.counts.clip} short reminders`)}
-            icon={Sparkles}
-            href={LINKS.clips.href}
-            items={data.clips.map((c) => ({ track: clipTrack(c), meta: timeAgo(c.createdAt, lang) }))}
+          <ViewAll href={LINKS.boyan.href} label={t("সব বয়ান দেখুন", "View all talks")} />
+        </Container>
+      </section>
+
+      {/* Recent talks + player */}
+      <section className="bg-canvas-2 py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <SectionHeading title={t("সাম্প্রতিক বয়ান", "Recent talks")} subtitle={t("সর্বশেষ আপলোড হওয়া বয়ান — এক ক্লিকে শুনুন", "The latest uploads — one tap to listen")} />
+          </Reveal>
+          <RecentWithPlayer boyans={data.boyans} />
+        </Container>
+      </section>
+
+      {/* Duas */}
+      <section className="py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              title={t("দোয়ার বিভাগসমূহ", "Dua categories")}
+              subtitle={t("খাযায়েনে কোরআন ও হাদীছ থেকে দৈনন্দিন মাসনূন দোয়া", "Everyday masnoon duas from Khazain-e-Quran-o-Hadith")}
+            />
+          </Reveal>
+          <CategoryGrid
+            items={data.duaCats.map((c, i) => ({
+              key: c.id,
+              href: `/dua?c=${c.id}`,
+              title: c.title,
+              meta: t(`মোট ${num(c.count, lang)}টি দোয়া`, `${c.count} duas`),
+              icon: DUA_ICONS[i % DUA_ICONS.length],
+              tone: CAT_TONES[(i + 3) % CAT_TONES.length],
+            }))}
           />
-        </div>
-      </div>
+          <ViewAll href={LINKS.dua.href} label={t("সব দোয়া দেখুন", "View all duas")} />
+        </Container>
+      </section>
 
-      {/* Row 4 */}
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-12">
-        <div className="xl:col-span-7">
-          <AmalPanel amal={data.amal} />
-        </div>
-        <div className="xl:col-span-5">
-          <GalleryPanel albums={data.albums} videos={data.videoNasheeds} photos={data.counts.photos} />
-        </div>
-      </div>
+      {/* Malfuz carousel */}
+      {data.malfuz.length > 0 && (
+        <section className="bg-canvas-2 py-14 sm:py-20">
+          <Container>
+            <QuoteCarousel malfuz={data.malfuz} />
+          </Container>
+        </section>
+      )}
 
-      <AppBand />
+      {/* Nasheed + clips */}
+      <section className="py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <SectionHeading title={t("হামদ, নাত ও নসীহত", "Hamd, naat & reminders")} subtitle={t("হৃদয় ছোঁয়া নাশিদ আর ছোট ছোট নসীহত", "Heart-touching nasheeds and short reminders")} />
+          </Reveal>
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <AudioCard
+              title={t("হামদ ও নাত", "Hamd & Naat")}
+              link={LINKS.nasheed}
+              items={data.nasheeds.map((n) => ({ track: nasheedTrack(n), meta: n.artist || n.lyricist || "" }))}
+            />
+            <AudioCard title={t("শর্ট ক্লিপ", "Short clips")} link={LINKS.clips} items={data.clips.map((c) => ({ track: clipTrack(c), meta: formatDate(c.createdAt, lang) }))} />
+          </div>
+        </Container>
+      </section>
+
+      <AppSection />
+      <SupportSection />
     </div>
   );
 }
 
-/* ── Live (the "credit card") ─────────────────────────────────── */
+/* ── Hero ─────────────────────────────────────────────────────── */
 
-function LiveCard({ live }: { live: LiveStatus | null }) {
-  const { t, lang } = useLang();
-  const player = usePlayer();
-  const isLive = !!live?.isLive;
-  const rec = live?.recording ?? live?.recordings?.[0] ?? null;
-  const recTrack = rec?.audioUrl ? recordingTrack(rec) : null;
-  const recPlaying = !!recTrack && player.isCurrent(recTrack.id) && player.playing;
+const FIVE = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
+const PRAYER_ICON: Record<string, LucideIcon> = { Fajr: Sunrise, Sunrise, Dhuhr: Sun, Asr: Sun, Maghrib: Sunset, Isha: Moon };
+
+type Prayer = ReturnType<typeof usePrayer>;
+
+function Hero({ live }: { live: LiveStatus | null }) {
+  const { t } = useLang();
+  const prayer = usePrayer();
 
   return (
-    <Panel className="p-3 sm:p-3">
-      <PanelHeader
-        className="px-3 pt-3 pb-4"
-        title={t("লাইভ মজলিস", "Live majlis")}
-        subtitle={isLive ? t("এখন সরাসরি সম্প্রচার চলছে", "Broadcasting right now") : t("সর্বশেষ সম্প্রচার", "Latest broadcast")}
-        href={LINKS.live.href}
-      />
-      <div className="relative overflow-hidden rounded-[22px] bg-brand p-5 text-white">
-        <div className="pointer-events-none absolute -top-16 -right-10 h-44 w-44 rounded-full bg-white/10" />
-        <div className="pointer-events-none absolute -bottom-20 -left-8 h-40 w-40 rounded-full bg-black/10" />
-        <div className="relative flex items-center justify-between">
-          <span className="text-lg font-bold tracking-tight italic">islah<span className="opacity-70">LIVE</span></span>
-          {isLive ? (
-            <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
-              {t("সরাসরি", "LIVE")}
+    <section className="relative overflow-hidden">
+      <Scenery />
+      <Container className="relative pt-6 pb-12 sm:pt-12 sm:pb-20">
+        {/* Hero Motion Graphic Headline & Shaykh Accreditation */}
+        <div className="mx-auto max-w-4xl text-center px-3 pb-6 sm:pb-10">
+          {/* Top Line: Kholifa accreditation badge with animated ambient glow */}
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/25 bg-brand-soft/90 px-4 py-1.5 text-xs sm:text-sm font-medium text-brand shadow-sm backdrop-blur-md dark:border-brand/35 dark:bg-brand-soft/25"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
             </span>
-          ) : (
-            <AudioLines className="h-5 w-5 opacity-80" />
-          )}
+            <span className="tracking-wide">
+              {t(
+                "তরজুমানে আকাবির হযরত মাওলানা শাহ আব্দুল মতিন (রহ.)-এর খলিফা",
+                "Khalifah of Tarjuman-e-Akabir Hazrat Mawlana Shah Abdul Matin (Rah.)"
+              )}
+            </span>
+          </motion.div>
+
+          {/* Big Revered Scholar Name: হযরত মাওলানা তৈয়্যব আশরাফ সাহেব দামাত বারাকাতুহুম */}
+          <motion.h1
+            initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-heading text-3xl font-bold tracking-tight text-ink sm:text-4xl md:text-5xl lg:text-[50px] leading-[1.28] sm:leading-[1.22]"
+          >
+            {t(
+              "হযরত মাওলানা তৈয়্যব আশরাফ সাহেব দামাত বারাকাতুহুম",
+              "Hazrat Mawlana Tayeb Ashraf Saheb Damat Barakatuhum"
+            )}
+          </motion.h1>
+
+          {/* Primary Platform Headline: বয়ান, কুরআন, দোয়া ও আমলের ঠিকানা */}
+          <motion.h2
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.22, ease: "easeOut" }}
+            className="mx-auto mt-3.5 sm:mt-5 font-heading text-xl font-semibold text-ink/90 sm:text-2xl md:text-3xl max-w-2xl"
+          >
+            {t("বয়ান, কুরআন, দোয়া ও আমলের ঠিকানা", "Sanctuary of Talks, Quran, Duas & Daily Amal")}
+          </motion.h2>
+
+          {/* Complementary Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.32, ease: "easeOut" }}
+            className="mx-auto mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-base text-ink-2 leading-relaxed"
+          >
+            {t(
+              "হযরত মাওলানা তৈয়্যব আশরাফ সাহেব দা.বা.-এর ইসলাহী বয়ান, আত্মশুদ্ধি ও দ্বীনি খেদমত",
+              "Islahi talks, spiritual guidance and Islamic service of Hazrat Mawlana Tayeb Ashraf Saheb (db)"
+            )}
+          </motion.p>
         </div>
-        <p className="relative mt-4 text-xs opacity-75">{isLive ? t("এখন চলছে", "On air") : t("রেকর্ডিং", "Recording")}</p>
-        <p className="relative mt-0.5 line-clamp-2 text-[22px] leading-snug font-semibold">
-          {(isLive ? live?.title : rec?.title) || t("লাইভ সম্প্রচার", "Live broadcast")}
-        </p>
-        <div className="relative mt-5 flex items-end justify-between gap-3 text-xs">
-          <div className="min-w-0">
-            <p className="truncate opacity-90">{shortSpeaker((isLive ? live?.speaker : rec?.speaker) || "islahbd")}</p>
-            <p className="mt-0.5 truncate opacity-65">
-              {isLive
-                ? t(`${num(live?.listeners ?? 0, lang)} জন শুনছেন`, `${live?.listeners ?? 0} listening`)
-                : [rec?.duration && num(rec.duration, lang), rec?.endedAt && timeAgo(rec.endedAt, lang)].filter(Boolean).join(" · ")}
-            </p>
+
+        <MobilePrayer prayer={prayer} />
+
+        <div className="mx-auto mt-10 hidden max-w-[940px] grid-cols-2 gap-6 lg:grid">
+          <DateCard prayer={prayer} />
+          <div className="glass-card flex items-center gap-6 p-5">
+            <PrayerRing prayer={prayer} size={176} />
+            <PrayerList prayer={prayer} className="flex-1" />
           </div>
-          {isLive ? (
-            <Link href={LINKS.live.href} className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-brand-strong">
-              <Headphones className="h-4 w-4" />
-              {t("শুনুন", "Listen")}
-            </Link>
-          ) : recTrack ? (
-            <PlayButton
-              playing={recPlaying}
-              onClick={() => (recPlaying ? player.pause() : player.play(recTrack))}
-              label={t("রেকর্ডিং শুনুন", "Play recording")}
-              className={cn("bg-white text-brand-strong hover:bg-white hover:text-brand-strong", recPlaying && "bg-white text-brand-strong")}
-            />
-          ) : null}
         </div>
-      </div>
-    </Panel>
+
+        <QuickMenu />
+        {live?.isLive && <LiveBanner live={live} />}
+      </Container>
+    </section>
   );
 }
 
-function NextPrayerCard() {
-  const { t, lang } = useLang();
-  const { next, remaining } = usePrayer();
-  const h = Math.floor(remaining / 3600);
-  const m = Math.floor((remaining % 3600) / 60);
+function remainingClock(sec: number, lang: Parameters<typeof num>[1]) {
+  const parts = [Math.floor(sec / 3600), Math.floor((sec % 3600) / 60), sec % 60];
+  return num(parts.map((v) => String(v).padStart(2, "0")).join(":"), lang);
+}
+
+function CitySelect({ prayer, className }: { prayer: Prayer; className?: string }) {
+  const { t } = useLang();
   return (
-    <Link href={LINKS.prayer.href} className="panel flex items-center justify-between gap-3 p-5 transition hover:ring-2 hover:ring-brand/20">
-      <div className="min-w-0">
-        <p className="text-xs text-ink-3">{t("পরবর্তী নামাজ", "Next prayer")}</p>
-        {next ? (
-          <p className="mt-1 truncate text-[26px] leading-tight font-semibold text-ink">
-            {t(PRAYER_BN[next.name], next.name)} <span className="font-num">{num(to12h(next.time), lang)}</span>
-          </p>
-        ) : (
-          <span className="skeleton mt-2 block h-7 w-36" />
-        )}
+    <select
+      value={prayer.city.name}
+      onChange={(e) => prayer.setCity(BD_CITIES.find((c) => c.name === e.target.value) ?? BD_CITIES[0])}
+      className={cn("cursor-pointer bg-transparent outline-none", className)}
+      aria-label={t("শহর", "City")}
+    >
+      {BD_CITIES.map((c) => (
+        <option key={c.name} value={c.name}>
+          {t(`${c.nameBn}, বাংলাদেশ`, `${c.name}, Bangladesh`)}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+/** Circular countdown to the next prayer. */
+function PrayerRing({ prayer, size }: { prayer: Prayer; size: number }) {
+  const { t, lang } = useLang();
+  const r = 70;
+  const c = 2 * Math.PI * r;
+  const angle = prayer.progress * 2 * Math.PI - Math.PI / 2;
+  const name = prayer.current || prayer.next?.name || "";
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg viewBox="0 0 180 180" className="h-full w-full" aria-hidden>
+        <circle cx="90" cy="90" r={r} fill="none" stroke="var(--brand-soft)" strokeWidth="14" />
+        <circle
+          cx="90"
+          cy="90"
+          r={r}
+          fill="none"
+          stroke="var(--brand)"
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={c * prayer.progress}
+          transform="rotate(-90 90 90)"
+          className="transition-[stroke-dashoffset] duration-700"
+        />
+        <circle cx={90 + r * Math.cos(angle)} cy={90 + r * Math.sin(angle)} r="10" fill="var(--panel)" stroke="var(--brand)" strokeWidth="3" />
+        <circle cx={90 + r * Math.cos(angle)} cy={90 + r * Math.sin(angle)} r="4" fill="var(--brand)" />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <p className="text-lg font-semibold text-ink">{name ? t(PRAYER_BN[name], name) : "—"}</p>
+        <p className="text-[13px] text-ink-2">{t("বাকি সময়", "Remaining")}</p>
+        <p className="mt-0.5 font-num text-xl font-medium text-ink" dir="ltr">
+          {prayer.now ? remainingClock(prayer.remaining, lang) : "--:--:--"}
+        </p>
       </div>
-      {next && (
-        <Pill>
-          {h > 0 ? t(`${num(h, lang)}ঘ ${num(m, lang)}মি`, `${h}h ${m}m`) : t(`${num(m, lang)} মিনিট`, `${m} min`)}
-        </Pill>
-      )}
+    </div>
+  );
+}
+
+function MobilePrayer({ prayer }: { prayer: Prayer }) {
+  const { t, lang } = useLang();
+  const [open, setOpen] = useState(false);
+  const name = prayer.current || "";
+  return (
+    <div className="lg:hidden">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <span className="inline-block rounded-full bg-brand-soft px-4 py-1 text-sm text-brand">{t("এখন", "Now")}</span>
+          <p className="mt-2 font-heading text-[34px] leading-none text-ink">{name ? t(PRAYER_BN[name], name) : "—"}</p>
+          <p className="mt-3 flex items-center gap-1 text-sm text-ink-2">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-brand" />
+            <CitySelect prayer={prayer} />
+          </p>
+          <p className="mt-3 text-[15px] font-semibold text-ink">{prayer.now ? formatHijri(prayer.now, lang) : " "}</p>
+          <p className="mt-1 text-sm text-ink-2">{prayer.now ? formatDate(prayer.now.toISOString(), lang, { month: "long", weekday: "long" }) : " "}</p>
+        </div>
+        <PrayerRing prayer={prayer} size={148} />
+      </div>
+
+      <div className="mt-4 flex justify-center">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label={t("সব ওয়াক্ত দেখুন", "Show all prayer times")}
+          className="flex h-9 w-24 items-center justify-center rounded-full bg-brand-soft text-brand"
+        >
+          <ChevronsUpDown className="h-4 w-4" />
+        </button>
+      </div>
+      <motion.div initial={false} animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }} className="overflow-hidden">
+        <PrayerList prayer={prayer} className="mt-3" />
+      </motion.div>
+    </div>
+  );
+}
+
+function PrayerList({ prayer, className }: { prayer: Prayer; className?: string }) {
+  const { t, lang } = useLang();
+  return (
+    <ul className={cn("space-y-1 rounded-2xl bg-panel/80 p-2", className)}>
+      {FIVE.map((name) => {
+        const on = prayer.current === name;
+        const Icon = PRAYER_ICON[name];
+        return (
+          <li key={name} className={cn("flex items-center justify-between rounded-xl px-4 py-2.5 text-[15px]", on ? "bg-brand text-white" : "text-ink")}>
+            <span className="flex items-center gap-2.5">
+              <Icon className={cn("h-4 w-4", on ? "text-white" : "text-brand")} />
+              {t(PRAYER_BN[name], name)}
+            </span>
+            <span className="font-num" dir="ltr">
+              {prayer.times ? num(to12h(prayer.times[name]), lang) : "--:--"}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function DateCard({ prayer }: { prayer: Prayer }) {
+  const { lang } = useLang();
+  const now = useNow(30_000);
+  return (
+    <div className="glass-card relative overflow-hidden p-6">
+      <MosqueScene className="pointer-events-none absolute end-0 bottom-0 h-40 w-64 text-brand-tint" />
+      <div className="relative flex items-center gap-4">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-icon-bg text-brand">
+          <MapPin className="h-5 w-5" />
+        </span>
+        <div>
+          <CitySelect prayer={prayer} className="text-[15px] text-ink-2" />
+          <p className="mt-0.5 font-num text-xl font-semibold text-ink">{now ? formatTime(now.toISOString(), lang) : "--:--"}</p>
+        </div>
+      </div>
+      <div className="relative mt-8 flex items-center gap-4">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-icon-bg text-brand">
+          <CalendarDays className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-[15px] text-ink-2">{now ? formatDate(now.toISOString(), lang, { month: "long", weekday: "long" }) : " "}</p>
+          <p className="mt-0.5 text-xl font-semibold text-ink">{now ? formatHijri(now, lang) : " "}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QuickMenu() {
+  const { t } = useLang();
+  const { openMore } = useShell();
+  const tile = "tap group flex flex-col items-center gap-2.5 rounded-2xl px-1 py-2 text-center transition active:scale-95";
+  return (
+    <nav aria-label={t("দ্রুত প্রবেশ", "Quick access")} className="mx-auto mt-8 max-w-[940px] lg:glass-card lg:mt-6 lg:px-4 lg:py-4">
+      <ul className="grid grid-cols-4 gap-y-5 lg:grid-cols-8">
+        {QUICK_LINKS.map((l) => (
+          <li key={l.href}>
+            <FeatureLink link={l} className={tile}>
+              <ToneIcon link={l} size="lg" className="transition group-hover:-translate-y-0.5" />
+              <span className="text-[14px] leading-tight text-ink">{t(l.bn, l.en)}</span>
+            </FeatureLink>
+          </li>
+        ))}
+        <li>
+          <button onClick={openMore} className={cn(tile, "w-full")}>
+            <ToneIcon link={{ icon: Grid2x2, tone: "#417360" }} size="lg" className="transition group-hover:-translate-y-0.5" />
+            <span className="text-[14px] leading-tight text-ink">{t("সব ফিচার", "All features")}</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+function LiveBanner({ live }: { live: LiveStatus }) {
+  const { t } = useLang();
+  return (
+    <Link href={LINKS.live.href} className="mx-auto mt-6 flex max-w-[940px] items-center gap-3 rounded-2xl border border-live/30 bg-live/10 p-3 pe-4">
+      <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-live text-white">
+        <span className="absolute inset-0 animate-ping rounded-full bg-live/40" />
+        <Radio className="relative h-5 w-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-live">{t("এখন সরাসরি চলছে", "Live now")}</span>
+        <span className="block truncate text-[15px] text-ink">{live.title}</span>
+      </span>
+      <span className="rounded-full bg-live px-4 py-2 text-sm font-medium text-white">{t("শুনুন", "Listen")}</span>
     </Link>
   );
 }
 
-/* ── Upload chart ─────────────────────────────────────────────── */
-
-function UploadChart({ boyans }: { boyans: Boyan[] }) {
-  const { t, lang } = useLang();
-  const [mode, setMode] = useState<"month" | "category">("month");
-
-  const data = useMemo(() => {
-    if (mode === "category") {
-      const counts = new Map<string, number>();
-      for (const b of boyans) {
-        const k = (b.category || "General").replace(/\s+/g, " ").trim();
-        counts.set(k, (counts.get(k) ?? 0) + 1);
-      }
-      return [...counts.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 6)
-        .map(([label, value]) => ({ label: label.split(" ").slice(0, 2).join(" "), value, tip: `${label}: ${num(value, lang)}` }));
-    }
-    const latest = boyans.length ? new Date(boyans.reduce((a, b) => (a > b.uploadDate ? a : b.uploadDate), "")) : new Date();
-    const fmt = new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-US", { month: "short" });
-    return Array.from({ length: 6 }, (_, i) => {
-      const d = new Date(latest.getFullYear(), latest.getMonth() - (5 - i), 1);
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-      const value = boyans.filter((b) => b.uploadDate.startsWith(key)).length;
-      return { label: fmt.format(d), value, tip: t(`${num(value, lang)}টি বয়ান`, `${value} talks`) };
-    });
-  }, [boyans, mode, lang, t]);
-
+/** Soft sky, clouds, birds and distant hills behind the hero. */
+function Scenery() {
   return (
-    <Panel className="h-full">
-      <PanelHeader
-        icon={Mic2}
-        title={t("বয়ান আপলোড", "Boyan uploads")}
-        subtitle={t("নতুন অডিও সংযোজনের হিসাব", "How the archive grows")}
-        href={LINKS.boyan.href}
-        action={
-          <Segmented
-            size="sm"
-            className="hidden sm:inline-flex"
-            value={mode}
-            onChange={setMode}
-            options={[
-              { value: "month", label: t("মাসিক", "Monthly") },
-              { value: "category", label: t("বিভাগ", "Category") },
-            ]}
-          />
-        }
-      />
-      <Segmented
-        size="sm"
-        className="mt-4 sm:hidden"
-        value={mode}
-        onChange={setMode}
-        options={[
-          { value: "month", label: t("মাসিক", "Monthly") },
-          { value: "category", label: t("বিভাগ", "Category") },
-        ]}
-      />
-      <PillBarChart className="mt-8" data={data} height={264} format={(n) => num(n, lang)} />
-    </Panel>
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--canvas-2)_0%,var(--canvas)_100%)]" />
+      <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1440 760">
+        <g fill="var(--panel)" opacity="0.9">
+          <Cloud x={120} y={250} s={1.1} />
+          <Cloud x={560} y={90} s={0.8} />
+          <Cloud x={1180} y={180} s={1.2} />
+          <Cloud x={1320} y={260} s={0.9} />
+        </g>
+        <g stroke="var(--ink-3)" strokeWidth="2.2" fill="none" strokeLinecap="round" opacity="0.55">
+          <path d="M1180 210 q8 -8 16 0 q8 -8 16 0" />
+          <path d="M1230 240 q6 -6 12 0 q6 -6 12 0" />
+          <path d="M1270 196 q7 -7 14 0 q7 -7 14 0" />
+        </g>
+        <g fill="var(--brand)">
+          <path d="M486 130 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4z" opacity="0.18" />
+          <path d="M136 186 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3z" opacity="0.15" />
+          <path d="M1290 170 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3z" opacity="0.15" />
+        </g>
+        <path d="M0 640 C 200 560 360 600 520 620 S 860 560 1040 600 S 1320 620 1440 580 L1440 760 L0 760Z" fill="var(--brand-soft)" opacity="0.7" />
+        <path d="M0 690 C 240 640 420 680 640 690 S 1020 650 1220 680 S 1380 690 1440 670 L1440 760 L0 760Z" fill="var(--canvas)" />
+      </svg>
+    </div>
   );
 }
 
-/* ── Library total + growth (the "balance" card) ──────────────── */
+function Cloud({ x, y, s }: { x: number; y: number; s: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <ellipse cx="0" cy="0" rx="70" ry="22" />
+      <ellipse cx="-28" cy="-12" rx="30" ry="22" />
+      <ellipse cx="16" cy="-20" rx="36" ry="28" />
+    </g>
+  );
+}
 
-function LibraryCard({ data }: { data: HomeData }) {
+/** Mosque skyline silhouette used inside the date card. */
+function MosqueScene({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 260 160" className={className} fill="currentColor" aria-hidden>
+      <circle cx="200" cy="40" r="30" opacity="0.25" />
+      <g opacity="0.55">
+        <rect x="30" y="70" width="6" height="90" />
+        <path d="M33 52 l5 18 h-10z" />
+        <rect x="220" y="60" width="7" height="100" />
+        <path d="M223.5 40 l6 20 h-12z" />
+        <path d="M70 160 v-50 q50 -55 100 0 v50z" />
+        <path d="M120 70 l3 -10 l3 10z" />
+        <path d="M50 160 v-30 q20 -22 40 0 v30z" />
+        <path d="M150 160 v-30 q20 -22 40 0 v30z" />
+        <rect x="40" y="140" width="190" height="20" />
+      </g>
+    </svg>
+  );
+}
+
+/* ── Category cards ───────────────────────────────────────────── */
+
+function CategoryGrid({ items }: { items: { key: string; href: string; title: string; meta: string; icon: LucideIcon; tone: string }[] }) {
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+      {items.map((it) => (
+        <li key={it.key}>
+          <Link
+            href={it.href}
+            className="group flex items-center gap-4 rounded-2xl border border-line bg-panel p-4 transition hover:border-brand/40 hover:shadow-[0_10px_30px_-18px_rgba(65,115,96,0.5)]"
+          >
+            <ToneIcon link={{ icon: it.icon, tone: it.tone }} size="lg" className="rounded-2xl" />
+            <span className="min-w-0">
+              <span className="block truncate text-[17px] text-ink group-hover:text-brand">{it.title}</span>
+              <span className="mt-0.5 block text-sm text-ink-3">{it.meta}</span>
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* ── Recent talks + player card ───────────────────────────────── */
+
+const BARS = Array.from({ length: 44 }, (_, i) => 0.3 + 0.7 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6)));
+
+function RecentWithPlayer({ boyans }: { boyans: Boyan[] }) {
   const { t, lang } = useLang();
   const player = usePlayer();
-  const total = data.counts.boyan + data.counts.nasheed + data.counts.clip;
-  const fmt = new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-US", { month: "short", year: "2-digit" });
-  const series = data.growth.slice(-12).map((g) => ({
-    label: fmt.format(new Date(`${g.month}-01T00:00:00`)),
-    value: g.total,
-    tip: t(`মোট ${num(g.total, lang)}টি`, `${g.total} total`),
-  }));
-  const queue = data.boyans.map(boyanTrack);
+  const queue = useMemo(() => boyans.map(boyanTrack), [boyans]);
+  const rows = boyans.slice(0, 8);
+  const fromHere = !!player.current && queue.some((q) => q.id === player.current!.id);
+  const featured: Track | undefined = fromHere ? player.current! : queue[0];
+  const isFeatured = !!featured && player.isCurrent(featured.id);
+  const playing = isFeatured && player.playing;
+  const pct = isFeatured && player.duration ? player.time / player.duration : 0;
 
   return (
-    <section className="panel flex h-full flex-col overflow-hidden">
-      <div className="p-5 pb-0 sm:p-6 sm:pb-0">
-        <PanelHeader title={t("অডিও লাইব্রেরি", "Audio library")} subtitle={t("বয়ান, নাশিদ ও ক্লিপ", "Talks, nasheeds & clips")} href={LINKS.boyan.href} />
-        <p className="mt-5 text-center text-xs text-ink-3">{t("মোট অডিও", "Total audio")}</p>
-        <p className="text-center text-[38px] leading-tight font-semibold tracking-tight text-ink">
-          <span className="font-num">{num(total, lang)}</span>
-          <span className="text-ink-3">{t("টি", "")}</span>
-        </p>
-        <div className="mt-2 flex justify-center gap-3 text-[11px] text-ink-3">
-          <span>{t("বয়ান", "Talks")} {num(data.counts.boyan, lang)}</span>
-          <span>·</span>
-          <span>{t("নাশিদ", "Nasheeds")} {num(data.counts.nasheed, lang)}</span>
-          <span>·</span>
-          <span>{t("ক্লিপ", "Clips")} {num(data.counts.clip, lang)}</span>
-        </div>
-      </div>
-      <div className="relative mt-auto">
-        <AreaChart data={series} height={170} className="mt-4" />
-        <div className="absolute inset-x-0 bottom-4 flex justify-center">
-          <div className="flex items-center gap-1 rounded-full bg-panel p-1 shadow-lg shadow-black/5">
-            <button
-              onClick={() => queue[0] && player.play(queue[0], queue)}
-              className="flex h-10 items-center gap-2 rounded-full bg-brand px-5 text-sm font-medium text-white transition hover:bg-brand-strong"
-            >
-              {t("শুনুন", "Play")} <Headphones className="h-4 w-4" />
-            </button>
-            <Link href={LINKS.boyan.href} className="flex h-10 items-center gap-2 rounded-full px-4 text-sm font-medium text-ink-2 hover:text-ink">
-              {t("সব দেখুন", "Browse")} <ChevronDown className="h-4 w-4 -rotate-90" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Recent boyan table (the "payment history") ───────────────── */
-
-function RecentBoyans({ boyans }: { boyans: Boyan[] }) {
-  const { t, lang } = useLang();
-  const player = usePlayer();
-  const rows = boyans.slice(0, 6);
-  const queue = boyans.map(boyanTrack);
-
-  return (
-    <Panel className="h-full">
-      <PanelHeader title={t("সাম্প্রতিক বয়ান", "Recent talks")} subtitle={t("সর্বশেষ আপলোড হওয়া বয়ান", "Latest uploads")} href={LINKS.boyan.href} />
-      <div className="mt-4 -mx-2 sm:overflow-x-auto">
-        <table className="w-full table-fixed border-separate sm:table-auto sm:min-w-[560px] border-spacing-y-1 text-sm">
-          <thead>
-            <tr className="text-left text-xs text-ink-3">
-              <th className="px-3 py-2 font-normal">{t("শিরোনাম", "Title")}</th>
-              <th className="hidden px-3 py-2 font-normal sm:table-cell">{t("তারিখ", "Date")}</th>
-              <th className="hidden px-3 py-2 font-normal md:table-cell">{t("সময়", "Time")}</th>
-              <th className="hidden px-3 py-2 font-normal sm:table-cell">{t("স্থান", "Location")}</th>
-              <th className="w-16 px-3 py-2 text-right font-normal">{t("শুনুন", "Play")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((b, i) => {
-              const track = queue[i];
-              const current = player.isCurrent(track.id);
-              const playing = current && player.playing;
-              return (
-                <tr key={b.id} className={cn("group transition", current ? "bg-brand-soft" : "hover:bg-panel-2")}>
-                  <td className="rounded-l-2xl px-3 py-2.5">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-panel-2 text-brand group-hover:bg-panel">
-                        {current ? <Equalizer active={playing} /> : <Mic2 className="h-4 w-4" />}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="truncate font-medium text-ink sm:max-w-[280px]">{b.title}</p>
-                        <p className="truncate text-[11px] text-brand">
-                          {b.category}
-                          <span className="text-ink-3 sm:hidden"> · {formatDate(b.uploadDate, lang)}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="hidden px-3 py-2.5 whitespace-nowrap text-ink-2 sm:table-cell">{formatDate(b.uploadDate, lang)}</td>
-                  <td className="hidden px-3 py-2.5 whitespace-nowrap text-ink-2 md:table-cell">{formatTime(b.uploadDate, lang)}</td>
-                  <td className="hidden px-3 py-2.5 sm:table-cell">
-                    <span className="inline-flex max-w-[180px] items-center gap-2 rounded-full bg-panel px-2.5 py-1 text-xs text-ink-2">
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
-                      <span className="truncate">{b.location || "—"}</span>
-                    </span>
-                  </td>
-                  <td className="rounded-r-2xl px-3 py-2.5 text-right">
-                    <PlayButton
-                      size="sm"
-                      className="ml-auto"
-                      playing={playing}
-                      loading={current && player.loading}
-                      onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                      label={playing ? t("থামান", "Pause") : t("শুনুন", "Play")}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </Panel>
-  );
-}
-
-/* ── Malfuz + notice board (the "credit" card) ────────────────── */
-
-function MalfuzCard({ malfuz, notices, total }: { malfuz: Malfuz[]; notices: Notice[]; total: number }) {
-  const { t, lang } = useLang();
-  const now = useNow(3_600_000);
-  const pick = malfuz.length && now ? malfuz[Math.floor(now.getTime() / 86_400_000) % malfuz.length] : malfuz[0];
-  const reactions = pick ? Object.values(pick.reactions).reduce((a, b) => a + b, 0) : 0;
-  const withImages = notices.filter((n) => n.imageUrl).slice(0, 4);
-
-  return (
-    <Panel className="flex h-full flex-col">
-      <PanelHeader icon={Quote} title={t("আজকের মালফুযাত", "Today's malfuz")} subtitle={pick?.author || ""} href={LINKS.malfuzat.href} />
-      {pick ? (
-        <>
-          <p className="mt-5 line-clamp-5 text-[17px] leading-relaxed text-ink">{pick.text}</p>
-          <div className="mt-3 flex items-center gap-2">
-            {Object.entries(pick.reactions).map(([emoji, n]) => (
-              <span key={emoji} className="inline-flex items-center gap-1 rounded-full bg-panel-2 px-2 py-0.5 text-xs text-ink-2">
-                {emoji} <span className="font-num">{num(n, lang)}</span>
-              </span>
-            ))}
-            {reactions > 0 && <Pill className="ml-auto">{t(`${num(reactions, lang)} প্রতিক্রিয়া`, `${reactions} reactions`)}</Pill>}
-          </div>
-        </>
-      ) : (
-        <p className="mt-5 text-sm text-ink-3">{t("এখনো কিছু নেই", "Nothing yet")}</p>
-      )}
-
-      <Link href={LINKS.notices.href} className="mt-5 block rounded-[22px] bg-panel-2 p-4 transition hover:ring-2 hover:ring-brand/20 sm:mt-auto">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-ink">{t("নোটিশ বোর্ড", "Notice board")}</p>
-            <p className="mt-0.5 truncate text-xs text-ink-3">{notices[0]?.description.split("\n")[0] || t("সর্বশেষ ঘোষণা", "Latest announcements")}</p>
-          </div>
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-panel text-ink-2">
-            <Megaphone className="h-4 w-4" />
-          </span>
-        </div>
-        <div className="mt-4 flex items-center">
-          {withImages.map((n, i) => (
-            <span key={n.id} className="relative -ml-2 h-11 w-11 overflow-hidden rounded-full border-[3px] border-panel-2 first:ml-0" style={{ zIndex: 10 - i }}>
-              <Image src={n.imageUrl!} alt="" fill sizes="44px" className="object-cover" unoptimized />
-            </span>
-          ))}
-          {total > withImages.length && (
-            <span className="relative -ml-2 flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-panel-2 bg-brand font-num text-xs font-semibold text-white first:ml-0">
-              +{num(total - withImages.length, lang)}
-            </span>
-          )}
-        </div>
-      </Link>
-    </Panel>
-  );
-}
-
-/* ── Feature grid ─────────────────────────────────────────────── */
-
-function FeatureGrid({ counts }: { counts: HomeData["counts"] }) {
-  const { t, lang } = useLang();
-  const countFor: Partial<Record<string, number>> = {
-    "/boyan": counts.boyan,
-    "/nasheed": counts.nasheed,
-    "/clips": counts.clip,
-    "/quran": 114,
-    "/amal": counts.amal,
-    "/malfuzat": counts.malfuz,
-    "/notices": counts.notices,
-    "/gallery": counts.photos + counts.wallpapers,
-    "/library": counts.books,
-  };
-  const links = ALL_LINKS.filter((l) => l.href !== "/" && l.href !== LINKS.member.href);
-  return (
-    <section className="mt-8">
-      <div className="mb-4 flex items-end justify-between px-1">
-        <div>
-          <h2 className="text-xl font-semibold text-ink sm:text-2xl">{t("সব ফিচার", "All features")}</h2>
-          <p className="text-sm text-ink-3">{t("অ্যাপের সব কিছু, এখন ওয়েবেও", "Everything from the app, now on the web")}</p>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-6">
-        {links.map((l) => {
-          const Icon = l.icon;
-          const c = countFor[l.href];
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_380px]">
+      <ul className="order-2 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:order-1">
+        {rows.map((b, i) => {
+          const track = queue[i];
+          const current = player.isCurrent(track.id);
+          const on = current && player.playing;
           return (
-            <Link key={l.href} href={l.href} className="panel group flex flex-col gap-4 p-4 transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-12px_rgba(14,26,19,0.18)] sm:p-5">
-              <div className="flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-soft text-brand-strong transition group-hover:bg-brand group-hover:text-white dark:text-brand">
-                  <Icon className="h-5 w-5" />
+            <li key={b.id}>
+              <button
+                onClick={() => (on ? player.pause() : player.play(track, queue))}
+                className={cn(
+                  "flex w-full items-center gap-3.5 rounded-2xl border p-3.5 text-start transition",
+                  current ? "border-brand/40 bg-brand-soft" : "border-line bg-panel hover:border-brand/40",
+                )}
+              >
+                <NumberBadge n={current ? <Equalizer active={on} /> : num(i + 1, lang)} />
+                <span className="min-w-0 flex-1">
+                  <span className="line-clamp-1 text-[15.5px] text-ink">{b.title}</span>
+                  <span className="mt-0.5 block truncate text-[13px] text-ink-3">
+                    {b.category || "General"} · {formatDate(b.uploadDate, lang)}
+                  </span>
                 </span>
-                {c ? <span className="font-num text-xs font-semibold text-ink-3">{num(c, lang)}</span> : null}
-              </div>
-              <div>
-                <p className="font-semibold text-ink">{t(l.bn, l.en)}</p>
-                <p className="mt-0.5 line-clamp-2 text-xs text-ink-3">{t(l.descBn, l.descEn)}</p>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-/* ── Prayer times ─────────────────────────────────────────────── */
-
-function PrayerPanel() {
-  const { t, lang } = useLang();
-  const { city, setCity, times, current, next, progress } = usePrayer();
-  return (
-    <Panel className="h-full">
-      <PanelHeader
-        icon={Clock}
-        title={t("নামাজের সময়", "Prayer times")}
-        subtitle={
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
-            <select
-              value={city.name}
-              onChange={(e) => setCity(BD_CITIES.find((c) => c.name === e.target.value) ?? BD_CITIES[0])}
-              className="cursor-pointer bg-transparent text-xs text-ink-3 outline-none"
-              aria-label={t("শহর", "City")}
-            >
-              {BD_CITIES.map((c) => (
-                <option key={c.name} value={c.name}>
-                  {t(c.nameBn, c.name)}
-                </option>
-              ))}
-            </select>
-          </span>
-        }
-        href={LINKS.prayer.href}
-      />
-      <ul className="mt-5 space-y-1.5">
-        {(["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"] as const).map((name) => {
-          const isCur = current === name;
-          const isNext = next?.name === name;
-          return (
-            <li
-              key={name}
-              className={cn(
-                "relative flex items-center justify-between overflow-hidden rounded-2xl px-4 py-2.5 text-sm",
-                isCur ? "bg-brand text-white" : "bg-panel-2 text-ink",
-              )}
-            >
-              {isCur && <span className="absolute inset-y-0 left-0 bg-white/12" style={{ width: `${progress * 100}%` }} />}
-              <span className="relative flex items-center gap-2 font-medium">
-                {t(PRAYER_BN[name], name)}
-                {isNext && <Pill tone="soft">{t("পরবর্তী", "Next")}</Pill>}
-              </span>
-              <span className={cn("relative font-num font-semibold", !isCur && "text-ink-2")}>{times ? num(to12h(times[name]), lang) : "--:--"}</span>
+              </button>
             </li>
           );
         })}
       </ul>
-    </Panel>
+
+      {featured && (
+        <div className="order-1 flex flex-col rounded-2xl border border-line bg-panel p-5 lg:order-2">
+          <p className="line-clamp-2 text-center text-[15.5px] font-semibold text-brand">{featured.title}</p>
+          <p className="mt-1 truncate text-center text-xs text-ink-3">{shortSpeaker(featured.subtitle || "")}</p>
+          <div className="my-6 flex h-24 items-center justify-center gap-[3px]" dir="ltr">
+            {BARS.map((h, i) => (
+              <span
+                key={i}
+                className={cn("w-[4px] origin-center rounded-full transition-colors", i / BARS.length < pct ? "bg-brand" : "bg-brand-tint")}
+                style={{ height: `${h * 100}%`, animation: playing ? `wave 1.1s ${(i % 7) * 0.09}s ease-in-out infinite alternate` : undefined }}
+              />
+            ))}
+          </div>
+          <p className="text-center font-num text-sm text-ink-2" dir="ltr">
+            {clock(isFeatured ? player.time : 0)} <span className="text-ink-3">/ {clock(isFeatured ? player.duration : 0)}</span>
+          </p>
+          <div className="mt-5 flex items-center justify-between" dir="ltr">
+            <button aria-label={t("আগের", "Previous")} onClick={player.prev} className="p-2 text-ink-2 hover:text-brand">
+              <SkipBack className="h-5 w-5" fill="currentColor" />
+            </button>
+            <button aria-label={t("পেছনে ১০ সেকেন্ড", "Back 10s")} onClick={() => player.skip(-10)} className="p-2 text-ink-2 hover:text-brand">
+              <RotateCcw className="h-5 w-5" />
+            </button>
+            <button
+              aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
+              onClick={() => (playing ? player.pause() : isFeatured ? player.toggle() : player.play(featured, queue))}
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-[0_0_0_6px_var(--brand-soft)] transition active:scale-95"
+            >
+              {playing ? <Pause className="h-6 w-6" fill="currentColor" /> : <Play className="ms-0.5 h-6 w-6" fill="currentColor" />}
+            </button>
+            <button aria-label={t("সামনে ১০ সেকেন্ড", "Forward 10s")} onClick={() => player.skip(10)} className="p-2 text-ink-2 hover:text-brand">
+              <RotateCw className="h-5 w-5" />
+            </button>
+            <button aria-label={t("পরের", "Next")} onClick={player.next} className="p-2 text-ink-2 hover:text-brand">
+              <SkipForward className="h-5 w-5" fill="currentColor" />
+            </button>
+          </div>
+          <style>{`@keyframes wave{0%{transform:scaleY(.5)}100%{transform:scaleY(1)}}`}</style>
+        </div>
+      )}
+    </div>
   );
 }
 
-/* ── Compact audio list ───────────────────────────────────────── */
+/* ── Quote carousel ───────────────────────────────────────────── */
 
-function AudioListPanel({
-  title,
-  subtitle,
-  icon,
-  href,
-  items,
-}: {
-  title: string;
-  subtitle: string;
-  icon: typeof Mic2;
-  href: string;
-  items: { track: ReturnType<typeof boyanTrack>; meta: string }[];
-}) {
+function QuoteCarousel({ malfuz }: { malfuz: Malfuz[] }) {
+  const { t, lang } = useLang();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((v) => (v + 1) % malfuz.length), 8000);
+    return () => clearInterval(id);
+  }, [malfuz.length]);
+  const m = malfuz[i];
+  return (
+    <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[160px_1fr] md:gap-10">
+      <svg viewBox="0 0 120 100" className="h-16 w-20 text-brand-tint md:h-28 md:w-36 rtl:-scale-x-100" fill="currentColor" aria-hidden>
+        <path d="M8 96 V58 C8 26 22 8 50 4 v18 C34 26 28 36 28 50 h22 v46z M68 96 V58 C68 26 82 8 110 4 v18 C94 26 88 36 88 50 h22 v46z" />
+      </svg>
+      <div>
+        <div className="mb-5 flex gap-2">
+          {malfuz.map((x, k) => (
+            <button
+              key={x.id}
+              onClick={() => setI(k)}
+              aria-label={t(`মালফুয ${num(k + 1, lang)}`, `Saying ${k + 1}`)}
+              className={cn("h-2.5 rounded-full transition-all", k === i ? "w-6 bg-brand" : "w-2.5 bg-line")}
+            />
+          ))}
+        </div>
+        <motion.blockquote key={m.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="line-clamp-6 text-[18px] leading-[1.9] text-ink sm:text-[21px]">{m.text}</p>
+          <footer className="mt-4 text-[15px] text-ink-2 italic">— {m.author}</footer>
+        </motion.blockquote>
+        <Link href={LINKS.malfuzat.href} className="mt-5 inline-block text-[15px] font-medium text-brand hover:underline">
+          {t("সব মালফুযাত পড়ুন", "Read all sayings")}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ── Audio cards (nasheed / clips) ────────────────────────────── */
+
+function AudioCard({ title, link, items }: { title: string; link: NavLink; items: { track: Track; meta: string }[] }) {
   const { t } = useLang();
   const player = usePlayer();
   const queue = items.map((i) => i.track);
   return (
-    <Panel className="h-full">
-      <PanelHeader icon={icon} title={title} subtitle={subtitle} href={href} />
-      <ul className="mt-4 space-y-1">
+    <div className="rounded-2xl border border-line bg-panel p-4 sm:p-5">
+      <div className="mb-3 flex items-center gap-3">
+        <ToneIcon link={link} />
+        <h3 className="flex-1 text-lg font-semibold text-ink">{title}</h3>
+        <Link href={link.href} className="text-sm font-medium text-brand hover:underline">
+          {t("সব দেখুন", "See all")}
+        </Link>
+      </div>
+      <ul className="space-y-1">
         {items.map(({ track, meta }) => {
           const current = player.isCurrent(track.id);
           const playing = current && player.playing;
           return (
-            <li key={track.id} className={cn("flex items-center gap-3 rounded-2xl p-2 transition", current ? "bg-brand-soft" : "hover:bg-panel-2")}>
-              <PlayButton
-                size="sm"
-                playing={playing}
-                loading={current && player.loading}
+            <li key={track.id}>
+              <button
                 onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                label={playing ? t("থামান", "Pause") : t("শুনুন", "Play")}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-ink">{track.title}</p>
-                {meta && <p className="truncate text-[11px] text-ink-3">{meta}</p>}
-              </div>
-              {current && <Equalizer active={playing} />}
+                className={cn("flex w-full items-center gap-3 rounded-xl p-2 text-start transition", current ? "bg-brand-soft" : "hover:bg-panel-2")}
+              >
+                <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full", playing ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
+                  {playing ? <Equalizer active /> : link === LINKS.nasheed ? <Music2 className="h-4 w-4" /> : <Play className="ms-0.5 h-4 w-4" fill="currentColor" />}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[15px] text-ink">{track.title}</span>
+                  {meta && <span className="block truncate text-xs text-ink-3">{meta}</span>}
+                </span>
+              </button>
             </li>
           );
         })}
       </ul>
-    </Panel>
+    </div>
   );
 }
 
-/* ── Amal sections ────────────────────────────────────────────── */
+/* ── App download ─────────────────────────────────────────────── */
 
-const SECTION_LABEL: Record<AmalSection, [string, string]> = {
-  amal: ["আমল", "Amal"],
-  wazifa: ["ওয়াজিফা", "Wazifa"],
-  sunnat: ["সুন্নাত", "Sunnah"],
-  fazilat: ["ফযীলত", "Virtues"],
-};
-
-function AmalPanel({ amal }: { amal: HomeData["amal"] }) {
-  const { t, lang } = useLang();
-  const [section, setSection] = useState<AmalSection>("amal");
-  const cats = amal.filter((c) => c.section === section);
-  const totals = (Object.keys(SECTION_LABEL) as AmalSection[]).map((s) => ({
-    s,
-    n: amal.filter((c) => c.section === s).reduce((a, c) => a + c.itemCount, 0),
-  }));
-  return (
-    <Panel className="h-full">
-      <PanelHeader icon={ScrollText} title={t("আমল ও সুন্নাত", "Amal & Sunnah")} subtitle={t("দৈনন্দিন আমলের সংকলন", "Daily practice collection")} href={LINKS.amal.href} />
-      <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {totals.map(({ s, n }) => (
-          <button
-            key={s}
-            onClick={() => setSection(s)}
-            className={cn(
-              "rounded-2xl p-3 text-left transition",
-              section === s ? "bg-brand text-white" : "bg-panel-2 text-ink hover:ring-2 hover:ring-brand/20",
-            )}
-          >
-            <p className={cn("text-xs", section === s ? "text-white/75" : "text-ink-3")}>{t(...SECTION_LABEL[s])}</p>
-            <p className="font-num text-xl font-semibold">{num(n, lang)}</p>
-          </button>
-        ))}
-      </div>
-      <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
-        {cats.slice(0, 8).map((c) => (
-          <li key={c.id}>
-            <Link href={`/amal?section=${c.section}&category=${c.id}`} className="flex items-center gap-3 rounded-2xl p-2.5 transition hover:bg-panel-2">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-soft font-num text-xs font-semibold text-brand-strong dark:text-brand">
-                {num(c.itemCount, lang)}
-              </span>
-              <span className="truncate text-sm text-ink">{c.title}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </Panel>
-  );
-}
-
-/* ── Gallery + video ──────────────────────────────────────────── */
-
-function GalleryPanel({ albums, videos, photos }: { albums: GalleryAlbum[]; videos: Nasheed[]; photos: number }) {
-  const { t, lang } = useLang();
-  const tiles = albums.flatMap((a) => a.photos.map((p) => ({ ...p, album: a.title }))).slice(0, 5);
-  return (
-    <Panel className="h-full">
-      <PanelHeader icon={Users} title={t("গ্যালারি ও ভিডিও", "Gallery & video")} subtitle={t(`${num(photos, lang)}টি ছবি`, `${photos} photos`)} href={LINKS.gallery.href} />
-      <div className="mt-5 grid h-56 grid-cols-3 grid-rows-2 gap-2">
-        {tiles.map((p, i) => (
-          <Link
-            key={p.id}
-            href={LINKS.gallery.href}
-            className={cn("relative overflow-hidden rounded-2xl bg-panel-2", i === 0 && "col-span-2 row-span-2")}
-          >
-            <Image src={p.url} alt={p.album} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition duration-500 hover:scale-105" unoptimized />
-          </Link>
-        ))}
-      </div>
-      {videos.length > 0 && (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {videos.slice(0, 2).map((v) => (
-            <Link key={v.id} href={`/nasheed?tab=video&play=${v.id}`} className="group flex items-center gap-2.5 rounded-2xl bg-panel-2 p-2">
-              <span className="relative h-10 w-14 shrink-0 overflow-hidden rounded-xl">
-                <Image src={youtubeThumb(v.youtubeId!)} alt="" fill sizes="56px" className="object-cover" unoptimized />
-              </span>
-              <span className="line-clamp-2 text-xs font-medium text-ink">{v.title}</span>
-            </Link>
-          ))}
-        </div>
-      )}
-    </Panel>
-  );
-}
-
-/* ── App download band ────────────────────────────────────────── */
-
-function AppBand() {
+function AppSection() {
   const { t } = useLang();
+  const chips = [
+    { bn: "নামাজের সময়", en: "Prayer times", cls: "top-[6%] start-[0%]" },
+    { bn: "কিবলা", en: "Qibla", cls: "top-[40%] start-[-2%]" },
+    { bn: "অফলাইন বয়ান", en: "Offline talks", cls: "top-[16%] end-[-2%]" },
+    { bn: "আযান-অ্যালার্ম", en: "Adhan alarm", cls: "top-[58%] end-[0%]" },
+    { bn: "তাসবীহ", en: "Tasbeeh", cls: "bottom-[8%] start-[6%]" },
+  ];
   return (
-    <section className="relative mt-8 overflow-hidden rounded-[28px] bg-brand p-6 text-white sm:p-10">
-      <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-white/10" />
-      <div className="pointer-events-none absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-black/10" />
-      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="max-w-xl">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
-            <Smartphone className="h-3.5 w-3.5" /> islahbd app
-          </span>
-          <h2 className="mt-3 text-2xl leading-snug font-semibold sm:text-3xl">
-            {t("নামাজের আযান-অ্যালার্ম, অফলাইন অডিও আর কিবলা — অ্যাপে আরও অনেক কিছু", "Adhan alarms, offline audio, qibla and more in the app")}
+    <section className="overflow-hidden bg-canvas-2 py-14 sm:py-20">
+      <Container className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        <Reveal>
+          <h2 className="font-heading text-[26px] leading-snug text-ink sm:text-[34px]">
+            {t("অ্যাপ ডাউনলোড করুন", "Download the app")}
+            <br />
+            <span className="text-brand">{t("islahbd — আপনার ইসলামিক সঙ্গী", "islahbd — your Islamic companion")}</span>
           </h2>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-brand-strong">
-            <Download className="h-4 w-4" /> Google Play
-          </a>
-          <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center gap-2 rounded-full bg-white/15 px-5 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-white/20">
-            <Download className="h-4 w-4" /> App Store
-          </a>
-        </div>
-      </div>
+          <p className="mt-5 max-w-xl text-[16.5px] leading-relaxed text-ink-2">
+            {t(
+              "আযান-অ্যালার্ম, অফলাইনে বয়ান শোনা, কিবলা, তাসবীহ, হোম-স্ক্রিন উইজেট আর লাইভ মজলিসের নোটিফিকেশন — সব পাবেন অ্যাপে।",
+              "Adhan alarms, offline talks, qibla, tasbeeh, home-screen widgets and live majlis alerts — all in the app.",
+            )}
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <StoreButton href={PLAY_STORE_URL} top="GET IT ON" name="Google Play" icon={<PlayLogo />} />
+            <StoreButton href={APP_STORE_URL} top="Download on the" name="App Store" icon={<AppleLogo />} />
+          </div>
+        </Reveal>
+
+        <Reveal className="relative mx-auto w-full max-w-[400px]">
+          <div className="absolute inset-[6%] rounded-full bg-brand-soft" />
+          <div className="absolute inset-0 rounded-full border border-line" />
+          <div className="relative mx-auto w-[56%] -rotate-3 rounded-[34px] border-[6px] border-[#1b1f1d] bg-[#1b1f1d] shadow-[var(--shadow-float)]">
+            <Image src="/home.png" alt={t("islahbd অ্যাপের হোম স্ক্রিন", "islahbd app home screen")} width={1206} height={2622} className="rounded-3xl" />
+          </div>
+          {chips.map((c) => (
+            <span key={c.en} className={cn("absolute rounded-xl border border-line bg-panel px-3 py-2 text-[13px] text-brand shadow-sm", c.cls)}>
+              {t(c.bn, c.en)}
+            </span>
+          ))}
+        </Reveal>
+      </Container>
     </section>
   );
 }
 
+function StoreButton({ href, top, name, icon }: { href: string; top: string; name: string; icon: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" dir="ltr" className="flex h-[60px] items-center gap-3 rounded-2xl border border-line bg-panel px-5 transition hover:border-brand/40">
+      {icon}
+      <span className="leading-tight">
+        <span className="block text-[11px] text-ink-2">{top}</span>
+        <span className="block text-[15px] font-semibold text-ink">{name}</span>
+      </span>
+    </a>
+  );
+}
+
+const PlayLogo = () => (
+  <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden>
+    <path fill="#34A853" d="M3.6 1.8 13.4 12l-9.8 10.2c-.4-.2-.6-.7-.6-1.2V3c0-.5.2-1 .6-1.2Z" />
+    <path fill="#FBBC04" d="m16.8 8.6-3.4 3.4 3.4 3.4 3.8-2.2c.9-.5.9-1.9 0-2.4l-3.8-2.2Z" />
+    <path fill="#4285F4" d="M3.6 1.8c.3-.2.8-.2 1.2 0l12 6.8-3.4 3.4L3.6 1.8Z" />
+    <path fill="#EA4335" d="m13.4 12 3.4 3.4-12 6.8c-.4.2-.9.2-1.2 0L13.4 12Z" />
+  </svg>
+);
+
+const AppleLogo = () => (
+  <svg viewBox="0 0 24 24" className="h-7 w-7 text-ink" fill="currentColor" aria-hidden>
+    <path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.1 2.5-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3-.1 1.7-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.2-1.2 3-2.4 1-1.4 1.3-2.7 1.4-2.8-.1 0-2.7-1-2.7-4.2ZM14 5.3c.7-.8 1.1-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4Z" />
+  </svg>
+);
+
+/* ── Support / sadaqah jariyah ────────────────────────────────── */
+
+function SupportSection() {
+  const { t } = useLang();
+  return (
+    <section className="py-14 sm:py-20">
+      <Container className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
+        <Reveal className="relative mx-auto aspect-square w-full max-w-[360px]">
+          <div className="absolute inset-0 rounded-full border border-line" />
+          <div className="absolute inset-[7%] rounded-full bg-panel-2" />
+          <DonationBox className="absolute inset-[22%]" />
+        </Reveal>
+        <Reveal>
+          <h2 className="font-heading text-[26px] leading-snug text-ink sm:text-[34px]">
+            {t("জামেআর পাশে থাকুন — হোন সদকায়ে জারিয়ার অংশীদার", "Stand by the Jamia — be part of a sadaqah jariyah")}
+          </h2>
+          <p className="mt-5 text-[16.5px] leading-relaxed text-ink-2">
+            {t(
+              "মাদরাসা মারকাযুল ইহসানে প্রায় এক হাজার তালিবুল ইলম দ্বীনি শিক্ষা গ্রহণ করছে। ডেমরায় স্থায়ী কমপ্লেক্সের কাজ চলছে। আজীবন সদস্য হয়ে বা অনুদান দিয়ে এই খেদমতে শরিক হোন।",
+              "Nearly a thousand students study at Madrasa Markazul Ihsan, and the permanent campus in Demra is being built. Join this service as a lifetime member or with a donation.",
+            )}
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href={LINKS.member.href} className="inline-flex h-12 items-center gap-2 rounded-2xl bg-brand px-6 text-[15px] font-medium text-white transition hover:bg-brand-strong">
+              {t("আজীবন সদস্য হোন", "Become a lifetime member")}
+              <HeartHandshake className="h-4 w-4" />
+            </Link>
+            <Link href={LINKS.about.href} className="inline-flex h-12 items-center rounded-2xl border border-line bg-panel px-6 text-[15px] text-ink transition hover:border-brand/40">
+              {t("মাদরাসা পরিচিতি", "About the madrasa")}
+            </Link>
+          </div>
+        </Reveal>
+      </Container>
+    </section>
+  );
+}
+
+function DonationBox({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 200 200" className={className} aria-hidden>
+      <path d="M72 46c-10-14-34-8-32 10 2 14 32 30 32 30s30-16 32-30c2-18-22-24-32-10z" fill="#E5484D" />
+      <circle cx="118" cy="64" r="22" fill="#F5B83D" />
+      <circle cx="118" cy="64" r="15" fill="#E8A21E" />
+      <text x="118" y="71" textAnchor="middle" fontSize="20" fontWeight="700" fill="#fff">
+        ৳
+      </text>
+      <rect x="24" y="96" width="152" height="18" rx="3" fill="var(--brand-tint)" />
+      <rect x="34" y="114" width="132" height="70" rx="4" fill="var(--brand)" />
+      <rect x="64" y="132" width="72" height="30" rx="6" fill="var(--brand-tint)" />
+      <rect x="84" y="94" width="34" height="6" rx="3" fill="var(--brand-strong)" />
+    </svg>
+  );
+}

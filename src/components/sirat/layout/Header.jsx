@@ -210,7 +210,7 @@ export default function Header() {
           <Link
             href="/"
             className="sirat-back-link"
-            title="ইসলাহ্ বিডি প্রধান ড্যাশবোর্ডে ফিরে যান"
+            title="ইসলাহ প্রধান ড্যাশবোর্ডে ফিরে যান"
           >
             <span style={{
               display: 'inline-flex',
@@ -227,7 +227,7 @@ export default function Header() {
               border: '1px solid rgba(45, 138, 78, 0.25)',
               transition: 'all 0.2s',
             }}>
-              ← ইসলাহ্ বিডি
+              ← ইসলাহ
             </span>
           </Link>
         </div>

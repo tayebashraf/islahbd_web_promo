@@ -29,12 +29,12 @@ export function VideoGrid({ items, initialId }: { items: VideoItem[]; initialId?
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((v) => (
           <li key={v.id}>
-            <button onClick={() => setOpen(v)} className="group block w-full text-left">
-              <span className="relative block aspect-video overflow-hidden rounded-[22px] bg-panel-2">
+            <button onClick={() => setOpen(v)} className="group block w-full text-start">
+              <span className="relative block aspect-video overflow-hidden rounded-2xl bg-panel-2">
                 <Image src={youtubeThumb(v.youtubeId)} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" unoptimized />
                 <span className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <span className="absolute bottom-3 left-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-brand-strong shadow-lg transition group-hover:scale-110">
-                  <Play className="ml-0.5 h-4 w-4" fill="currentColor" />
+                  <Play className="ms-0.5 h-4 w-4" fill="currentColor" />
                 </span>
               </span>
               <span className="mt-2.5 block px-1">
@@ -79,7 +79,7 @@ function VideoModal({ video, onClose }: { video: VideoItem | null; onClose: () =
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="aspect-video overflow-hidden rounded-[22px] bg-black">
+            <div className="aspect-video overflow-hidden rounded-2xl bg-black">
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0`}
                 title={video.title}

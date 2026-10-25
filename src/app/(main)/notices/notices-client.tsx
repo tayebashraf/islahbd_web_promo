@@ -25,7 +25,7 @@ export function NoticesClient({ notices }: { notices: Notice[] }) {
             const [first, ...body] = n.description.split("\n");
             return (
               <li key={n.id} className="panel overflow-hidden">
-                <button onClick={() => setOpen(expanded ? null : n.id)} aria-expanded={expanded} className="flex w-full items-center gap-4 p-4 text-left sm:p-5">
+                <button onClick={() => setOpen(expanded ? null : n.id)} aria-expanded={expanded} className="flex w-full items-center gap-4 p-4 text-start sm:p-5">
                   {n.imageUrl ? (
                     <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-panel-2">
                       <Image src={n.imageUrl} alt="" fill sizes="56px" className="object-cover" unoptimized />
@@ -48,10 +48,10 @@ export function NoticesClient({ notices }: { notices: Notice[] }) {
                   <ChevronDown className={cn("h-5 w-5 shrink-0 text-ink-3 transition", expanded && "rotate-180")} />
                 </button>
                 {expanded && (
-                  <div className="grid gap-5 border-t border-line p-4 sm:p-6 lg:grid-cols-[1fr_320px]">
+                  <div className="grid grid-cols-1 gap-5 border-t border-line p-4 sm:p-6 lg:grid-cols-[1fr_320px]">
                     <p className="text-[15px] leading-relaxed whitespace-pre-line text-ink-2">{body.join("\n").trim() || n.description}</p>
                     {n.imageUrl && (
-                      <a href={n.imageUrl} target="_blank" rel="noopener noreferrer" className="relative block aspect-[4/5] overflow-hidden rounded-[22px] bg-panel-2">
+                      <a href={n.imageUrl} target="_blank" rel="noopener noreferrer" className="relative block aspect-[4/5] overflow-hidden rounded-2xl bg-panel-2">
                         <Image src={n.imageUrl} alt={n.title} fill sizes="320px" className="object-cover" unoptimized />
                       </a>
                     )}

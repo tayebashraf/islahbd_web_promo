@@ -51,8 +51,8 @@ export function FatwaClient({ fatwas, categories }: { fatwas: Fatwa[]; categorie
                 {shown.map((f) => {
                   const expanded = open === f.id;
                   return (
-                    <li key={f.id} className="overflow-hidden rounded-[22px] bg-panel-2">
-                      <button onClick={() => setOpen(expanded ? null : f.id)} aria-expanded={expanded} className="flex w-full items-start gap-3 p-4 text-left">
+                    <li key={f.id} className="overflow-hidden rounded-2xl bg-panel-2">
+                      <button onClick={() => setOpen(expanded ? null : f.id)} aria-expanded={expanded} className="flex w-full items-start gap-3 p-4 text-start">
                         <span className="mt-0.5 rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold text-white">{t("প্রশ্ন", "Q")}</span>
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm font-medium text-ink">{f.question}</span>
@@ -118,7 +118,7 @@ function AskForm({ categories }: { categories: FatwaCategory[] }) {
     <Panel className="h-fit xl:sticky xl:top-5 xl:col-span-5">
       <PanelHeader icon={Send} title={t("প্রশ্ন পাঠান", "Send a question")} subtitle={t("উত্তর পেতে কিছুদিন সময় লাগতে পারে", "Answers may take a few days")} />
       {state === "done" ? (
-        <div className="mt-6 flex flex-col items-center gap-3 rounded-[22px] bg-brand-soft p-6 text-center">
+        <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl bg-brand-soft p-6 text-center">
           <CheckCircle2 className="h-8 w-8 text-brand" />
           <p className="font-semibold text-ink">{t("আপনার প্রশ্ন পাঠানো হয়েছে", "Your question was sent")}</p>
           <p className="text-xs text-ink-2">{t("জাযাকাল্লাহু খাইরান। উত্তর প্রকাশিত হলে এখানে দেখা যাবে।", "JazakAllah khair. The answer will appear here once published.")}</p>
@@ -128,7 +128,7 @@ function AskForm({ categories }: { categories: FatwaCategory[] }) {
         </div>
       ) : (
         <form onSubmit={submit} className="mt-5 space-y-3">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <input className={input} placeholder={t("আপনার নাম", "Your name")} value={name} onChange={(e) => setName(e.target.value)} disabled={anon} />
             <select className={input} value={category} onChange={(e) => setCategory(e.target.value)} aria-label={t("বিভাগ", "Category")}>
               {categories.map((c) => (

@@ -15,9 +15,9 @@ interface Shot {
   title: string;
 }
 
-export function GalleryClient({ albums, wallpapers }: { albums: GalleryAlbum[]; wallpapers: Wallpaper[] }) {
+export function GalleryClient({ albums, wallpapers, initialTab }: { albums: GalleryAlbum[]; wallpapers: Wallpaper[]; initialTab?: "wallpapers" }) {
   const { t, lang } = useLang();
-  const [tab, setTab] = useState<"albums" | "wallpapers">(albums.length ? "albums" : "wallpapers");
+  const [tab, setTab] = useState<"albums" | "wallpapers">(initialTab ?? (albums.length ? "albums" : "wallpapers"));
   const [albumId, setAlbumId] = useState(albums[0]?.id);
   const [viewer, setViewer] = useState<{ shots: Shot[]; index: number } | null>(null);
   const album = albums.find((a) => a.id === albumId);
@@ -54,7 +54,7 @@ export function GalleryClient({ albums, wallpapers }: { albums: GalleryAlbum[]; 
                   <button
                     key={a.id}
                     onClick={() => setAlbumId(a.id)}
-                    className={cn("panel flex items-center gap-4 p-3 text-left transition", on ? "ring-2 ring-brand" : "hover:ring-2 hover:ring-brand/20")}
+                    className={cn("panel flex items-center gap-4 p-3 text-start transition", on ? "ring-2 ring-brand" : "hover:ring-2 hover:ring-brand/20")}
                   >
                     <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-panel-2">
                       {cover && <Image src={cover} alt="" fill sizes="64px" className="object-cover" unoptimized />}
@@ -93,7 +93,7 @@ export function GalleryClient({ albums, wallpapers }: { albums: GalleryAlbum[]; 
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-5">
           {wallpapers.map((w, i) => (
-            <div key={w.id} className="group relative aspect-[9/16] overflow-hidden rounded-[24px] bg-panel-2">
+            <div key={w.id} className="group relative aspect-[9/16] overflow-hidden rounded-2xl bg-panel-2">
               <button onClick={() => setViewer({ shots: wallpapers.map((x) => ({ url: x.url, title: x.title })), index: i })} className="absolute inset-0">
                 <Image src={w.url} alt={w.title} fill sizes="(max-width: 640px) 50vw, 20vw" className="object-cover transition duration-500 group-hover:scale-105" unoptimized />
               </button>

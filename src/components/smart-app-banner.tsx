@@ -46,7 +46,7 @@ function subscribe() {
 }
 
 /**
- * Bottom install banner shown only to mobile visitors browsing the website
+ * Top install strip shown only to mobile visitors browsing the website
  * instead of the app — Android gets the Play Store, iPhone/iPad gets the
  * App Store. Desktop visitors never see it. Dismissal is remembered for a
  * week so it doesn't nag on every visit.
@@ -74,30 +74,30 @@ export function SmartAppBanner() {
   };
 
   return (
+    // Body is a flex column, so -order-1 lifts the banner above the page's
+    // sticky top bar without fighting the mobile bottom navigation.
     <div
       role="complementary"
       aria-label={t("অ্যাপ ইনস্টল ব্যানার", "App install banner")}
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-border bg-card/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="-order-1 border-b border-line bg-panel"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-5xl items-center gap-3 px-3 py-2.5">
         <button
           type="button"
           onClick={dismiss}
           aria-label={t("বন্ধ করুন", "Dismiss")}
-          className="shrink-0 rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+          className="shrink-0 rounded-full p-1.5 text-ink-3 transition-colors hover:bg-panel-2 hover:text-ink"
         >
           <X className="h-4 w-4" />
         </button>
 
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gradient-emerald shadow-sm overflow-hidden">
-          <Image src="/icon-192.png" alt="islahbd" width={40} height={40} className="h-full w-full object-cover" />
-        </div>
+        <Image src="/icon-192.png" alt="islahbd" width={40} height={40} className="h-10 w-10 shrink-0 rounded-xl ring-1 ring-line" />
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-foreground">islahbd</p>
-          <p className="truncate text-xs text-muted-foreground">
-            {t("অ্যাপে আরও ভালো অভিজ্ঞতা পান", "Get the full experience in the app")}
+          <p className="truncate text-sm font-semibold text-ink">{t("islahbd অ্যাপ", "islahbd app")}</p>
+          <p className="truncate text-xs text-ink-3">
+            {t("আযান-অ্যালার্ম ও অফলাইন অডিও", "Adhan alarms & offline audio")}
           </p>
         </div>
 
@@ -106,9 +106,9 @@ export function SmartAppBanner() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={dismiss}
-          className="shrink-0 rounded-lg bg-gold px-4 py-2 text-xs font-semibold text-[#111827] hover:opacity-90 transition-opacity"
+          className="shrink-0 rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90"
         >
-          {t("ইনস্টল করুন", `Get on ${storeLabel}`)}
+          {t("ইনস্টল", `Get on ${storeLabel}`)}
         </a>
       </div>
     </div>

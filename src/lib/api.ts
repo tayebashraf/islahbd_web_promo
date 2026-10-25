@@ -265,3 +265,38 @@ export function askFatwa(q: FatwaQuestion) {
     deviceId: getDeviceId(),
   });
 }
+
+export type ParibarApplication =
+  | {
+      applicationType: "baiyat";
+      name: string;
+      fatherName: string;
+      education: string;
+      profession: string;
+      dateOfBirth: string;
+      gram: string;
+      upojla: string;
+      jela: string;
+      dakghor: string;
+      phone: string;
+      familyPhone: string;
+      mediumName: string;
+      mediumPhone: string;
+    }
+  | {
+      applicationType: "khanqah";
+      name: string;
+      fatherName: string;
+      dateOfBirth: string;
+      address: string;
+      phone: string;
+      familyPhone: string;
+      duration: string;
+      agreeFood: boolean;
+      agreeBedding: boolean;
+    };
+
+/** Bay'ah / khanqah stay application — the same endpoint the app posts to. */
+export function applyParibar(a: ParibarApplication) {
+  return postJSON<unknown>("/api/paribar/apply/", { ...a, deviceId: getDeviceId() });
+}

@@ -127,7 +127,7 @@ export function BoyanClient({
             <EmptyState icon={Mic2} title={t("কোনো বয়ান পাওয়া যায়নি", "No talks found")} hint={t("অন্য শব্দ দিয়ে খুঁজে দেখুন", "Try a different search")} />
           </div>
         ) : (
-          <ul className="mt-4 space-y-1">
+          <ul className="mt-4 space-y-2">
             {filtered.slice(0, limit).map((b, i) => (
               <AudioRow
                 key={b.id}

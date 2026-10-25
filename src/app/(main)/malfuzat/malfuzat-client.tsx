@@ -99,7 +99,7 @@ function MalfuzCard({
   };
 
   return (
-    <article className={cn("break-inside-avoid rounded-[28px] p-5 sm:p-6", featured ? "relative overflow-hidden bg-brand text-white sm:p-8" : "bg-panel")}>
+    <article className={cn("break-inside-avoid rounded-3xl p-5 sm:p-6", featured ? "relative overflow-hidden bg-brand text-white sm:p-8" : "bg-panel")}>
       {featured && <div className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-white/10" />}
       <Quote className={cn("relative h-7 w-7", featured ? "text-white/40" : "text-brand/40")} />
       <p className={cn("relative mt-3 leading-relaxed whitespace-pre-line", featured ? "text-lg sm:text-xl" : "text-[15px] text-ink")}>{m.text}</p>
