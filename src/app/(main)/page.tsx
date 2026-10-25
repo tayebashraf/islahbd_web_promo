@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Dashboard, type HomeData } from "@/components/home/dashboard";
 import { getBooks, getBoyanCategories, getBoyans, getClips, getLiveStatus, getMalfuzat, getNasheeds } from "@/lib/api";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
-import duaBook from "@/data/dua.json";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
@@ -44,7 +43,6 @@ export default async function HomePage() {
       duration,
     })),
     boyanCats,
-    duaCats: duaBook.categories.map((c) => ({ id: c.id, title: c.title, count: c.items.length })),
     nasheeds: nasheeds.filter((n) => n.type === "audio" && n.audioUrl).slice(0, 8),
     clips: clips.filter((c) => c.audioUrl).slice(0, 8),
     malfuz: malfuzat.slice(0, 6),

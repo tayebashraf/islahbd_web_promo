@@ -12,6 +12,7 @@ import { usePlayer } from "@/components/player/player-provider";
 import { PlayerBar } from "@/components/player/player-bar";
 import { ALL_LINKS, BOTTOM_NAV, LINKS, MORE, NAV_GROUPS, TOP_NAV, isActive, type NavLink } from "@/lib/nav";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/constants";
+import { SOCIAL } from "@/data/paribar";
 import { cn } from "@/lib/utils";
 import { useHydrated } from "@/lib/use-client-store";
 
@@ -558,6 +559,29 @@ function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void 
 
 /* ── Footer ────────────────────────────────────────────────────── */
 
+const SOCIAL_ICONS: { name: string; url: string; path: string }[] = [
+  {
+    name: "YouTube",
+    url: SOCIAL[0].url,
+    path: "M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15V9l5.8 3-5.8 3Z",
+  },
+  {
+    name: "Facebook",
+    url: SOCIAL[1].url,
+    path: "M13.5 21.9v-7.7h2.6l.4-3h-3V9.3c0-.9.3-1.5 1.5-1.5h1.6V5.1c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6v7.7h3.1Z",
+  },
+  {
+    name: "Telegram",
+    url: SOCIAL[2].url,
+    path: "M21.4 4.2 2.9 11.3c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.4ZM9.2 14.1l9-5.7c.4-.3.8-.1.5.2l-7.7 7-.3 3.2-1.5-4.7Z",
+  },
+  {
+    name: "WhatsApp",
+    url: SOCIAL[3].url,
+    path: "M12 2.2a9.8 9.8 0 0 0-8.4 14.8L2.2 21.8l4.9-1.3A9.8 9.8 0 1 0 12 2.2Zm5.7 13.8c-.2.7-1.4 1.3-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2.1 1c.3.1.5.2.6.3.1.2.1.7-.1 1.3Z",
+  },
+];
+
 function Footer() {
   const { t } = useLang();
   const cols: { title: string; links: NavLink[] }[] = [
@@ -566,48 +590,72 @@ function Footer() {
   ];
   return (
     <footer className="mt-auto border-t border-line bg-canvas-2">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
-        <div>
-          <Logo />
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-2">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-6 gap-y-6 px-4 pt-7 pb-6 sm:px-6 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] lg:gap-10 lg:py-12 lg:px-8">
+        {/* Brand + socials: one tight row on phones */}
+        <div className="col-span-2 lg:col-span-1">
+          <div className="flex items-center justify-between gap-3 lg:block">
+            <Logo />
+            <ul className="flex items-center gap-1.5 lg:mt-5 lg:gap-2">
+              {SOCIAL_ICONS.map((s) => (
+                <li key={s.name}>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.name}
+                    title={s.name}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-line bg-panel text-ink-2 transition hover:border-brand hover:bg-brand hover:text-white"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+                      <path d={s.path} />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-3 line-clamp-2 text-[13.5px] leading-relaxed text-ink-3 lg:mt-4 lg:line-clamp-none lg:max-w-sm lg:text-sm lg:text-ink-2">
             {t(
               "ইসলাহ — দ্বীনি জীবনের সঙ্গী। বয়ান, কুরআন, দোয়া, আমল ও নামাজের সময় এক জায়গায়।",
               "Islah is your companion for Islamic life — talks, Quran, duas, amal and prayer times in one place.",
             )}
           </p>
         </div>
+
         {cols.map((c) => (
-          <div key={c.title}>
-            <p className="mb-3 text-[15px] font-semibold text-ink">{c.title}</p>
-            <ul className="space-y-2">
+          <nav key={c.title} aria-label={c.title}>
+            <p className="mb-2 text-[13px] font-semibold tracking-wide text-ink lg:mb-3 lg:text-[15px]">{c.title}</p>
+            <ul className="space-y-1.5 lg:space-y-2">
               {c.links.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-ink-2 hover:text-brand">
+                  <Link href={l.href} className="text-[14px] text-ink-2 transition hover:text-brand">
                     {t(l.bn, l.en)}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         ))}
-        <div>
-          <p className="mb-3 text-[15px] font-semibold text-ink">{t("অ্যাপ ডাউনলোড", "Get the app")}</p>
-          <div className="flex flex-col gap-2">
-            <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex h-11 items-center gap-2 rounded-xl border border-line bg-panel px-3 text-sm text-ink hover:border-brand/40">
-              <Download className="h-4 w-4 text-brand" /> Google Play
+
+        <div className="col-span-2 lg:col-span-1">
+          <p className="mb-2 hidden text-[15px] font-semibold text-ink lg:mb-3 lg:block">{t("অ্যাপ ডাউনলোড", "Get the app")}</p>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+            <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" dir="ltr" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-ink px-3 text-[13px] font-medium text-canvas transition hover:opacity-90 lg:justify-start">
+              <Download className="h-4 w-4" /> Google Play
             </a>
-            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex h-11 items-center gap-2 rounded-xl border border-line bg-panel px-3 text-sm text-ink hover:border-brand/40">
+            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" dir="ltr" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-line bg-panel px-3 text-[13px] font-medium text-ink transition hover:border-brand/40 lg:justify-start">
               <Download className="h-4 w-4 text-brand" /> App Store
             </a>
           </div>
         </div>
       </div>
+
       <div className="border-t border-line">
-        <div className="mx-auto flex max-w-[1240px] flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-ink-3 sm:flex-row sm:px-6 lg:px-8">
-          <p>
+        <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-3 px-4 py-3.5 text-xs text-ink-3 sm:px-6 lg:px-8">
+          <p className="truncate">
             © {new Date().getFullYear()} ইসলাহ · {t("দ্বীনি জীবনের সঙ্গী", "Companion for Islamic Life")}
           </p>
-          <Link href="/privacy-policy" className="hover:text-ink">
+          <Link href="/privacy-policy" className="shrink-0 hover:text-ink">
             {t("গোপনীয়তা নীতি", "Privacy policy")}
           </Link>
         </div>

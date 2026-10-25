@@ -5,42 +5,31 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  BookOpen,
   CalendarDays,
   ChevronsUpDown,
-  Download,
-  ExternalLink,
   Grid2x2,
-  HandHeart,
   HeartHandshake,
-  Landmark,
-  Library,
   MapPin,
-  Mic2,
   Moon,
-  Music2,
   Pause,
   Play,
   Radio,
   RotateCcw,
   RotateCw,
-  ShieldCheck,
   SkipBack,
   SkipForward,
-  Sparkles,
   Sun,
   Sunrise,
   Sunset,
-  Users,
   type LucideIcon,
 } from "lucide-react";
 import type { Book, Boyan, Clip, LiveStatus, Malfuz, Nasheed } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
 import { usePlayer, type Track } from "@/components/player/player-provider";
 import { FeatureLink, ToneIcon, useShell } from "@/components/dashboard/shell";
-import { Equalizer, NumberBadge, SectionHeading, ViewAll } from "@/components/dashboard/ui";
+import { Equalizer, ViewAll } from "@/components/dashboard/ui";
 import { LINKS, QUICK_LINKS, type NavLink } from "@/lib/nav";
-import { boyanTrack, clipTrack, nasheedTrack } from "@/lib/tracks";
+import { boyanTrack } from "@/lib/tracks";
 import { clock, formatDate, formatHijri, formatTime, num, shortSpeaker } from "@/lib/format";
 import { PRAYER_BN, to12h, useNow, usePrayer } from "@/lib/use-prayer";
 import { APP_STORE_URL, BD_CITIES, PLAY_STORE_URL } from "@/lib/constants";
@@ -50,7 +39,6 @@ export interface HomeData {
   live: LiveStatus | null;
   boyans: Boyan[];
   boyanCats: { name: string; count: number }[];
-  duaCats: { id: string; title: string; count: number }[];
   nasheeds: Nasheed[];
   clips: Clip[];
   malfuz: Malfuz[];
@@ -78,42 +66,14 @@ const Container = ({ className, children }: { className?: string; children: Reac
   <div className={cn("mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8", className)}>{children}</div>
 );
 
-const CAT_ICONS: LucideIcon[] = [Mic2, BookOpen, Users, Landmark, Moon, Sparkles, Radio, HeartHandshake, CalendarDays];
-const DUA_ICONS: LucideIcon[] = [ShieldCheck, HandHeart, Sun, Moon, Sparkles, BookOpen, HeartHandshake];
-const CAT_TONES = ["#417360", "#D97706", "#0284C7", "#BE185D", "#7C3AED", "#0F766E", "#DC2626", "#A16207", "#4F46E5"];
 
 export function Dashboard({ data }: { data: HomeData }) {
-  const { t, lang } = useLang();
-
   return (
     <div>
       <Hero live={data.live} />
 
-      {/* Unified Multimedia Section (Boyan, Short Clips, Hamd-Naat, Books) */}
-      <MultimediaSection data={data} />
-
-      {/* Duas */}
-      <section className="py-14 sm:py-20">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              title={t("দোয়ার বিভাগসমূহ", "Dua categories")}
-              subtitle={t("খাযায়েনে কোরআন ও হাদীছ থেকে দৈনন্দিন মাসনূন দোয়া", "Everyday masnoon duas from Khazain-e-Quran-o-Hadith")}
-            />
-          </Reveal>
-          <CategoryGrid
-            items={data.duaCats.map((c, i) => ({
-              key: c.id,
-              href: `/dua?c=${c.id}`,
-              title: c.title,
-              meta: t(`মোট ${num(c.count, lang)}টি দোয়া`, `${c.count} duas`),
-              icon: DUA_ICONS[i % DUA_ICONS.length],
-              tone: CAT_TONES[(i + 3) % CAT_TONES.length],
-            }))}
-          />
-          <ViewAll href={LINKS.dua.href} label={t("সব দোয়া দেখুন", "View all duas")} />
-        </Container>
-      </section>
+      {/* Media (the app's four multimedia cards) + latest talks */}
+      <MediaSection data={data} />
 
       {/* Malfuz carousel */}
       {data.malfuz.length > 0 && (
@@ -262,17 +222,19 @@ function PrayerRing({ prayer, size }: { prayer: Prayer; size: number }) {
           stroke="var(--brand)"
           strokeWidth="14"
           strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={c * prayer.progress}
+          strokeDasharray={`${c * (1 - prayer.progress)} ${c}`}
+          strokeDashoffset={-c * prayer.progress}
           transform="rotate(-90 90 90)"
-          className="transition-[stroke-dashoffset] duration-700"
+          className="transition-[stroke-dasharray,stroke-dashoffset] duration-700"
         />
         <circle cx={90 + r * Math.cos(angle)} cy={90 + r * Math.sin(angle)} r="10" fill="var(--panel)" stroke="var(--brand)" strokeWidth="3" />
         <circle cx={90 + r * Math.cos(angle)} cy={90 + r * Math.sin(angle)} r="4" fill="var(--brand)" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
         <p className="text-lg font-semibold text-ink">{name ? t(PRAYER_BN[name], name) : "—"}</p>
-        <p className="text-[13px] text-ink-2">{t("বাকি সময়", "Remaining")}</p>
+        <p className="text-[13px] text-ink-2">
+          {prayer.next ? t(`${PRAYER_BN[prayer.next.name] ?? prayer.next.name} পর্যন্ত বাকি`, `Until ${prayer.next.name}`) : t("বাকি সময়", "Remaining")}
+        </p>
         <p className="mt-0.5 font-num text-xl font-medium text-ink" dir="ltr">
           {prayer.now ? remainingClock(prayer.remaining, lang) : "--:--:--"}
         </p>
@@ -471,49 +433,104 @@ function MosqueScene({ className }: { className?: string }) {
   );
 }
 
-/* ── Category cards ───────────────────────────────────────────── */
+/* ── Recent talks: latest one as a big player, the rest below ── */
 
-function CategoryGrid({ items }: { items: { key: string; href: string; title: string; meta: string; icon: LucideIcon; tone: string }[] }) {
-  return (
-    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-      {items.map((it) => (
-        <li key={it.key}>
-          <Link
-            href={it.href}
-            className="group flex items-center gap-4 rounded-2xl border border-line bg-panel p-4 transition hover:border-brand/40 hover:shadow-[0_10px_30px_-18px_rgba(65,115,96,0.5)]"
-          >
-            <ToneIcon link={{ icon: it.icon, tone: it.tone }} size="lg" className="rounded-2xl" />
-            <span className="min-w-0">
-              <span className="block truncate text-[17px] text-ink group-hover:text-brand">{it.title}</span>
-              <span className="mt-0.5 block text-sm text-ink-3">{it.meta}</span>
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
-}
+const BARS = Array.from({ length: 64 }, (_, i) => 0.25 + 0.75 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6)));
 
-/* ── Recent talks + player card ───────────────────────────────── */
-
-const BARS = Array.from({ length: 44 }, (_, i) => 0.3 + 0.7 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6)));
-
-function RecentWithPlayer({ boyans }: { boyans: Boyan[] }) {
+function RecentBoyans({ boyans }: { boyans: Boyan[] }) {
   const { t, lang } = useLang();
   const player = usePlayer();
   const queue = useMemo(() => boyans.map(boyanTrack), [boyans]);
-  const rows = boyans.slice(0, 8);
   const fromHere = !!player.current && queue.some((q) => q.id === player.current!.id);
   const featured: Track | undefined = fromHere ? player.current! : queue[0];
+  const meta = boyans.find((b) => featured && boyanTrack(b).id === featured.id);
   const isFeatured = !!featured && player.isCurrent(featured.id);
   const playing = isFeatured && player.playing;
   const pct = isFeatured && player.duration ? player.time / player.duration : 0;
+  const rows = boyans.slice(1, 7);
+
+  if (!featured) return null;
+
+  const toggle = () => (playing ? player.pause() : isFeatured ? player.toggle() : player.play(featured, queue));
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_380px]">
-      <ul className="order-2 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:order-1">
+    <div className="space-y-4">
+      {/* Featured: tap anywhere on the title row to play with the visualiser */}
+      <div className="hero-surface relative overflow-hidden rounded-3xl p-5 sm:p-7">
+        <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.07]" />
+        <div className="relative flex items-start gap-4">
+          <button
+            onClick={toggle}
+            aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white text-brand-strong shadow-[0_0_0_8px_rgba(255,255,255,0.15)] transition active:scale-95 sm:h-[72px] sm:w-[72px]"
+          >
+            {isFeatured && player.loading ? (
+              <Equalizer active />
+            ) : playing ? (
+              <Pause className="h-7 w-7" fill="currentColor" />
+            ) : (
+              <Play className="ms-1 h-7 w-7" fill="currentColor" />
+            )}
+          </button>
+          <button onClick={toggle} className="min-w-0 flex-1 text-start">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs text-white">
+              {playing ? <Equalizer active /> : <span className="h-1.5 w-1.5 rounded-full bg-gold-light" />}
+              {playing ? t("এখন বাজছে", "Now playing") : fromHere && isFeatured ? t("থেমে আছে", "Paused") : t("সর্বশেষ বয়ান", "Latest talk")}
+            </span>
+            <span className="mt-2 line-clamp-2 block text-[19px] leading-snug font-semibold text-white sm:text-[22px]">{featured.title}</span>
+            <span className="mt-1 block truncate text-sm text-white/75">
+              {[shortSpeaker(meta?.speaker || featured.subtitle || ""), meta?.category, meta && formatDate(meta.uploadDate, lang)].filter(Boolean).join(" · ")}
+            </span>
+          </button>
+        </div>
+
+        {/* Visualiser doubles as the seek bar */}
+        <button
+          dir="ltr"
+          aria-label={t("অগ্রগতি", "Seek")}
+          onClick={(e) => {
+            if (!isFeatured || !player.duration) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            player.seek(((e.clientX - r.left) / r.width) * player.duration);
+          }}
+          className="relative mt-6 flex h-16 w-full items-center gap-[3px] sm:h-20"
+        >
+          {BARS.map((h, i) => (
+            <span
+              key={i}
+              className={cn("flex-1 origin-center rounded-full transition-colors", i / BARS.length < pct ? "bg-white" : "bg-white/30", i % 2 && "max-sm:hidden")}
+              style={{ height: `${h * 100}%`, animation: playing ? `wave 1.1s ${(i % 7) * 0.09}s ease-in-out infinite alternate` : undefined }}
+            />
+          ))}
+        </button>
+
+        <div className="relative mt-4 flex items-center justify-between gap-3" dir="ltr">
+          <span className="font-num text-sm whitespace-nowrap text-white/80 sm:w-28">
+            {clock(isFeatured ? player.time : 0)} / {clock(isFeatured ? player.duration : 0)}
+          </span>
+          <div className="flex items-center gap-1 sm:gap-3">
+            <button aria-label={t("আগের", "Previous")} onClick={player.prev} disabled={!isFeatured} className="p-2 text-white/80 hover:text-white disabled:opacity-40">
+              <SkipBack className="h-5 w-5" fill="currentColor" />
+            </button>
+            <button aria-label={t("পেছনে ১০ সেকেন্ড", "Back 10s")} onClick={() => player.skip(-10)} disabled={!isFeatured} className="p-2 text-white/80 hover:text-white disabled:opacity-40">
+              <RotateCcw className="h-5 w-5" />
+            </button>
+            <button aria-label={t("সামনে ১০ সেকেন্ড", "Forward 10s")} onClick={() => player.skip(10)} disabled={!isFeatured} className="p-2 text-white/80 hover:text-white disabled:opacity-40">
+              <RotateCw className="h-5 w-5" />
+            </button>
+            <button aria-label={t("পরের", "Next")} onClick={player.next} disabled={!isFeatured} className="p-2 text-white/80 hover:text-white disabled:opacity-40">
+              <SkipForward className="h-5 w-5" fill="currentColor" />
+            </button>
+          </div>
+          <span className="hidden w-28 sm:block" />
+        </div>
+        <style>{`@keyframes wave{0%{transform:scaleY(.45)}100%{transform:scaleY(1)}}`}</style>
+      </div>
+
+      {/* More recent talks */}
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {rows.map((b, i) => {
-          const track = queue[i];
+          const track = queue[i + 1];
           const current = player.isCurrent(track.id);
           const on = current && player.playing;
           return (
@@ -525,7 +542,9 @@ function RecentWithPlayer({ boyans }: { boyans: Boyan[] }) {
                   current ? "border-brand/40 bg-brand-soft" : "border-line bg-panel hover:border-brand/40",
                 )}
               >
-                <NumberBadge n={current ? <Equalizer active={on} /> : num(i + 1, lang)} />
+                <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full", on ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
+                  {on ? <Equalizer active /> : <Play className="ms-0.5 h-4 w-4" fill="currentColor" />}
+                </span>
                 <span className="min-w-0 flex-1">
                   <span className="line-clamp-1 text-[15.5px] text-ink">{b.title}</span>
                   <span className="mt-0.5 block truncate text-[13px] text-ink-3">
@@ -537,47 +556,6 @@ function RecentWithPlayer({ boyans }: { boyans: Boyan[] }) {
           );
         })}
       </ul>
-
-      {featured && (
-        <div className="order-1 flex flex-col rounded-2xl border border-line bg-panel p-5 lg:order-2">
-          <p className="line-clamp-2 text-center text-[15.5px] font-semibold text-brand">{featured.title}</p>
-          <p className="mt-1 truncate text-center text-xs text-ink-3">{shortSpeaker(featured.subtitle || "")}</p>
-          <div className="my-6 flex h-24 items-center justify-center gap-[3px]" dir="ltr">
-            {BARS.map((h, i) => (
-              <span
-                key={i}
-                className={cn("w-[4px] origin-center rounded-full transition-colors", i / BARS.length < pct ? "bg-brand" : "bg-brand-tint")}
-                style={{ height: `${h * 100}%`, animation: playing ? `wave 1.1s ${(i % 7) * 0.09}s ease-in-out infinite alternate` : undefined }}
-              />
-            ))}
-          </div>
-          <p className="text-center font-num text-sm text-ink-2" dir="ltr">
-            {clock(isFeatured ? player.time : 0)} <span className="text-ink-3">/ {clock(isFeatured ? player.duration : 0)}</span>
-          </p>
-          <div className="mt-5 flex items-center justify-between" dir="ltr">
-            <button aria-label={t("আগের", "Previous")} onClick={player.prev} className="p-2 text-ink-2 hover:text-brand">
-              <SkipBack className="h-5 w-5" fill="currentColor" />
-            </button>
-            <button aria-label={t("পেছনে ১০ সেকেন্ড", "Back 10s")} onClick={() => player.skip(-10)} className="p-2 text-ink-2 hover:text-brand">
-              <RotateCcw className="h-5 w-5" />
-            </button>
-            <button
-              aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
-              onClick={() => (playing ? player.pause() : isFeatured ? player.toggle() : player.play(featured, queue))}
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-[0_0_0_6px_var(--brand-soft)] transition active:scale-95"
-            >
-              {playing ? <Pause className="h-6 w-6" fill="currentColor" /> : <Play className="ms-0.5 h-6 w-6" fill="currentColor" />}
-            </button>
-            <button aria-label={t("সামনে ১০ সেকেন্ড", "Forward 10s")} onClick={() => player.skip(10)} className="p-2 text-ink-2 hover:text-brand">
-              <RotateCw className="h-5 w-5" />
-            </button>
-            <button aria-label={t("পরের", "Next")} onClick={player.next} className="p-2 text-ink-2 hover:text-brand">
-              <SkipForward className="h-5 w-5" fill="currentColor" />
-            </button>
-          </div>
-          <style>{`@keyframes wave{0%{transform:scaleY(.5)}100%{transform:scaleY(1)}}`}</style>
-        </div>
-      )}
     </div>
   );
 }
@@ -620,409 +598,68 @@ function QuoteCarousel({ malfuz }: { malfuz: Malfuz[] }) {
   );
 }
 
-/* ── Multimedia Section (Boyan, Short Clips, Hamd & Naat, Books) ── */
+/* ── Media: the app's four multimedia cards ─────────────────── */
 
-type MediaTab = "boyan" | "clips" | "nasheed" | "book";
-
-interface MediaTabItem {
-  id: MediaTab;
-  bn: string;
-  en: string;
-  icon: LucideIcon;
-  countKey: keyof HomeData["counts"];
-}
-
-const MEDIA_TABS: MediaTabItem[] = [
-  { id: "boyan", bn: "বয়ান", en: "Boyans", icon: Mic2, countKey: "boyan" },
-  { id: "clips", bn: "সংক্ষিপ্ত ক্লিপ", en: "Short Clips", icon: Sparkles, countKey: "clip" },
-  { id: "nasheed", bn: "হামদ ও নাত", en: "Hamd & Naat", icon: Music2, countKey: "nasheed" },
-  { id: "book", bn: "বই ও কিতাব", en: "Books & Kitab", icon: BookOpen, countKey: "book" },
+const MEDIA: { link: NavLink; bn: string; en: string; sub: [string, string]; count: keyof HomeData["counts"] }[] = [
+  { link: LINKS.boyan, bn: "বয়ান", en: "Boyan", sub: ["ওয়াজ শুনুন", "Listen to waz"], count: "boyan" },
+  { link: LINKS.clips, bn: "সংক্ষিপ্ত ক্লিপ", en: "Short clips", sub: ["হাইলাইটস", "Highlights"], count: "clip" },
+  { link: LINKS.nasheed, bn: "হামদ ও নাত", en: "Hamd & Naat", sub: ["ইসলামিক নাশিদ", "Islamic nasheeds"], count: "nasheed" },
+  { link: LINKS.library, bn: "বই ও কিতাব", en: "Books", sub: ["ইসলামিক বই", "Islamic books"], count: "book" },
 ];
 
-function MultimediaSection({ data }: { data: HomeData }) {
-  const { t, lang } = useLang();
-  const [tab, setTab] = useState<MediaTab>("boyan");
-
+/** App-style section title: gold-to-green bar + heading. */
+function BarTitle({ title, subtitle, className }: { title: React.ReactNode; subtitle?: React.ReactNode; className?: string }) {
   return (
-    <section className="bg-canvas-2 py-12 sm:py-16">
-      <Container>
-        {/* Header with App-like Gold/Primary Gradient Accent Bar */}
-        <Reveal>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex items-center gap-3">
-              <span className="h-8 w-1.5 rounded-full bg-gradient-to-b from-[#EAB308] to-brand" />
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-                    {t("মিডিয়া", "Media")}
-                  </h2>
-                  <span className="rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-semibold text-brand">
-                    {t("মাল্টিমিডিয়া", "Multimedia")}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-ink-2">
-                  {t(
-                    "বয়ান, সংক্ষিপ্ত ক্লিপ, হামদ-নাত ও ইসলামী কিতাব একসাথে",
-                    "Talks, short clips, nasheeds & Islamic books all in one place"
-                  )}
-                </p>
-              </div>
-            </div>
+    <div className={cn("mb-4 flex items-center gap-3", className)}>
+      <span className="h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-gold to-brand" />
+      <div className="min-w-0">
+        <h2 className="font-heading text-[22px] leading-tight font-bold text-ink sm:text-[26px]">{title}</h2>
+        {subtitle && <p className="mt-0.5 text-sm text-ink-3">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
 
-            {/* Segmented Tab Controls (like Flutter mobile app) */}
-            <div className="flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-line bg-panel p-1.5 shadow-sm scrollbar-none">
-              {MEDIA_TABS.map((tItem) => {
-                const active = tab === tItem.id;
-                const count = data.counts?.[tItem.countKey] ?? 0;
-                const Icon = tItem.icon;
-                return (
-                  <button
-                    key={tItem.id}
-                    onClick={() => setTab(tItem.id)}
-                    className={cn(
-                      "relative flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition whitespace-nowrap",
-                      active ? "text-white" : "text-ink-2 hover:bg-panel-2 hover:text-ink"
-                    )}
+function MediaSection({ data }: { data: HomeData }) {
+  const { t, lang } = useLang();
+  return (
+    <section className="py-12 sm:py-16">
+      <Container>
+        <Reveal>
+          <BarTitle title={t("মিডিয়া", "Media")} subtitle={t("দেখুন ও শুনুন", "Watch & listen")} />
+          <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {MEDIA.map((m) => {
+              const n = data.counts?.[m.count] ?? 0;
+              return (
+                <li key={m.link.href}>
+                  <Link
+                    href={m.link.href}
+                    className="group flex h-full flex-col justify-between gap-5 rounded-2xl border border-line bg-panel p-4 transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_12px_30px_-18px_rgba(65,115,96,0.55)] active:scale-[0.98] sm:p-5"
                   >
-                    {active && (
-                      <motion.span
-                        layoutId="activeMediaPill"
-                        className="absolute inset-0 rounded-xl bg-brand shadow-sm"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    <span className="relative z-10 flex items-center gap-2">
-                      <Icon className={cn("h-4 w-4", active ? "text-white" : "text-brand")} />
-                      <span>{t(tItem.bn, tItem.en)}</span>
-                      {count > 0 && (
-                        <span
-                          className={cn(
-                            "rounded-full px-2 py-0.5 text-[11px] font-semibold font-num",
-                            active ? "bg-white/20 text-white" : "bg-panel-2 text-ink-3"
-                          )}
-                        >
-                          {num(count, lang)}
-                        </span>
-                      )}
+                    <span className="flex items-start justify-between">
+                      <span className="tone flex h-11 w-11 items-center justify-center rounded-xl sm:h-12 sm:w-12" style={{ ["--tone" as string]: m.link.tone }}>
+                        <m.link.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                      </span>
+                      {n > 0 && <span className="rounded-full bg-panel-2 px-2 py-0.5 font-num text-xs text-ink-3">{num(n, lang)}</span>}
                     </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                    <span>
+                      <span className="block text-[16.5px] font-semibold text-ink group-hover:text-brand sm:text-lg">{t(m.bn, m.en)}</span>
+                      <span className="mt-0.5 block text-[13px] text-ink-3">{t(...m.sub)}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </Reveal>
 
-        {/* Tab Content Panels */}
-        <div className="mt-8 sm:mt-10">
-          {tab === "boyan" && (
-            <motion.div
-              key="tab-boyan"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="space-y-8"
-            >
-              {/* Category Chips - Compact 8-9 items */}
-              <div>
-                <div className="mb-3.5 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold tracking-wide text-ink-3 uppercase">
-                    {t("বয়ানের বিভাগসমূহ", "Boyan Categories")}
-                  </h3>
-                  <Link href={LINKS.boyan.href} className="text-xs font-medium text-brand hover:underline">
-                    {t("সব বিভাগ দেখুন", "Browse all categories")} →
-                  </Link>
-                </div>
-                <CategoryGrid
-                  items={data.boyanCats.slice(0, 9).map((c, i) => ({
-                    key: c.name,
-                    href: `/boyan?category=${encodeURIComponent(c.name)}`,
-                    title: c.name,
-                    meta: t(`মোট ${num(c.count, lang)}টি বয়ান`, `${c.count} talks`),
-                    icon: CAT_ICONS[i % CAT_ICONS.length],
-                    tone: CAT_TONES[i % CAT_TONES.length],
-                  }))}
-                />
-              </div>
-
-              {/* Recent Talks Audio Player */}
-              <div>
-                <h3 className="mb-3.5 text-sm font-semibold tracking-wide text-ink-3 uppercase">
-                  {t("সাম্প্রতিক বয়ান — এক ক্লিকে শুনুন", "Recent Talks — One Tap Listen")}
-                </h3>
-                <RecentWithPlayer boyans={data.boyans} />
-              </div>
-
-              <ViewAll href={LINKS.boyan.href} label={t("সব বয়ান শুনুন ও ডাউনলোড করুন", "View all talks")} />
-            </motion.div>
-          )}
-
-          {tab === "clips" && (
-            <motion.div
-              key="tab-clips"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <ClipsGrid clips={data.clips} />
-              <ViewAll href={LINKS.clips.href} label={t("সব সংক্ষিপ্ত ক্লিপ দেখুন", "View all short clips")} />
-            </motion.div>
-          )}
-
-          {tab === "nasheed" && (
-            <motion.div
-              key="tab-nasheed"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <NasheedsGrid nasheeds={data.nasheeds} />
-              <ViewAll href={LINKS.nasheed.href} label={t("সব হামদ ও নাত শুনুন", "Listen to all nasheeds")} />
-            </motion.div>
-          )}
-
-          {tab === "book" && (
-            <motion.div
-              key="tab-book"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <BooksGrid books={data.books ?? []} />
-              <ViewAll href={LINKS.library.href} label={t("লাইব্রেরির সব বই দেখুন", "View all books in library")} />
-            </motion.div>
-          )}
-        </div>
+        <Reveal>
+          <BarTitle className="mt-12" title={t("সাম্প্রতিক বয়ান", "Recent talks")} subtitle={t("সর্বশেষ বয়ানটি চাপলেই শুরু হবে", "Tap the latest talk to start listening")} />
+          <RecentBoyans boyans={data.boyans} />
+          <ViewAll href={LINKS.boyan.href} label={t("সব বয়ান শুনুন ও ডাউনলোড করুন", "Listen to & download all talks")} />
+        </Reveal>
       </Container>
     </section>
-  );
-}
-
-/* ── Clips Grid ───────────────────────────────────────────────── */
-
-function ClipsGrid({ clips }: { clips: Clip[] }) {
-  const { t, lang } = useLang();
-  const player = usePlayer();
-  const queue = useMemo(() => clips.filter((c) => c.audioUrl).map(clipTrack), [clips]);
-
-  if (clips.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
-        <Sparkles className="mb-2 h-6 w-6 text-brand" />
-        {t("কোনো সংক্ষিপ্ত ক্লিপ পাওয়া যায়নি", "No short clips available")}
-      </div>
-    );
-  }
-
-  return (
-    <ul className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-      {clips.map((clip) => {
-        const track = clipTrack(clip);
-        const current = player.isCurrent(track.id);
-        const playing = current && player.playing;
-        return (
-          <li key={clip.id} className="group">
-            <div
-              className={cn(
-                "flex h-full flex-col justify-between rounded-2xl border p-4 transition-all duration-300",
-                current
-                  ? "border-brand bg-brand-soft/70 shadow-sm"
-                  : "border-line bg-panel hover:border-brand/40 hover:shadow-md"
-              )}
-            >
-              <div className="flex items-start gap-3">
-                <button
-                  type="button"
-                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                  aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
-                  className={cn(
-                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition active:scale-95",
-                    playing
-                      ? "bg-brand text-white shadow-md shadow-brand/25"
-                      : "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white"
-                  )}
-                >
-                  {playing ? <Equalizer active /> : <Play className="ms-0.5 h-4 w-4" fill="currentColor" />}
-                </button>
-                <div className="min-w-0 flex-1">
-                  <h4 className="line-clamp-2 text-sm font-semibold text-ink group-hover:text-brand transition">
-                    {clip.title}
-                  </h4>
-                  <p className="mt-1 text-xs text-ink-3">
-                    {formatDate(clip.createdAt, lang)}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-line/60 pt-3 text-xs text-ink-3">
-                <span className="inline-flex items-center gap-1 font-medium text-brand">
-                  <Sparkles className="h-3 w-3" />
-                  {t("সংক্ষিপ্ত নসীহত", "Short Reminder")}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                  className="font-medium text-ink hover:text-brand"
-                >
-                  {playing ? t("চলছে...", "Playing...") : t("শুনুন", "Listen")}
-                </button>
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-/* ── Nasheeds Grid ────────────────────────────────────────────── */
-
-function NasheedsGrid({ nasheeds }: { nasheeds: Nasheed[] }) {
-  const { t, lang } = useLang();
-  const player = usePlayer();
-  const queue = useMemo(() => nasheeds.filter((n) => n.audioUrl).map(nasheedTrack), [nasheeds]);
-
-  if (nasheeds.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
-        <Music2 className="mb-2 h-6 w-6 text-brand" />
-        {t("কোনো হামদ ও নাত পাওয়া যায়নি", "No nasheeds available")}
-      </div>
-    );
-  }
-
-  return (
-    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {nasheeds.map((n) => {
-        const track = nasheedTrack(n);
-        const current = player.isCurrent(track.id);
-        const playing = current && player.playing;
-        return (
-          <li key={n.id} className="group">
-            <div
-              className={cn(
-                "flex h-full flex-col justify-between rounded-2xl border p-4 transition-all duration-300",
-                current
-                  ? "border-brand bg-brand-soft/70 shadow-sm"
-                  : "border-line bg-panel hover:border-brand/40 hover:shadow-md"
-              )}
-            >
-              <div className="flex items-start gap-3">
-                <button
-                  type="button"
-                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                  aria-label={playing ? t("থামান", "Pause") : t("চালান", "Play")}
-                  className={cn(
-                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition active:scale-95",
-                    playing
-                      ? "bg-brand text-white shadow-md shadow-brand/25"
-                      : "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white"
-                  )}
-                >
-                  {playing ? <Equalizer active /> : <Music2 className="h-4 w-4" />}
-                </button>
-                <div className="min-w-0 flex-1">
-                  <h4 className="line-clamp-2 text-sm font-semibold text-ink group-hover:text-brand transition">
-                    {n.title}
-                  </h4>
-                  <p className="mt-1 truncate text-xs text-ink-3">
-                    {n.artist || n.lyricist || t("হামদ ও নাত", "Hamd & Naat")}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-line/60 pt-3 text-xs text-ink-3">
-                <span className="text-[11px] text-ink-3">
-                  {n.writingPlace || formatDate(n.createdAt, lang)}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => (playing ? player.pause() : player.play(track, queue))}
-                  className="font-medium text-brand hover:underline"
-                >
-                  {playing ? t("চলছে", "Playing") : t("বাজান", "Play")}
-                </button>
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-/* ── Books Grid ───────────────────────────────────────────────── */
-
-function BooksGrid({ books }: { books: Book[] }) {
-  const { t } = useLang();
-
-  if (books.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line py-12 text-center text-sm text-ink-3">
-        <BookOpen className="mb-2 h-6 w-6 text-brand" />
-        {t("কোনো বই পাওয়া যায়নি", "No books available")}
-      </div>
-    );
-  }
-
-  return (
-    <ul className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-      {books.map((b) => (
-        <li
-          key={b.id}
-          className="group flex flex-col justify-between rounded-2xl border border-line bg-panel p-3.5 transition hover:border-brand/40 hover:shadow-lg"
-        >
-          <div>
-            <a
-              href={b.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative block aspect-[3/4] overflow-hidden rounded-xl bg-panel-2 shadow-sm"
-            >
-              {b.coverUrl ? (
-                <Image
-                  src={b.coverUrl}
-                  alt={b.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                  unoptimized
-                />
-              ) : (
-                <span className="flex h-full flex-col items-center justify-center gap-2 text-ink-3">
-                  <BookOpen className="h-8 w-8 text-brand/60" />
-                  <span className="line-clamp-2 px-2 text-center text-[11px] font-medium text-ink-3">
-                    {b.title}
-                  </span>
-                </span>
-              )}
-            </a>
-            <h4 className="mt-3 line-clamp-2 px-1 text-sm font-semibold text-ink transition group-hover:text-brand">
-              {b.title}
-            </h4>
-            {b.author && b.author !== b.title && (
-              <p className="mt-0.5 truncate px-1 text-xs text-ink-3">{b.author}</p>
-            )}
-          </div>
-          <div className="mt-3.5 grid grid-cols-2 gap-1.5 border-t border-line/60 pt-2">
-            <a
-              href={b.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-8 items-center justify-center gap-1 rounded-xl bg-brand text-xs font-medium text-white transition hover:bg-brand-strong"
-            >
-              <ExternalLink className="h-3 w-3" />
-              {t("পড়ুন", "Read")}
-            </a>
-            <a
-              href={b.pdfUrl}
-              download
-              className="flex h-8 items-center justify-center gap-1 rounded-xl bg-panel-2 text-xs font-medium text-ink transition hover:bg-brand-soft hover:text-brand"
-            >
-              <Download className="h-3 w-3" />
-              {t("PDF", "PDF")}
-            </a>
-          </div>
-        </li>
-      ))}
-    </ul>
   );
 }
 
