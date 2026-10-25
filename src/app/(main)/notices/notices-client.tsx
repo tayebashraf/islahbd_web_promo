@@ -355,38 +355,38 @@ function NoticeCard({
 
   return (
     <article className="overflow-hidden rounded-3xl border border-line bg-panel shadow-sm transition hover:shadow-md">
-      {/* ── 1. Top Image Banner (মোবাইল ভিউতে উপরে সুন্দর ছবি) ── */}
+      {/* ── 1. Top Image Banner (১৯২০x১০৮০ / 16:9 ফরম্যাট — কোনো টেক্সট বা পাশ কাটা যাবে না) ── */}
       {notice.imageUrl && (
         <div className="relative w-full overflow-hidden border-b border-line/60 bg-neutral-900/5 dark:bg-neutral-950/40">
-          {/* Natural flyer container: never crop poster text */}
           <div
-            className="group relative flex w-full cursor-pointer items-center justify-center p-2 sm:p-4"
+            className="group relative flex w-full aspect-video cursor-pointer items-center justify-center overflow-hidden bg-neutral-950/5 dark:bg-neutral-950/30"
             onClick={() => onZoomImage(notice.imageUrl!, title)}
+            title={t("বড় করে দেখতে ক্লিক করুন", "Click to enlarge")}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={notice.imageUrl}
               alt={title}
               loading="lazy"
-              className="h-auto max-h-[580px] w-full rounded-2xl object-contain shadow-sm transition-transform duration-300 group-hover:scale-[1.01]"
+              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"
             />
 
             {/* Floating Top-Left Date Tag */}
-            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1 text-xs font-medium text-white shadow-sm backdrop-blur-md sm:left-6 sm:top-6">
+            <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white shadow-sm backdrop-blur-md sm:left-5 sm:top-5">
               <CalendarDays className="h-3.5 w-3.5" />
               <span>{formatDate(notice.date, lang)}</span>
             </span>
 
             {/* Floating Top-Right New Tag */}
             {isNew && (
-              <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-md sm:right-6 sm:top-6">
+              <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-md sm:right-5 sm:top-5">
                 <Sparkles className="h-3 w-3" />
                 <span>{t("নতুন ঘোষণা", "New")}</span>
               </span>
             )}
 
             {/* Floating Bottom-Right Zoom Hint */}
-            <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1 text-[11px] font-semibold text-white opacity-90 shadow-sm backdrop-blur-md transition group-hover:opacity-100 sm:bottom-6 sm:right-6">
+            <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1 text-[11px] font-semibold text-white opacity-90 shadow-sm backdrop-blur-md transition group-hover:opacity-100 sm:bottom-5 sm:right-5">
               <Maximize2 className="h-3.5 w-3.5" />
               <span>{t("বড় করে দেখুন", "Zoom")}</span>
             </span>
