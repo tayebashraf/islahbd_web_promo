@@ -20,10 +20,10 @@ export function FatwaClient({ fatwas, categories }: { fatwas: Fatwa[]; categorie
   return (
     <div>
       <PageHeader
-        eyebrow={t("মাসআলা", "Q&A")}
-        title={t("শরঈ জিজ্ঞাসা", "Ask a Mufti")}
+        eyebrow={t("মাসআলা ও ফতোয়া", "Q&A")}
+        title={t("আমার জিজ্ঞাসা", "My Inquiries")}
         muted={t(`${num(fatwas.length, lang)}টি উত্তর`, `${fatwas.length} answers`)}
-        description={t("আপনার শরঈ প্রশ্ন পাঠান — ফতোয়া বিভাগ উত্তর দেবেন। উত্তরপ্রাপ্ত প্রশ্নগুলো নিচে পড়ুন।", "Send your question — the fatwa department will answer.")}
+        description={t("আপনার জিজ্ঞাসা বা শরঈ প্রশ্ন পাঠান — ফতোয়া বিভাগ উত্তর দেবেন। উত্তরপ্রাপ্ত প্রশ্নগুলো নিচে পড়ুন।", "Send your query — the fatwa department will answer.")}
         actions={<SearchInput value={q} onChange={setQ} placeholder={t("প্রশ্ন খুঁজুন…", "Search questions…")} />}
       />
 

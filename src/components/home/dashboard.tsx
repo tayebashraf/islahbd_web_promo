@@ -347,10 +347,10 @@ function QuickMenu() {
           </li>
         ))}
         <li>
-          <button onClick={openMore} className={cn(tile, "w-full")}>
+          <Link href="/more" className={cn(tile, "w-full")}>
             <ToneIcon link={{ icon: Grid2x2, tone: "#417360" }} size="lg" className="transition group-hover:-translate-y-0.5" />
             <span className="text-[13px] sm:text-[14px] leading-snug text-ink">{t("সব ফিচার", "All features")}</span>
-          </button>
+          </Link>
         </li>
       </ul>
     </nav>

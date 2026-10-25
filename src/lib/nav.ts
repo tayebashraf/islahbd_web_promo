@@ -47,6 +47,10 @@ export interface NavLink {
   tone: string;
   /** Opens in a new tab (maps, stores). */
   external?: boolean;
+  /** Status badge like শীঘ্রই আসছে */
+  badgeBn?: string;
+  badgeEn?: string;
+  comingSoon?: boolean;
 }
 
 export const LINKS = {
@@ -60,7 +64,7 @@ export const LINKS = {
   sunnat: { href: "/amal?section=sunnat", bn: "সুন্নাত", en: "Sunnah", icon: Sparkle, descBn: "দৈনন্দিন জীবনের সুন্নাত", descEn: "Sunnah of daily life", tone: "#C08A2E" },
   wazifa: { href: "/amal?section=wazifa", bn: "ওয়াজিফা", en: "Wazifa", icon: BookMarked, descBn: "সালেকীনের মামুলাত", descEn: "Daily litanies", tone: "#417360" },
   hajj: { href: "/hajj", bn: "হজ্জ ও উমরাহ", en: "Hajj & Umrah", icon: Landmark, descBn: "ধাপে ধাপে হজ্জ ও উমরাহ গাইড", descEn: "Step-by-step Hajj & Umrah guide", tone: "#92400E" },
-  zakat: { href: "/zakat", bn: "যাকাত ক্যালকুলেটর", en: "Zakat Calculator", icon: Calculator, descBn: "যাকাতের হিসাব করুন", descEn: "Work out your zakat", tone: "#059669" },
+  zakat: { href: "/zakat", bn: "যাকাত ক্যালকুলেটর", en: "Zakat Calculator", icon: Calculator, descBn: "শীঘ্রই আসছে", descEn: "Coming soon", tone: "#059669", badgeBn: "শীঘ্রই আসছে", badgeEn: "Coming Soon", comingSoon: true },
   mosque: { href: "https://www.google.com/maps/search/mosque+near+me", bn: "নিকটবর্তী মসজিদ", en: "Nearby Mosque", icon: MapPinned, descBn: "আশেপাশের মসজিদ খুঁজুন", descEn: "Find mosques around you", tone: "#2563EB", external: true },
 
   // Knowledge
@@ -72,7 +76,7 @@ export const LINKS = {
   calendar: { href: "/calendar", bn: "ইসলামিক ক্যালেন্ডার", en: "Islamic Calendar", icon: CalendarDays, descBn: "হিজরি মাস ও গুরুত্বপূর্ণ দিন", descEn: "Hijri months & key days", tone: "#DC2626" },
   malfuzat: { href: "/malfuzat", bn: "মালফুযাত", en: "Malfuzat", icon: Quote, descBn: "হযরতের বাণী", descEn: "Sayings of the shaykh", tone: "#C08A2E" },
   poems: { href: "/poems", bn: "কবিতা ও কালাম", en: "Poetry", icon: Feather, descBn: "আধ্যাত্মিক কবিতা ও অনুবাদ", descEn: "Spiritual poetry with translation", tone: "#DB2777" },
-  fatwa: { href: "/fatwa", bn: "শরঈ জিজ্ঞাসা", en: "Ask a Mufti", icon: MessageCircleQuestion, descBn: "প্রশ্ন করুন, উত্তর পড়ুন", descEn: "Ask and read answers", tone: "#4F46E5" },
+  fatwa: { href: "/fatwa", bn: "আমার জিজ্ঞাসা", en: "My Queries", icon: MessageCircleQuestion, descBn: "প্রশ্ন করুন, উত্তর পড়ুন", descEn: "Ask and read answers", tone: "#4F46E5" },
   library: { href: "/library", bn: "লাইব্রেরি", en: "Library", icon: Library, descBn: "বই পড়ুন ও ডাউনলোড করুন", descEn: "Read & download books", tone: "#A16207" },
   blog: { href: "/blog", bn: "ইসলাহ ব্লগ", en: "Islah Blog", icon: PenLine, descBn: "সীরাত ও ইসলামিক প্রবন্ধ", descEn: "Islamic articles & sirat", tone: "#2563EB" },
 
@@ -81,7 +85,7 @@ export const LINKS = {
   live: { href: "/listen", bn: "লাইভ", en: "Live", icon: Radio, descBn: "সরাসরি মজলিস শুনুন", descEn: "Listen to the live majlis", tone: "#DC2626" },
   holySites: { href: "/holy-sites", bn: "হারামাইন লাইভ", en: "Makkah & Madinah Live", icon: Tv, descBn: "মক্কা ও মদিনা সরাসরি", descEn: "Live from Makkah & Madinah", tone: "#92400E" },
   nasheed: { href: "/nasheed", bn: "হামদ ও নাত", en: "Hamd & Naat", icon: Music2, descBn: "অডিও ও ভিডিও নাশিদ", descEn: "Audio & video nasheeds", tone: "#E11D48" },
-  clips: { href: "/clips", bn: "শর্ট ক্লিপ", en: "Short Clips", icon: Sparkles, descBn: "ছোট ছোট নসীহত", descEn: "Bite-sized reminders", tone: "#7C3AED" },
+  clips: { href: "/clips", bn: "শর্ট ক্লিপ", en: "Short Clips", icon: Sparkles, descBn: "শীঘ্রই আসছে", descEn: "Coming soon", tone: "#7C3AED", badgeBn: "শীঘ্রই আসছে", badgeEn: "Coming Soon", comingSoon: true },
   gallery: { href: "/gallery", bn: "গ্যালারি", en: "Gallery", icon: Images, descBn: "ছবির অ্যালবাম", descEn: "Photo albums", tone: "#DB2777" },
   wallpaper: { href: "/gallery?tab=wallpapers", bn: "ওয়ালপেপার", en: "Wallpapers", icon: Image, descBn: "ইসলামিক ওয়ালপেপার", descEn: "Islamic wallpapers", tone: "#0891B2" },
 
@@ -91,13 +95,16 @@ export const LINKS = {
   member: { href: "/lifetime-member", bn: "আজীবন সদস্য সম্মেলন", en: "Lifetime Member", icon: HeartHandshake, descBn: "জামেআর পাশে থাকুন", descEn: "Support the Jamia", tone: "#BE185D" },
   khidmat: { href: "/khidmat", bn: "খিদমত ফান্ড", en: "Khidmat Fund", icon: HandHeart, descBn: "তোলাবায়ে কেরামের খেদমত ও যাকাত ফান্ড", descEn: "Student welfare & zakat fund", tone: "#059669" },
   notices: { href: "/notices", bn: "নোটিশ", en: "Notices", icon: Megaphone, descBn: "সর্বশেষ ঘোষণা", descEn: "Latest announcements", tone: "#EA580C" },
+
+  // Dedicated "More" Page
+  more: { href: "/more", bn: "অন্যান্য", en: "More", icon: Grid2x2, descBn: "সকল ফিচার ও সেবা", descEn: "All features & services", tone: "#417360" },
 } satisfies Record<string, NavLink>;
 
-/** "More" is not a page — it opens the all-features sheet. */
-export const MORE = { bn: "অন্যান্য", en: "More", icon: Grid2x2 };
+/** Dedicated "More" page link */
+export const MORE = LINKS.more;
 
-/** Mobile bottom bar, mirroring the app's tabs (Home, Live, Boyan, Paribar, Others). */
-export const BOTTOM_NAV: NavLink[] = [LINKS.home, LINKS.live, LINKS.boyan, LINKS.paribar];
+/** Mobile bottom bar: Home, Live, Boyan, Paribar, More (অন্যান্য). */
+export const BOTTOM_NAV: NavLink[] = [LINKS.home, LINKS.live, LINKS.boyan, LINKS.paribar, MORE];
 
 /** Desktop header links. */
 export const TOP_NAV: NavLink[] = [LINKS.home, LINKS.boyan, LINKS.quran, LINKS.dua, LINKS.amal, LINKS.live];

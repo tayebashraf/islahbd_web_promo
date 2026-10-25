@@ -92,7 +92,7 @@ export function ZakatClient() {
           <p className="flex gap-2 rounded-xl bg-gold-soft p-4 text-sm leading-relaxed text-ink-2">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
             {t(
-              "নিসাব: সাড়ে বায়ান্ন ভরি রূপা বা সাড়ে সাত ভরি স্বর্ণ। নগদ টাকা বা মিশ্র সম্পদ থাকলে রূপার নিসাব ধরা হয়। বিস্তারিত মাসআলার জন্য “শরঈ জিজ্ঞাসা”য় প্রশ্ন করুন।",
+              "নিসাব: সাড়ে বায়ান্ন ভরি রূপা বা সাড়ে সাত ভরি স্বর্ণ। নগদ টাকা বা মিশ্র সম্পদ থাকলে রূপার নিসাব ধরা হয়। বিস্তারিত মাসআলার জন্য “আমার জিজ্ঞাসা”য় প্রশ্ন করুন।",
               "Nisab is 52.5 tola of silver or 7.5 tola of gold; with cash or mixed assets the silver nisab applies. Ask a mufti for details.",
             )}
           </p>

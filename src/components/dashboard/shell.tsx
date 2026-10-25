@@ -26,8 +26,8 @@ export const useShell = () => useContext(ShellContext);
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { current } = usePlayer();
-  const [more, setMore] = useState(false);
   const [palette, setPalette] = useState(false);
   const home = pathname === "/";
 
@@ -42,7 +42,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const ctx = useMemo(() => ({ openMore: () => setMore(true), openSearch: () => setPalette(true) }), []);
+  const ctx = useMemo(() => ({ openMore: () => router.push("/more"), openSearch: () => setPalette(true) }), [router]);
 
   return (
     <ShellContext.Provider value={ctx}>
@@ -57,8 +57,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         {/* Room for the fixed bottom bar and mini player on phones. */}
         <div aria-hidden style={{ height: `calc(var(--nav-h) + env(safe-area-inset-bottom) + ${current ? 96 : 0}px)` }} />
 
-        <BottomNav pathname={pathname} moreOpen={more} onMore={() => setMore((v) => !v)} onNavigate={() => setMore(false)} />
-        <MoreSheet open={more} onClose={() => setMore(false)} pathname={pathname} />
+        <BottomNav pathname={pathname} onNavigate={() => {}} />
         <CommandPalette open={palette} onClose={() => setPalette(false)} />
         <PlayerBar />
       </div>
@@ -319,40 +318,40 @@ export function FeatureLink({ link, className, children, onClick }: { link: NavL
 
 /* ── Mobile chrome ─────────────────────────────────────────────── */
 
-function BottomNav({ pathname, moreOpen, onMore, onNavigate }: { pathname: string; moreOpen: boolean; onMore: () => void; onNavigate: () => void }) {
+function BottomNav({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
   const { t } = useLang();
-  const inTabs = BOTTOM_NAV.some((l) => isActive(pathname, l.href));
-  const items = [
-    ...BOTTOM_NAV.map((l) => ({ key: l.href, link: l, label: t(l.bn, l.en), active: !moreOpen && isActive(pathname, l.href) })),
-    { key: "more", link: null, label: t(MORE.bn, MORE.en), active: moreOpen || !inTabs },
-  ];
 
   return (
     <nav aria-label={t("নিচের নেভিগেশন", "Bottom navigation")} className="fixed inset-x-0 bottom-0 z-[55] border-t border-line bg-canvas-2/95 pb-safe backdrop-blur-xl lg:hidden">
       <ul className="mx-auto grid h-16 max-w-lg grid-cols-5">
-        {items.map((it) => {
-          const Icon = it.link?.icon ?? MORE.icon;
-          const inner = (
-            <>
-              <span className="relative flex h-8 w-14 items-center justify-center">
-                {it.active && <motion.span layoutId="bottom-pill" className="absolute inset-0 rounded-full bg-brand-soft" transition={{ type: "spring", damping: 30, stiffness: 380 }} />}
-                <Icon className={cn("relative h-[22px] w-[22px]", it.active ? "text-brand" : "text-ink-3")} strokeWidth={it.active ? 2.2 : 1.8} />
-              </span>
-              <span className={cn("mt-0.5 text-[11.5px] leading-tight", it.active ? "font-semibold text-brand" : "text-ink-3")}>{it.label}</span>
-            </>
-          );
-          const cls = "tap flex h-full w-full flex-col items-center justify-center transition-transform active:scale-95";
+        {BOTTOM_NAV.map((l) => {
+          const active = isActive(pathname, l.href);
+          const Icon = l.icon;
           return (
-            <li key={it.key}>
-              {it.link ? (
-                <Link href={it.link.href} onClick={onNavigate} aria-current={it.active ? "page" : undefined} className={cls}>
-                  {inner}
-                </Link>
-              ) : (
-                <button onClick={onMore} aria-expanded={moreOpen} className={cls}>
-                  {inner}
-                </button>
-              )}
+            <li key={l.href}>
+              <Link
+                href={l.href}
+                onClick={onNavigate}
+                aria-current={active ? "page" : undefined}
+                className="tap flex h-full w-full flex-col items-center justify-center transition-transform active:scale-95"
+              >
+                <span className="relative flex h-8 w-14 items-center justify-center">
+                  {active && (
+                    <motion.span
+                      layoutId="bottom-pill"
+                      className="absolute inset-0 rounded-full bg-brand-soft"
+                      transition={{ type: "spring", damping: 30, stiffness: 380 }}
+                    />
+                  )}
+                  <Icon
+                    className={cn("relative h-[22px] w-[22px]", active ? "text-brand" : "text-ink-3")}
+                    strokeWidth={active ? 2.2 : 1.8}
+                  />
+                </span>
+                <span className={cn("mt-0.5 text-[11.5px] leading-tight", active ? "font-semibold text-brand" : "text-ink-3")}>
+                  {t(l.bn, l.en)}
+                </span>
+              </Link>
             </li>
           );
         })}

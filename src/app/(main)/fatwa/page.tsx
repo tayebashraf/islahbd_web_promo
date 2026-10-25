@@ -4,8 +4,8 @@ import { getFatwaCategories, getFatwas } from "@/lib/api";
 import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "শরঈ জিজ্ঞাসা — প্রশ্ন করুন",
-  description: "শরঈ মাসআলা জানতে প্রশ্ন পাঠান এবং উত্তরপ্রাপ্ত প্রশ্নগুলো পড়ুন।",
+  title: "আমার জিজ্ঞাসা — প্রশ্ন করুন",
+  description: "শরঈ মাসআলা জানতে আপনার জিজ্ঞাসা পাঠান এবং উত্তরপ্রাপ্ত প্রশ্নগুলো পড়ুন।",
   alternates: { canonical: `${SITE_URL}/fatwa` },
 };
 
