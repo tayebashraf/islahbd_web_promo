@@ -85,6 +85,9 @@ const DAY_BN = ["", "সোমবার", "মঙ্গলবার", "বুধ
 const DAY_EN = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const ORD_BN = ["", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
 const ORD_EN = ["", "1st", "2nd", "3rd", "4th", "5th"];
+// Fixed labels: Intl's short month differs between Node and browsers (hydration mismatch).
+const MONTH_BN = ["জানু", "ফেব্রু", "মার্চ", "এপ্রি", "মে", "জুন", "জুলা", "আগ", "সেপ্টে", "অক্টো", "নভে", "ডিসে"];
+const MONTH_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /** Next date (today included) this majlis falls on. Dart weekday: Mon=1…Sun=7. */
 export function nextOccurrence(m: RecurringMajlis, from = new Date()): Date | null {
@@ -133,7 +136,7 @@ export function RecurringMajlisList({ majlis }: { majlis: RecurringMajlis[] }) {
                 {next && (
                   <span className={cn("flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl leading-none", i === 0 ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
                     <span className="font-num text-lg font-semibold">{num(next.getDate(), lang)}</span>
-                    <span className="mt-0.5 text-[10px]">{new Intl.DateTimeFormat(lang === "bn" ? "bn-BD" : "en-GB", { month: "short" }).format(next)}</span>
+                    <span className="mt-0.5 text-[10px]">{(lang === "bn" ? MONTH_BN : MONTH_EN)[next.getMonth()]}</span>
                   </span>
                 )}
                 <span className="min-w-0 flex-1">

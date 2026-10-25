@@ -49,6 +49,12 @@ export function BoyanClient({
   }, [boyans, q, cat, sort]);
 
   const queue = useMemo(() => filtered.map(boyanTrack), [filtered]);
+  // Nearly every talk is by the same shaykh; only name the others.
+  const mainSpeaker = useMemo(() => {
+    const n = new Map<string, number>();
+    for (const b of boyans) n.set(b.speaker, (n.get(b.speaker) ?? 0) + 1);
+    return [...n.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+  }, [boyans]);
   const allQueue = useMemo(() => boyans.map(boyanTrack), [boyans]);
   const initial = initialPlay ? allQueue.find((tr) => tr.id === `boyan-${initialPlay}`) : undefined;
   useInitialPlay(initial, allQueue);
@@ -106,7 +112,7 @@ export function BoyanClient({
             <EmptyState icon={Mic2} title={t("কোনো বয়ান পাওয়া যায়নি", "No talks found")} hint={t("অন্য শব্দ দিয়ে খুঁজে দেখুন", "Try a different search")} />
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             {filtered.slice(0, limit).map((b, i) => (
               <AudioRow
                 key={b.id}
@@ -121,15 +127,15 @@ export function BoyanClient({
                       <Clock className="h-3 w-3" />
                       {formatDate(b.uploadDate, lang)}
                     </span>
+                    {b.speaker && b.speaker !== mainSpeaker && <span className="truncate">{shortSpeaker(b.speaker)}</span>}
                     {b.location && (
-                      <span className="inline-flex max-w-[260px] items-center gap-1 truncate">
+                      <span className="inline-flex min-w-0 max-w-[260px] items-center gap-1 truncate">
                         <MapPin className="h-3 w-3 shrink-0" />
                         <span className="truncate">{b.location}</span>
                       </span>
                     )}
                   </>
                 }
-                aside={<span className="block max-w-[220px] truncate text-xs text-ink-3">{shortSpeaker(b.speaker)}</span>}
               />
             ))}
           </ul>

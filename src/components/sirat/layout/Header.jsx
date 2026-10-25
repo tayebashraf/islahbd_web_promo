@@ -101,7 +101,7 @@ export default function Header() {
     if (res.status) {
       setPushStatus(res.status);
       if (res.status === 'granted') {
-        alert('সীরাত.ব্লগ পুশ নোটিফিকেশন সফলভাবে সক্রিয় করা হয়েছে!');
+        alert('ইসলাহ ব্লগ পুশ নোটিফিকেশন সফলভাবে সক্রিয় করা হয়েছে!');
       }
     }
   };
@@ -197,15 +197,15 @@ export default function Header() {
   return (
     <header className="sirat-app-header" role="banner">
       <div className="sirat-header-inner">
-        {/* LEFT: SiratBook Brand Logo & IslahBD Return Link */}
+        {/* LEFT: Islah Blog Brand Logo & IslahBD Return Link */}
         <div className="sirat-header-left">
           <Link
             href="/blog"
             className="siratbook-brand-logo"
-            title="SiratBook হোম (শীর্ষে যেতে ক্লিক করুন)"
+            title="ইসলাহ ব্লগ হোম (শীর্ষে যেতে ক্লিক করুন)"
             onClick={handleLogoClick}
           >
-            <span className="siratbook-brand-text">SiratBook</span>
+            <span className="siratbook-brand-text">ইসলাহ ব্লগ</span>
           </Link>
           <Link
             href="/"
@@ -557,7 +557,7 @@ export default function Header() {
                     onClick={() => setSettingsOpen(false)}
                   >
                     <Info size={17} color="var(--color-text-secondary)" />
-                    <span>সীরাত.ব্লগ সম্পর্কে</span>
+                    <span>ইসলাহ ব্লগ সম্পর্কে</span>
                     <ChevronRight size={15} className="fb-settings-arrow" />
                   </Link>
                 </div>
@@ -590,7 +590,7 @@ export default function Header() {
             <input
               ref={searchInputRef}
               type="search"
-              placeholder="সীরাত.ব্লগে হাদিস, সিরাত বা লেখক অনুসন্ধান করুন..."
+              placeholder="ইসলাহ ব্লগে হাদিস, সিরাত বা লেখক অনুসন্ধান করুন..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               aria-label="অনুসন্ধান"

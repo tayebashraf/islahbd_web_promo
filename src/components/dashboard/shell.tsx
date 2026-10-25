@@ -586,7 +586,7 @@ function Footer() {
   const { t } = useLang();
   const cols: { title: string; links: NavLink[] }[] = [
     { title: t("জনপ্রিয় পেজ", "Popular pages"), links: [LINKS.boyan, LINKS.quran, LINKS.dua, LINKS.prayer, LINKS.amal] },
-    { title: t("প্রতিষ্ঠান", "Institution"), links: [LINKS.about, LINKS.paribar, LINKS.member, LINKS.notices, LINKS.blog] },
+    { title: t("প্রতিষ্ঠান", "Institution"), links: [LINKS.about, LINKS.paribar, LINKS.member, LINKS.khidmat, LINKS.notices, LINKS.blog] },
   ];
   return (
     <footer className="mt-auto border-t border-line bg-canvas-2">

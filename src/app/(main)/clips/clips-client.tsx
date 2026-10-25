@@ -57,7 +57,7 @@ export function ClipsClient({ clips, initialPlay }: { clips: Clip[]; initialPlay
           {tab === "audio" ? (
             shown.length ? (
               <>
-                <ul className="grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-x-4">
+                <ul className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                   {shown.slice(0, limit).map((c, i) => (
                     <AudioRow
                       key={c.id}

@@ -140,7 +140,7 @@ export const LeftSidebar = () => {
 
         {/* Footer Meta */}
         <div className="fb-sidebar-footer">
-          <p>© ২০২৬ সীরাত.ব্লগ • রাসূলুল্লাহ ﷺ-এর জীবন ও আদর্শ</p>
+          <p>© ২০২৬ ইসলাহ ব্লগ • রাসূলুল্লাহ ﷺ-এর জীবন ও আদর্শ</p>
         </div>
       </div>
     </aside>

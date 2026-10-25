@@ -71,7 +71,7 @@ export default function FeedbackConsultationBox({ variant = 'footer' }) {
           </div>
           <div className="sirat-feedback-surface-text">
             <h4 className="sirat-feedback-surface-title">
-              সীরাত.ব্লগের সার্বিক উন্নতিতে আপনার সুপরামর্শ ও মতামত দিন
+              ইসলাহ ব্লগের সার্বিক উন্নতিতে আপনার সুপরামর্শ ও মতামত দিন
             </h4>
             <p className="sirat-feedback-surface-sub">
               বিশুদ্ধ দ্বীনি সিরাত চর্চা ও প্ল্যাটফর্মের উন্নয়নে আপনার গঠনমূলক পরামর্শ অত্যন্ত মূল্যবান।
@@ -103,7 +103,7 @@ export default function FeedbackConsultationBox({ variant = 'footer' }) {
               <span>সরাসরি যোগাযোগ ও পরামর্শ কেন্দ্র</span>
             </div>
             <p className="sirat-feedback-banner-desc">
-              সীরাত.ব্লগ পরিচালনায় যেকোনো পরামর্শ, প্রস্তাবনা বা সংশোধনের জন্য সরাসরি যোগাযোগ করতে পারেন:
+              ইসলাহ ব্লগ পরিচালনায় যেকোনো পরামর্শ, প্রস্তাবনা বা সংশোধনের জন্য সরাসরি যোগাযোগ করতে পারেন:
             </p>
 
             <div className="sirat-feedback-direct-channels">
@@ -120,7 +120,7 @@ export default function FeedbackConsultationBox({ variant = 'footer' }) {
 
               {/* WhatsApp Direct Message */}
               <a
-                href="https://wa.me/8801718763978?text=আসসালামু%20আলাইকুম,%20সীরাত.ব্লগ%20সম্পর্কে%20আমার%20পরামর্শ:"
+                href="https://wa.me/8801718763978?text=আসসালামু%20আলাইকুম,%20ইসলাহ%20ব্লগ%20সম্পর্কে%20আমার%20পরামর্শ:"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="sirat-feedback-channel-item sirat-feedback-channel--whatsapp"
@@ -184,7 +184,7 @@ export default function FeedbackConsultationBox({ variant = 'footer' }) {
                 rows={4}
                 required
                 className="sirat-feedback-textarea"
-                placeholder="সীরাত.ব্লগকে আরও সমৃদ্ধ করতে আপনার যেকোনো পরামর্শ বা দ্বীনি প্রস্তাবনা বিস্তারিত লিখুন..."
+                placeholder="ইসলাহ ব্লগকে আরও সমৃদ্ধ করতে আপনার যেকোনো পরামর্শ বা দ্বীনি প্রস্তাবনা বিস্তারিত লিখুন..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />

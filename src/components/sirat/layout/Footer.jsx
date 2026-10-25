@@ -11,8 +11,8 @@ export default function Footer() {
 
         <div className="footer__top">
           <div className="footer__brand">
-            <Link href="/blog" className="footer__logo" aria-label="সীরাত.ব্লগ হোমপেজ">
-              সীরাত<span className="footer__logo-dot">.</span>ব্লগ
+            <Link href="/blog" className="footer__logo" aria-label="ইসলাহ ব্লগ হোমপেজ">
+              ইসলাহ<span className="footer__logo-dot">.</span>ব্লগ
             </Link>
             <p className="footer__tagline">
               রাসূলুল্লাহ ﷺ-এর সিরাত, জীবন, চরিত্র ও শিক্ষা নিয়ে প্রামাণ্য জ্ঞানভিত্তিক ডিজিটাল প্রকাশনা।
@@ -58,7 +58,7 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <p className="footer__copyright">
-            © {new Date().getFullYear()} সীরাত.ব্লগ — সর্বস্বত্ব সংরক্ষিত। প্রামাণ্য ও শান্ত সীরাত প্রকাশনা।
+            © {new Date().getFullYear()} ইসলাহ ব্লগ — সর্বস্বত্ব সংরক্ষিত। প্রামাণ্য ইসলামিক প্রবন্ধ ও সীরাত প্রকাশনা।
           </p>
         </div>
       </div>

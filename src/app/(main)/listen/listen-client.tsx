@@ -261,7 +261,7 @@ export function ListenClient({ recentBoyans, majlis }: { recentBoyans: Boyan[]; 
             </div>
 
             <div className="relative my-2 aspect-square w-[210px] sm:w-[240px] lg:w-[260px]">
-              <LiveVisualizer analyser={playing ? analyser : null} active={live && playing} className="absolute inset-0 h-full w-full" />
+              <LiveVisualizer analyser={playing ? analyser : null} mode={!live ? "off" : playing ? "playing" : "live"} className="absolute inset-0 h-full w-full" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <button
                   onClick={playing ? stop : () => play()}
@@ -315,7 +315,7 @@ export function ListenClient({ recentBoyans, majlis }: { recentBoyans: Boyan[]; 
           </div>
 
           <div className="flex flex-col px-4 pt-1 pb-4 sm:px-5 sm:pb-5 lg:pt-5">
-            <LiveChat open={live && status?.chatOpen !== false} />
+            <LiveChat open={status?.chatOpen !== false} />
           </div>
         </div>
       </section>

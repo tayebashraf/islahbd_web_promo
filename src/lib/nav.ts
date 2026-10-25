@@ -74,7 +74,7 @@ export const LINKS = {
   poems: { href: "/poems", bn: "কবিতা ও কালাম", en: "Poetry", icon: Feather, descBn: "আধ্যাত্মিক কবিতা ও অনুবাদ", descEn: "Spiritual poetry with translation", tone: "#DB2777" },
   fatwa: { href: "/fatwa", bn: "শরঈ জিজ্ঞাসা", en: "Ask a Mufti", icon: MessageCircleQuestion, descBn: "প্রশ্ন করুন, উত্তর পড়ুন", descEn: "Ask and read answers", tone: "#4F46E5" },
   library: { href: "/library", bn: "লাইব্রেরি", en: "Library", icon: Library, descBn: "বই পড়ুন ও ডাউনলোড করুন", descEn: "Read & download books", tone: "#A16207" },
-  blog: { href: "/blog", bn: "ব্লগ", en: "Blog", icon: PenLine, descBn: "সীরাত ও গবেষণা নিবন্ধ", descEn: "Sirat & research articles", tone: "#2563EB" },
+  blog: { href: "/blog", bn: "ইসলাহ ব্লগ", en: "Islah Blog", icon: PenLine, descBn: "সীরাত ও ইসলামিক প্রবন্ধ", descEn: "Islamic articles & sirat", tone: "#2563EB" },
 
   // Audio & video
   boyan: { href: "/boyan", bn: "বয়ান", en: "Boyan", icon: Mic2, descBn: "ইসলাহী বয়ানের অডিও আর্কাইভ", descEn: "Audio archive of talks", tone: "#0D9488" },
@@ -88,7 +88,8 @@ export const LINKS = {
   // Institution
   paribar: { href: "/paribar", bn: "পরিবার", en: "Paribar", icon: Users, descBn: "হযরতের পরিচিতি, মিশন ও বাইয়াত", descEn: "The shaykh, his mission & bay'ah", tone: "#BE185D" },
   about: { href: "/about", bn: "মাদরাসা পরিচিতি", en: "About the Madrasa", icon: Building2, descBn: "মারকাযুল ইহসান পরিচিতি", descEn: "About Markazul Ihsan", tone: "#417360" },
-  member: { href: "/lifetime-member", bn: "আজীবন সদস্য", en: "Lifetime Member", icon: HeartHandshake, descBn: "জামেআর পাশে থাকুন", descEn: "Support the Jamia", tone: "#BE185D" },
+  member: { href: "/lifetime-member", bn: "আজীবন সদস্য সম্মেলন", en: "Lifetime Member", icon: HeartHandshake, descBn: "জামেআর পাশে থাকুন", descEn: "Support the Jamia", tone: "#BE185D" },
+  khidmat: { href: "/khidmat", bn: "খিদমত ফান্ড", en: "Khidmat Fund", icon: HandHeart, descBn: "তোলাবায়ে কেরামের খেদমত ও যাকাত ফান্ড", descEn: "Student welfare & zakat fund", tone: "#059669" },
   notices: { href: "/notices", bn: "নোটিশ", en: "Notices", icon: Megaphone, descBn: "সর্বশেষ ঘোষণা", descEn: "Latest announcements", tone: "#EA580C" },
 } satisfies Record<string, NavLink>;
 
@@ -118,11 +119,19 @@ export const NAV_GROUPS: { bn: string; en: string; links: NavLink[] }[] = [
     en: "Audio & video",
     links: [LINKS.boyan, LINKS.live, LINKS.holySites, LINKS.nasheed, LINKS.clips, LINKS.gallery, LINKS.wallpaper],
   },
-  { bn: "প্রতিষ্ঠান", en: "Institution", links: [LINKS.paribar, LINKS.about, LINKS.member, LINKS.notices] },
+  { bn: "প্রতিষ্ঠান", en: "Institution", links: [LINKS.paribar, LINKS.about, LINKS.member, LINKS.khidmat, LINKS.notices] },
 ];
 
 /** Home quick-access tiles; the last slot opens the "More" sheet. */
-export const QUICK_LINKS: NavLink[] = [LINKS.prayer, LINKS.quran, LINKS.boyan, LINKS.dua, LINKS.amal, LINKS.tasbeeh, LINKS.qibla];
+export const QUICK_LINKS: NavLink[] = [
+  LINKS.prayer,
+  LINKS.quran,
+  LINKS.boyan,
+  LINKS.member,
+  LINKS.khidmat,
+  LINKS.blog,
+  LINKS.qibla,
+];
 
 export const ALL_LINKS: NavLink[] = [LINKS.home, ...NAV_GROUPS.flatMap((g) => g.links)];
 

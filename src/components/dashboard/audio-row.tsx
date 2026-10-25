@@ -67,7 +67,7 @@ export function AudioRow({
         label={playing ? t("থামান", "Pause") : t("শুনুন", "Play")}
       />
       <div className="min-w-0 flex-1">
-        <p className="line-clamp-2 text-[15px] text-ink sm:line-clamp-1">{track.title}</p>
+        <p className="line-clamp-2 text-[15px] leading-snug text-ink">{track.title}</p>
         {meta && <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-ink-3">{meta}</div>}
       </div>
       {aside && <div className="hidden shrink-0 lg:block">{aside}</div>}
