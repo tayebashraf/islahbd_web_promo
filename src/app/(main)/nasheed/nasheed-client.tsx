@@ -58,12 +58,11 @@ export function NasheedClient({ nasheeds, initialPlay, initialTab }: { nasheeds:
       <div>
           {tab === "audio" ? (
             shownAudio.length ? (
-              <ul className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
+              <ul className="grid grid-cols-1 gap-2.5 lg:grid-cols-2 lg:gap-3">
                 {shownAudio.map((n, i) => (
                   <AudioRow
                     key={n.id}
-                    index={i}
-                    track={queue[i]}
+                        track={queue[i]}
                     queue={queue}
                     highlight={n.id === initialPlay}
                     meta={

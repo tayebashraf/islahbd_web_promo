@@ -68,7 +68,7 @@ export function AudioRow({
       />
       <div className="min-w-0 flex-1">
         <p className="line-clamp-2 text-[15px] leading-snug text-ink">{track.title}</p>
-        {meta && <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-ink-3">{meta}</div>}
+        {meta && <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-ink-3">{meta}</div>}
       </div>
       {aside && <div className="hidden shrink-0 lg:block">{aside}</div>}
       <div className="flex shrink-0 items-center gap-1 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">

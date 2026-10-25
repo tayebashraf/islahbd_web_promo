@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Copy, ExternalLink, Loader2, Send } from "lucide-react";
+import { CheckCircle2, ExternalLink, Loader2, Send } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 import { Panel, Segmented } from "@/components/dashboard/ui";
 import { Blocks } from "@/components/book/blocks";
-import { BAIYAT, BIO, DONATION, MISSION, SHAYKH, SOCIAL } from "@/data/paribar";
+import { BAIYAT, BIO, MISSION, SHAYKH, SOCIAL } from "@/data/paribar";
+import { DonateWidget } from "../khidmat/khidmat-client";
 import { applyParibar, type ParibarApplication } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -277,56 +278,9 @@ export function ParibarClient({ initialTab }: { initialTab?: string }) {
   );
 }
 
-/** Retained for use in About page and anywhere else donation info is legitimately displayed. */
+/** Donation box for the About page: digital payment (bKash / card / bank) via the khidmat fund. */
 export function DonationCard() {
-  const { t } = useLang();
-  const [copied, setCopied] = useState<string | null>(null);
-  const copy = async (v: string) => {
-    try {
-      await navigator.clipboard.writeText(v);
-      setCopied(v);
-      setTimeout(() => setCopied(null), 1500);
-    } catch {}
-  };
-  const rows: [string, string, string][] = [
-    ["বিকাশ / নগদ (পার্সোনাল)", "bKash / Nagad (personal)", DONATION.mobile],
-    ["একাউন্ট নাম", "Account name", DONATION.accountName],
-    ["একাউন্ট নম্বর", "Account number", DONATION.accountNumber],
-    ["ব্যাংক", "Bank", DONATION.bank],
-    ["শাখা", "Branch", DONATION.branch],
-    ["রাউটিং নম্বর", "Routing number", DONATION.routing],
-  ];
-  return (
-    <Panel>
-      <p className="text-[16.5px] font-semibold text-ink">{t("মাদরাসায় অনুদান করুন", "Donate to the madrasa")}</p>
-      <p className="mt-1 text-sm leading-relaxed text-ink-2">
-        {t("আপনার অনুদান তোলাবায়ে কেরামের খেদমতে ব্যয় হয়।", "Your donation is spent in service of the students.")}
-      </p>
-      <ul className="mt-3 divide-y divide-line">
-        {rows.map(([bn, en, v]) => (
-          <li key={en} className="flex items-center gap-2 py-2">
-            <span className="min-w-0 flex-1">
-              <span className="block text-xs text-ink-3">{t(bn, en)}</span>
-              <span className="block truncate font-num text-[15px] text-ink" dir="ltr">
-                {v}
-              </span>
-            </span>
-            <button onClick={() => copy(v)} aria-label={t("কপি", "Copy")} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-panel-2 text-brand">
-              {copied === v ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-3.5 w-3.5" />}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <a
-        href={`https://wa.me/${DONATION.contact.replace(/\D/g, "")}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-3 flex h-11 items-center justify-center rounded-xl bg-brand text-sm font-medium text-white"
-      >
-        {t("অনুদান পাঠিয়ে WhatsApp-এ রশিদ নিন", "Send a donation, then get a receipt on WhatsApp")}
-      </a>
-    </Panel>
-  );
+  return <DonateWidget />;
 }
 
 /* ── Application forms ────────────────────────────────────────── */

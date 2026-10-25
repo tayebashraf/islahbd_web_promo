@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "via.placeholder.com" },
+      { protocol: "https", hostname: "**.r2.dev" },
+      { protocol: "https", hostname: "api.islahbd.com" },
+      { protocol: "https", hostname: "cdn.islahbd.com" },
     ],
   },
   compress: true,
@@ -25,6 +28,13 @@ const nextConfig: NextConfig = {
       {
         source: "/hls2/:path*",
         destination: "https://cdn2.islahbd.com/live/:path*",
+      },
+      // Madrasa Markazul Ihsan's khidmat API (funds, member lookup/apply,
+      // bKash/SSLCommerz checkout). It sends no CORS headers, so the browser
+      // reaches it through us.
+      {
+        source: "/mk-api/khidmat/:path*",
+        destination: "https://www.markazulihsan.com/api/khidmat/:path*",
       },
     ];
   },

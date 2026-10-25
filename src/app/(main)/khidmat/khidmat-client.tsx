@@ -1,404 +1,392 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import {
-  Building2,
-  CheckCircle2,
-  Copy,
-  ExternalLink,
-  HandHeart,
-  HeartHandshake,
-  Landmark,
-  MessageCircle,
-  Phone,
-  QrCode,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
-import { useLang } from "@/components/providers/lang-provider";
-import { PageHeader, Panel, PanelHeader } from "@/components/dashboard/ui";
-import { DONATION } from "@/data/paribar";
-import { LINKS } from "@/lib/nav";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Check, Heart, Info, MessageCircle, Phone, ShieldCheck, Sparkles, X } from "lucide-react";
+import { Panel } from "@/components/dashboard/ui";
+import { cn } from "@/lib/utils";
+import { FALLBACK_FUNDS, KHIDMAT_API, RECEIPT_PHONE_LABEL, RECEIPT_WHATSAPP, formFor, lookFor, taka, type Fund } from "./khidmat-data";
+import { FormCard, LifetimeForm, MemberForm, QuickDonateForm } from "./khidmat-forms";
+
+/** Live fund list from the madrasa API (falls back to the bundled list). */
+export function useFunds() {
+  const [funds, setFunds] = useState<Fund[]>(FALLBACK_FUNDS);
+  useEffect(() => {
+    let alive = true;
+    fetch(`${KHIDMAT_API}/funds`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { funds?: Fund[] } | null) => {
+        if (alive && d?.funds?.length) setFunds(d.funds);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return funds;
+}
+
+function FundForm({ fund }: { fund: Fund }) {
+  const look = lookFor(fund);
+  const kind = formFor(fund);
+  if (kind === "lifetime")
+    return (
+      <FormCard icon={look.icon} tone={look.tone} title={fund.name} hint="নতুন হলে ফরম পূরণ করে সদস্য হোন, পুরাতন হলে অনুদান পরিশোধ করুন">
+        <LifetimeForm />
+      </FormCard>
+    );
+  if (kind === "monthly" || kind === "permanent")
+    return (
+      <FormCard icon={look.icon} tone={look.tone} title={fund.name} hint="নতুন হলে সদস্য হিসেবে আবেদন করুন, পুরাতন হলে মোবাইল নম্বর দিয়ে অনুদান দিন">
+        <MemberForm key={kind} category={kind} suggested={fund.suggested_amounts?.length ? fund.suggested_amounts : [300, 500, 1000, 2000, 5000]} />
+      </FormCard>
+    );
+  return (
+    <FormCard icon={look.icon} tone={look.tone} title={fund.name} hint={fund.description}>
+      <QuickDonateForm key={fund.id} fund={fund} />
+    </FormCard>
+  );
+}
+
+function FundPicker({ funds, value, onChange }: { funds: Fund[]; value: number; onChange: (id: number) => void }) {
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+      {funds.map((f) => {
+        const look = lookFor(f);
+        const on = f.id === value;
+        return (
+          <button
+            key={f.id}
+            type="button"
+            onClick={() => onChange(f.id)}
+            aria-pressed={on}
+            className={cn(
+              "flex items-center gap-2.5 rounded-2xl border p-2.5 text-start transition sm:p-3",
+              on ? "border-brand bg-brand-soft shadow-[0_8px_20px_-16px_var(--brand)]" : "border-line bg-panel hover:border-brand/40",
+            )}
+          >
+            <span className="tone flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ ["--tone" as string]: look.tone }}>
+              <look.icon className="h-[18px] w-[18px]" />
+            </span>
+            <span className={cn("line-clamp-2 text-[13.5px] leading-snug", on ? "font-semibold text-ink" : "text-ink-2")}>{f.name}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── Payment result (gateways send donors back with ?payment= / ?sslcz=) ── */
+
+type Result = { status: "success" | "fail" | "cancel"; tranId?: string; trx?: string; amount?: string; message?: string };
+
+function readResult(): Result | null {
+  const q = new URLSearchParams(window.location.search);
+  const sslcz = q.get("sslcz");
+  const payment = q.get("payment");
+  if (!sslcz && !payment) return null;
+  window.history.replaceState(null, "", window.location.pathname);
+  if (sslcz === "success" || payment === "success")
+    return {
+      status: "success",
+      tranId: q.get("tran_id") || q.get("tranId") || "",
+      trx: q.get("trx") || q.get("trx_id") || "",
+      amount: q.get("amount") || "",
+      message: q.get("saved") === "0" ? "পেমেন্ট সম্পন্ন হয়েছে, কিন্তু আজীবন সদস্য আবেদন সংরক্ষণে সমস্যা হয়েছে। অনুগ্রহ করে নিচের TrxID সহ হোয়াটসঅ্যাপে যোগাযোগ করুন।" : undefined,
+    };
+  if (sslcz === "fail" || sslcz === "failure" || payment === "fail") return { status: "fail", tranId: q.get("tran_id") || "", message: q.get("msg") || "পেমেন্ট সম্পন্ন করা যায়নি।" };
+  if (sslcz === "cancel" || payment === "cancel") return { status: "cancel", tranId: q.get("tran_id") || "", message: "পেমেন্ট বাতিল করা হয়েছে।" };
+  return null;
+}
+
+function Modal({ onClose, children, label }: { onClose: () => void; children: React.ReactNode; label: string }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" onClick={onClose}>
+      <motion.div
+        role="dialog"
+        aria-modal
+        aria-label={label}
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        onClick={(e) => e.stopPropagation()}
+        className="flex max-h-[85vh] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-line bg-panel shadow-2xl"
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function ResultModal({ result, onClose }: { result: Result; onClose: () => void }) {
+  const ok = result.status === "success";
+  return (
+    <Modal onClose={onClose} label={ok ? "অনুদান গৃহীত" : "পেমেন্ট সম্পন্ন হয়নি"}>
+      <div className="space-y-5 p-6 text-center sm:p-8">
+        <span className={cn("mx-auto flex h-16 w-16 items-center justify-center rounded-full", ok ? "bg-brand-soft text-brand" : "bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400")}>
+          {ok ? <Check className="h-8 w-8" strokeWidth={3} /> : <X className="h-8 w-8" strokeWidth={3} />}
+        </span>
+        <div className="space-y-1">
+          <h3 className="font-heading text-2xl font-bold text-ink">{ok ? "আলহামদুলিল্লাহ!" : "পেমেন্ট সম্পন্ন হয়নি"}</h3>
+          <p className={cn("text-sm", ok ? "font-medium text-brand" : "text-ink-2")}>{ok ? "আপনার অনুদান সফলভাবে গৃহীত হয়েছে।" : result.message}</p>
+        </div>
+        {ok && result.message && <p className="rounded-xl border border-gold/30 bg-gold-soft p-3 text-[13px] text-ink">{result.message}</p>}
+        {ok && (result.trx || result.tranId) && (
+          <dl className="space-y-1.5 rounded-2xl border border-line bg-panel-2 p-4 text-start text-[13px]">
+            {result.amount && (
+              <div className="flex justify-between">
+                <dt className="text-ink-3">পরিমাণ</dt>
+                <dd className="font-num font-semibold text-brand">৳{Number.isNaN(Number(result.amount)) ? result.amount : taka(Number(result.amount))}</dd>
+              </div>
+            )}
+            {result.trx && (
+              <div className="flex justify-between gap-3">
+                <dt className="text-ink-3">TrxID</dt>
+                <dd className="font-mono font-semibold break-all text-ink">{result.trx}</dd>
+              </div>
+            )}
+            {result.tranId && (
+              <div className="flex justify-between gap-3">
+                <dt className="text-ink-3">Invoice</dt>
+                <dd className="font-mono break-all text-ink-2">{result.tranId}</dd>
+              </div>
+            )}
+          </dl>
+        )}
+        {ok && <p className="text-[13px] text-ink-3">আল্লাহ তাআলা আপনার এই দানকে সাদাকায়ে জারিয়া হিসেবে কবুল করুন এবং সর্বোত্তম প্রতিদান দান করুন।</p>}
+        <div className="flex flex-col gap-2">
+          {ok && (
+            <a href={`https://wa.me/${RECEIPT_WHATSAPP}`} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-brand text-sm font-semibold text-white hover:bg-brand-strong">
+              <MessageCircle className="h-[18px] w-[18px]" />
+              হোয়াটসঅ্যাপে রশিদ সংগ্রহ করুন
+            </a>
+          )}
+          <button type="button" onClick={onClose} className={cn("h-11 rounded-2xl text-sm font-medium", ok ? "text-ink-2 hover:text-ink" : "bg-brand text-white hover:bg-brand-strong")}>
+            {ok ? "সম্পন্ন করুন" : "পুনরায় চেষ্টা করুন"}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function PolicyModal({ onClose }: { onClose: () => void }) {
+  return (
+    <Modal onClose={onClose} label="খিদমত ও অনুদান নীতিমালা">
+      <div className="flex items-start justify-between gap-3 border-b border-line bg-panel-2 p-5">
+        <div>
+          <h3 className="flex items-center gap-2 font-heading text-lg font-bold text-ink">
+            <Info className="h-5 w-5 text-brand" />
+            খিদমত ও অনুদান নীতিমালা
+          </h3>
+          <p className="mt-0.5 text-xs text-ink-3">দ্বীনি খাতের বিবরণ ও শরয়ী ব্যবহারের স্পষ্টতা</p>
+        </div>
+        <button type="button" onClick={onClose} aria-label="বন্ধ করুন" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-panel text-ink-2 hover:text-ink">
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="space-y-4 overflow-y-auto p-5 text-[14px] leading-relaxed text-ink-2">
+        <div className="space-y-2">
+          <h4 className="font-semibold text-ink">১. বিভিন্ন খিদমত খাতের পরিচয়</h4>
+          <ul className="list-disc space-y-1.5 ps-5">
+            <li>
+              <strong className="font-semibold text-ink">স্থায়ী ও মাসিক দাতা সদস্য:</strong> মাদরাসার নিয়মিত পরিচালনা, শিক্ষক-স্টাফদের সম্মাননা ও দ্বীনি কার্যক্রমে সহায়তা।
+            </li>
+            <li>
+              <strong className="font-semibold text-ink">আজীবন দাতা সদস্য:</strong> জামেয়ার দীর্ঘমেয়াদী স্থিতিশীলতা ও অবকাঠামোগত প্রসারে এককালীন বা বাৎসরিক অবদান।
+            </li>
+            <li>
+              <strong className="font-semibold text-ink">সাধারণ ও যাকাত ফান্ড:</strong> শুধুমাত্র যাকাত গ্রহণের উপযুক্ত অসচ্ছল ও এতিম ছাত্রদের অন্ন, বস্ত্র ও শিক্ষার প্রয়োজনীয় খাতে শরীয়াহ মোতাবেক বণ্টন।
+            </li>
+            <li>
+              <strong className="font-semibold text-ink">স্টুডেন্ট ফি ও লিল্লাহ বোর্ডিং:</strong> অসচ্ছল মেধাবী শিক্ষার্থীদের মাসিক খাবার ও কিতাবের ব্যবস্থা।
+            </li>
+          </ul>
+        </div>
+        <div className="space-y-2 border-t border-line pt-3">
+          <h4 className="font-semibold text-ink">২. মোবাইল নম্বর কেন প্রয়োজন?</h4>
+          <p>আপনার অনুদানটি সফলভাবে গৃহীত হওয়ার পর ডিজিটাল মানি রিসিট প্রস্তুত হয়। ট্র্যাকিং নিশ্চিত করতে এবং ভবিষ্যতে জামেয়ার বার্ষিক আয়-ব্যয় রিপোর্ট পৌঁছানোর জন্য সঠিক মোবাইল নম্বর প্রদান আবশ্যক।</p>
+        </div>
+        <div className="space-y-1 rounded-xl border border-gold/30 bg-gold-soft p-4 text-[13px] text-ink">
+          <p className="flex items-center gap-1.5 font-semibold">
+            <Sparkles className="h-3.5 w-3.5 text-gold" />
+            রাসূলুল্লাহ (সা.) ইরশাদ করেছেন:
+          </p>
+          <p className="italic">&ldquo;সাদাকাহ মানুষের কোনো ধন-সম্পদ হ্রাস করে না, বরং বৃদ্ধি করে।&rdquo; — সহীহ মুসলিম</p>
+        </div>
+      </div>
+      <div className="flex justify-end border-t border-line p-4">
+        <button type="button" onClick={onClose} className="h-10 rounded-xl bg-brand px-6 text-sm font-medium text-white hover:bg-brand-strong">
+          বুঝেছি
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+/* ── Page ─────────────────────────────────────────────────────── */
 
 export function KhidmatClient() {
-  const { t } = useLang();
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  const copy = async (text: string, key: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedKey(key);
-      setTimeout(() => setCopiedKey(null), 2000);
-    } catch {
-      // Fallback
-    }
-  };
-
-  const openApp = (scheme: string, number: string, key: string) => {
-    copy(number, key);
-    // On mobile devices, attempt to trigger app intent
-    if (typeof window !== "undefined") {
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile) {
-        window.location.href = scheme;
-      }
-    }
-  };
+  const funds = useFunds();
+  const [fundId, setFundId] = useState(FALLBACK_FUNDS[0].id);
+  const fund = funds.find((f) => f.id === fundId) ?? funds[0];
+  const [policy, setPolicy] = useState(false);
+  const [result, setResult] = useState<Result | null>(null);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- read once from the gateway's return URL
+  useEffect(() => setResult(readResult()), []);
 
   return (
-    <div className="mx-auto max-w-[880px] space-y-6 pb-12">
-      <PageHeader
-        title={t("তোলাবায়ে কেরামের খেদমত ফান্ড", "Talaba Khidmat & Zakat Fund")}
-        muted={t(
-          "জামেআ মারকাযুল ইহসান ঢাকা • যাকাত ও সাধারণ অনুদান",
-          "Jamea Markazul Ihsan Dhaka • Zakat & General Donations",
-        )}
-      />
-
-      {/* ── 1. Hero Notice Card ── */}
-      <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/70 via-panel to-amber-50/40 p-5 shadow-sm sm:p-7 dark:from-emerald-950/20 dark:via-panel dark:to-amber-950/10">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-600/10 text-emerald-700 dark:text-emerald-400">
-            <HandHeart className="h-5 w-5" />
+    <div className="mx-auto max-w-[880px] space-y-6 pb-10">
+      {/* Hero */}
+      <section className="hero-surface relative overflow-hidden rounded-3xl px-5 py-7 text-center sm:px-8 sm:py-10">
+        <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.07]" />
+        <div className="relative">
+          <div className="mx-auto mb-5 w-full max-w-md overflow-hidden rounded-2xl bg-white p-2 shadow-lg">
+            <Image src="/images/khidmat/markazul-ihsan-banner.jpg" alt="জামেআ মারকাযুল ইহসান ঢাকা" width={1024} height={143} className="h-auto w-full" priority />
+          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs text-white">
+            <Sparkles className="h-3.5 w-3.5 text-gold-light" />
+            মারকাযুল ইহসান ঢাকা • অনলাইন ডোনেশন ও খিদমত
           </span>
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/10 px-3 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-              <Sparkles className="h-3 w-3" />
-              {t("হযরতের সরাসরি তত্ত্বাবধানে পরিচালিত", "Under the direct supervision of the Shaykh")}
-            </span>
-            <h2 className="text-base font-bold text-ink sm:text-lg">
-              {t("আসসালামু আলাইকুম", "Assalamu Alaikum")}
-            </h2>
-          </div>
-        </div>
-
-        <p className="mt-2 text-xs font-medium tracking-wide text-ink-3">
-          {t(
-            "জামেআর সম্মানিত শুভাকাঙ্খী ও প্রিয় আজীবন সদস্য,",
-            "Honourable well-wishers and lifetime members of the Jamia,",
-          )}
-        </p>
-
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-2 sm:text-[16px]">
-          {t(
-            "আপনাদের অবগতির জন্য জানানো যাচ্ছে যে, প্রতি বছর আপনাদের সার্বিক সহযোগিতায় মাদরাসার তোলাবায়ে কেরামের খেদমত ফান্ডে (যাকাত ফান্ডে) বিপুল পরিমাণ অর্থ ব্যয় করা হয়। আপনার আত্নীয়-স্বজন, বন্ধু-বান্ধব সহ মহতী এ খেদমতে শরীক হতে সচেষ্ট হবেন। আল্লাহপাক খুব তাওফীক দান করুন।",
-            "Please be informed that each year, with your generous support, substantial funds are spent for the welfare of the madrasa's students (Zakat & Khidmat Fund). We warmly encourage you and your near and dear ones to partake in this noble service. May Allah grant abundant blessings.",
-          )}
-        </p>
-
-        <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3">
-            <HeartHandshake className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-400" />
-            <p className="text-sm leading-snug text-ink">
-              {t(
-                "আপনার আজীবন সদস্য অনুদান জমা না হয়ে থাকলে, এই সুযোগে জমা দিয়ে সওয়াব অর্জনের পথ সুগম করুন।",
-                "If your lifetime member contribution is due, you may contribute now to reap enduring rewards.",
-              )}
-            </p>
-          </div>
-          <Link
-            href={LINKS.member.href}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-700 active:scale-95"
-          >
-            <span>{t("আজীবন সদস্য সম্মেলন", "Lifetime Member")}</span>
-            <span aria-hidden="true">→</span>
-          </Link>
+          <h1 className="mt-3 font-heading text-[34px] leading-tight font-bold text-white sm:text-5xl">খিদমত</h1>
+          <p className="mx-auto mt-2 max-w-lg text-[14.5px] leading-relaxed text-white/80 sm:text-base">দ্বীনি শিক্ষার খেদমত ও তোলাবাদের কল্যাণে আপনার সদকা, যাকাত ও নিয়মিত অনুদান জমা দিন</p>
         </div>
       </section>
 
-      {/* ── 2. Mobile Banking Section ── */}
-      <Panel className="p-5 sm:p-6">
-        <PanelHeader
-          icon={QrCode}
-          title={t("মোবাইল ব্যাংকিং অনুদান", "Mobile Banking Donation")}
-          subtitle={t(
-            "বিকাশ বা নগদ পার্সোনাল নাম্বারে 'Send Money' করুন",
-            "Send money to bKash or Nagad Personal number",
-          )}
-        />
-
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {/* bKash Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-[#E2136E]/20 bg-gradient-to-br from-[#E2136E]/5 to-transparent p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#E2136E] px-2.5 py-1 text-xs font-bold text-white">
-                bKash বিকাশ
-              </span>
-              <span className="text-xs font-medium text-ink-3">
-                {t("পার্সোনাল", "Personal")}
-              </span>
-            </div>
-
-            <div className="mt-4">
-              <span className="text-xs text-ink-3">{t("বিকাশ নম্বর", "bKash Number")}</span>
-              <div className="mt-0.5 flex items-center justify-between gap-2">
-                <span className="font-mono text-xl font-bold tracking-wider text-ink sm:text-2xl" dir="ltr">
-                  {DONATION.mobile}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copy(DONATION.mobile, "bkash")}
-                  className="flex h-9 items-center gap-1.5 rounded-xl border border-line bg-panel px-3 text-xs font-semibold text-ink transition hover:border-[#E2136E] hover:text-[#E2136E]"
-                  aria-label="বিকাশ নাম্বার কপি করুন"
-                >
-                  {copiedKey === "bkash" ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span className="text-emerald-600">{t("কপি হয়েছে", "Copied")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      <span>{t("কপি", "Copy")}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  openApp(
-                    "intent://#Intent;package=com.bKash.customerapp;scheme=bkash;end",
-                    DONATION.mobile,
-                    "bkash",
-                  )
-                }
-                className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#E2136E] text-xs font-semibold text-white shadow-sm transition hover:opacity-95 active:scale-95"
-              >
-                <span>{t("বিকাশ অ্যাপে পাঠান", "Open bKash App")}</span>
-                <ExternalLink className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Nagad Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-[#F7941D]/25 bg-gradient-to-br from-[#F7941D]/5 to-transparent p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#F7941D] px-2.5 py-1 text-xs font-bold text-white">
-                Nagad নগদ
-              </span>
-              <span className="text-xs font-medium text-ink-3">
-                {t("পার্সোনাল", "Personal")}
-              </span>
-            </div>
-
-            <div className="mt-4">
-              <span className="text-xs text-ink-3">{t("নগদ নম্বর", "Nagad Number")}</span>
-              <div className="mt-0.5 flex items-center justify-between gap-2">
-                <span className="font-mono text-xl font-bold tracking-wider text-ink sm:text-2xl" dir="ltr">
-                  {DONATION.mobile}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copy(DONATION.mobile, "nagad")}
-                  className="flex h-9 items-center gap-1.5 rounded-xl border border-line bg-panel px-3 text-xs font-semibold text-ink transition hover:border-[#F7941D] hover:text-[#F7941D]"
-                  aria-label="নগদ নাম্বার কপি করুন"
-                >
-                  {copiedKey === "nagad" ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span className="text-emerald-600">{t("কপি হয়েছে", "Copied")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      <span>{t("কপি", "Copy")}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  openApp(
-                    "intent://#Intent;package=com.konasl.nagad;scheme=nagad;end",
-                    DONATION.mobile,
-                    "nagad",
-                  )
-                }
-                className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#F7941D] text-xs font-semibold text-white shadow-sm transition hover:opacity-95 active:scale-95"
-              >
-                <span>{t("নগদ অ্যাপে পাঠান", "Open Nagad App")}</span>
-                <ExternalLink className="h-3.5 w-3.5" />
-              </button>
-            </div>
+      {/* Donate */}
+      <section id="donate" className="scroll-mt-24 space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="h-7 w-1 shrink-0 rounded-full bg-gradient-to-b from-gold to-brand" />
+          <div className="min-w-0">
+            <h2 className="font-heading text-[20px] leading-tight font-bold text-ink sm:text-[22px]">আপনার অনুদান প্রদান করুন</h2>
+            <p className="text-[13px] text-ink-3">তহবিল নির্বাচন করে সরাসরি অনলাইনে অনুদান প্রদান করুন</p>
           </div>
         </div>
-
-        <p className="mt-3 text-xs text-ink-3">
-          💡 {t(
-            "মোবাইল ব্যাংকিংয়ে Send Money করার সময় রেফারেন্সে আপনার নাম বা মোবাইল নম্বর লিখে দিতে পারেন।",
-            "When sending money via bKash or Nagad, you can add your name or mobile number in the reference.",
-          )}
+        <FundPicker funds={funds} value={fund.id} onChange={setFundId} />
+        {fund.description && formFor(fund) !== "quick" && <p className="px-1 text-[13.5px] text-ink-2">{fund.description}</p>}
+        <AnimatePresence mode="wait">
+          <motion.div key={fund.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.2 }}>
+            <FundForm fund={fund} />
+          </motion.div>
+        </AnimatePresence>
+        <p className="px-1 text-center text-[13px] leading-relaxed text-ink-3">
+          মারকাযুল ইহসানে আপনার দান সাদাকায়ে জারিয়া হিসেবে গণ্য হবে এবং এতিম-অসহায় শিক্ষার্থীদের কল্যাণে ব্যয় হবে।{" "}
+          <button type="button" onClick={() => setPolicy(true)} className="font-medium text-brand underline">
+            বিস্তারিত জানুন
+          </button>
         </p>
-      </Panel>
+      </section>
 
-      {/* ── 3. Bank Account Card ── */}
-      <Panel className="p-5 sm:p-6">
-        <PanelHeader
-          icon={Landmark}
-          title={t("ব্যাংক অ্যাকাউন্ট ডিটেইলস", "Bank Account Details")}
-          subtitle={t(
-            "সরাসরি ব্যাংকের মাধ্যমে অথবা BEFTN / NPSB / অনলাইন ট্রান্সফার",
-            "Direct bank deposit or BEFTN / NPSB / Online transfer",
-          )}
-        />
-
-        <div className="mt-5 rounded-2xl border border-emerald-600/20 bg-emerald-600/5 p-4 sm:p-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
-              <Building2 className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-base font-bold text-ink sm:text-lg">
-                {DONATION.bank}
-              </p>
-              <p className="text-xs text-ink-3">
-                {DONATION.branch} • {DONATION.type}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 divide-y divide-line/70 rounded-xl border border-line bg-panel p-3 sm:p-4">
-            {/* Account Name */}
-            <div className="flex flex-col py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-              <span className="text-xs text-ink-3">{t("অ্যাকাউন্ট নাম", "Account Name")}</span>
-              <div className="mt-0.5 flex items-center justify-between gap-2 sm:mt-0">
-                <span className="font-semibold text-ink sm:text-[15px]" dir="ltr">
-                  {DONATION.accountName}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copy(DONATION.accountName, "accName")}
-                  className="p-1 text-ink-3 hover:text-brand"
-                  aria-label="অ্যাকাউন্ট নাম কপি"
-                >
-                  {copiedKey === "accName" ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Account Number */}
-            <div className="flex flex-col py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                {t("অ্যাকাউন্ট নম্বর", "Account Number")}
-              </span>
-              <div className="mt-0.5 flex items-center justify-between gap-3 sm:mt-0">
-                <span className="font-mono text-lg font-bold tracking-wider text-ink sm:text-xl" dir="ltr">
-                  {DONATION.accountNumber}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copy(DONATION.accountNumber, "accNum")}
-                  className="flex h-8 items-center gap-1 rounded-lg border border-line bg-panel-2 px-2.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-600 hover:text-white dark:text-emerald-400"
-                >
-                  {copiedKey === "accNum" ? (
-                    <>
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>{t("কপি হয়েছে", "Copied")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" />
-                      <span>{t("কপি", "Copy")}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Routing Number */}
-            <div className="flex flex-col py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-              <span className="text-xs text-ink-3">{t("রাউটিং নম্বর", "Routing Number")}</span>
-              <div className="mt-0.5 flex items-center justify-between gap-2 sm:mt-0">
-                <span className="font-mono font-semibold text-ink sm:text-[15px]" dir="ltr">
-                  {DONATION.routing}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copy(DONATION.routing, "routing")}
-                  className="p-1 text-ink-3 hover:text-brand"
-                  aria-label="রাউটিং নম্বর কপি"
-                >
-                  {copiedKey === "routing" ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Branch */}
-            <div className="flex flex-col py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-              <span className="text-xs text-ink-3">{t("শাখা", "Branch")}</span>
-              <span className="mt-0.5 font-medium text-ink sm:mt-0" dir="ltr">
-                {DONATION.branch}
-              </span>
-            </div>
-          </div>
+      {/* Salam note */}
+      <Panel className="space-y-5 p-6 text-center sm:p-8">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-brand">
+          <Heart className="h-7 w-7 fill-current" />
+        </span>
+        <div className="space-y-1.5">
+          <h2 className="font-heading text-2xl font-bold text-ink">আসসালামু আলাইকুম</h2>
+          <p className="font-medium text-brand">জামেআর সম্মানিত শুভাকাঙ্খী ও প্রিয় আজীবন ও নিয়মিত সদস্যবৃন্দ!</p>
         </div>
-      </Panel>
-
-      {/* ── 4. Receipt & Confirmation via WhatsApp / Call ── */}
-      <Panel className="p-5 sm:p-6">
-        <PanelHeader
-          icon={ShieldCheck}
-          title={t("রশিদ সংগ্রহের জন্য যোগাযোগ", "Receipt Collection & Contact")}
-          subtitle={t(
-            "অনুদান পাঠিয়ে নিম্নোক্ত নাম্বারে যোগাযোগ করে রশীদ সংগ্রহ করুন",
-            "Contact below to receive your official receipt after donating",
-          )}
-        />
-
-        <div className="mt-4 rounded-2xl border border-line bg-panel-2/50 p-4 sm:p-5">
-          <p className="text-sm leading-relaxed text-ink-2">
-            {t(
-              "যাকাত বা সাধারণ অনুদান পাঠানোর পর ট্রানজেকশনের স্ক্রিনশট বা মেসেজ নিম্নোক্ত নম্বরে হোয়াটসঅ্যাপে পাঠিয়ে নিশ্চিত করুন। অফিস থেকে আপনার নামে দ্রুত মানি রিসিট ইস্যু করা হবে ইনশাআল্লাহ।",
-              "After transferring, send the screenshot or SMS via WhatsApp to receive your official donation receipt from the Madrasa administration, Insha'Allah.",
-            )}
-          </p>
-
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={`https://wa.me/${DONATION.contact.replace(/\D/g, "")}?text=${encodeURIComponent(
-                "আসসালামু আলাইকুম, আমি তোলাবায়ে কেরামের খেদমত ফান্ডে অনুদান পাঠিয়েছি। অনুগ্রহ করে মানি রিসিট প্রদান করুন।",
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#20ba5a] active:scale-95"
-            >
-              <MessageCircle className="h-5 w-5" />
-              <span>{t("WhatsApp-এ রশীদ নিন", "Get Receipt on WhatsApp")}</span>
-            </a>
-
-            <a
-              href={`tel:${DONATION.contact}`}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-line bg-panel px-5 text-sm font-semibold text-ink shadow-sm transition hover:border-brand hover:text-brand active:scale-95"
-            >
-              <Phone className="h-4 w-4" />
-              <span className="font-mono" dir="ltr">{DONATION.contact}</span>
-            </a>
-          </div>
-        </div>
-      </Panel>
-
-      {/* ── 5. Hadith on Charity ── */}
-      <div className="rounded-2xl border border-line/60 bg-panel/60 p-5 text-center">
-        <p className="text-xs font-semibold tracking-wider text-emerald-700 uppercase dark:text-emerald-400">
-          {t("হাদিস শরীফ", "Prophetic Guidance")}
+        <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-ink-2">
+          আপনাদের অবগতির জন্য জানানো যাচ্ছে যে, প্রতি বছর আপনাদের সার্বিক সহযোগিতায় মাদরাসার তোলাবায়ে কেরামের খেদমত ফান্ডে (যাকাত ফান্ডে) বিপুল পরিমাণ অর্থ ব্যয় করা হয়। মহান আল্লাহ তাআলার সন্তুষ্টি ও পরকালীন মহা-সাওয়াব অর্জনের লক্ষ্যে এ মহতী দ্বীনি খেদমতে শরীক হতে সচেষ্ট হবেন। আল্লাহপাক খুব তাওফীক দান করুন।
         </p>
-        <blockquote className="mt-2 text-[15px] font-medium text-ink italic sm:text-[16px]">
-          &ldquo;{t(
-            "দান-সদকা সম্পদ কমায় না, বরং তা পবিত্র করে এবং বরকত বৃদ্ধি করে।",
-            "Charity does not decrease wealth, rather it purifies it and increases blessings.",
-          )}&rdquo;
-        </blockquote>
-        <p className="mt-1 text-xs text-ink-3">{t("— সহীহ মুসলিম", "— Sahih Muslim")}</p>
-      </div>
+        <p className="mx-auto max-w-2xl rounded-2xl border-s-4 border-gold bg-brand-soft/60 p-4 text-start text-[15px] leading-relaxed text-ink">
+          আপনার আজীবন বা মাসিক <strong className="font-semibold text-brand">&lsquo;সদস্য অনুদান&rsquo;</strong> নিয়মিত জমা দিয়ে দ্বীনের খাদেম ও হাফেজে কোরআন তৈরির এই পবিত্র কাফেলায় সার্বক্ষণিক সহযোগী হয়ে থাকুন।
+        </p>
+        <div className="flex flex-wrap justify-center gap-2 text-[13px] text-ink-2">
+          {[
+            { icon: ShieldCheck, label: "১০০% শরীয়াহসম্মত ব্যবহার" },
+            { icon: Check, label: "স্বয়ংক্রিয় ডিজিটাল রসিদ" },
+            { icon: Sparkles, label: "সাদাকায়ে জারিয়ার সওয়াব" },
+          ].map(({ icon: Icon, label }) => (
+            <span key={label} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel-2 px-3 py-1.5">
+              <Icon className="h-4 w-4 text-brand" />
+              {label}
+            </span>
+          ))}
+        </div>
+      </Panel>
+
+      {/* Receipt */}
+      <section className="hero-surface relative overflow-hidden rounded-3xl p-6 text-center sm:p-10">
+        <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.07]" />
+        <div className="relative flex flex-col items-center gap-4">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-gold-light">
+            <MessageCircle className="h-7 w-7" />
+          </span>
+          <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">রশিদ সংগ্রহের জন্য যোগাযোগ করুন</h2>
+          <p className="max-w-xl text-[15px] leading-relaxed text-white/80">অনুদান পাঠিয়ে সরাসরি মানি রিসিট সংগ্রহ করতে বা কোনো পরামর্শের জন্য নিচের হোয়াটসঅ্যাপ নম্বরে মেসেজ পাঠান</p>
+          <a
+            href={`https://wa.me/${RECEIPT_WHATSAPP}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            dir="ltr"
+            className="inline-flex h-14 items-center gap-3 rounded-2xl bg-gold px-7 font-num text-lg font-bold tracking-wide text-[#1d1607] shadow-lg transition hover:brightness-105"
+          >
+            {RECEIPT_PHONE_LABEL}
+            <Phone className="h-5 w-5" />
+          </a>
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {policy && <PolicyModal onClose={() => setPolicy(false)} />}
+        {result && <ResultModal result={result} onClose={() => setResult(null)} />}
+      </AnimatePresence>
     </div>
+  );
+}
+
+/* ── Compact widget for other pages (About, Paribar) ──────────── */
+
+const QUICK = ["general", "lillah", "student_fee", "construction"];
+
+export function DonateWidget({ className }: { className?: string }) {
+  const funds = useFunds();
+  const quick = funds.filter((f) => formFor(f) === "quick" && QUICK.includes(f.category));
+  const list = quick.length ? quick : funds.filter((f) => formFor(f) === "quick");
+  const [fundId, setFundId] = useState<number | null>(null);
+  const fund = list.find((f) => f.id === fundId) ?? list[0];
+  if (!fund) return null;
+
+  return (
+    <Panel className={cn("space-y-4", className)}>
+      <div>
+        <p className="text-[16.5px] font-semibold text-ink">মাদরাসায় অনুদান করুন</p>
+        <p className="mt-1 text-sm leading-relaxed text-ink-2">বিকাশ, কার্ড/নগদ বা ব্যাংকে সরাসরি অনুদান দিন — তোলাবায়ে কেরামের খেদমতে ব্যয় হবে।</p>
+      </div>
+      <div className="scroll-hide -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
+        {list.map((f) => {
+          const on = f.id === fund.id;
+          const look = lookFor(f);
+          return (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setFundId(f.id)}
+              aria-pressed={on}
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] whitespace-nowrap transition",
+                on ? "border-brand bg-brand text-white" : "border-line bg-panel text-ink-2 hover:border-brand/40",
+              )}
+            >
+              <look.icon className="h-3.5 w-3.5" />
+              {f.name.replace(/\s*\(.*\)$/, "")}
+            </button>
+          );
+        })}
+      </div>
+      <QuickDonateForm key={fund.id} fund={fund} />
+      <Link href="/khidmat" className="flex items-center justify-center gap-1.5 border-t border-line pt-3 text-sm font-medium text-brand hover:underline">
+        দাতা সদস্য হতে বা সব তহবিল দেখতে খিদমত পাতায় যান
+        <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+      </Link>
+    </Panel>
   );
 }
