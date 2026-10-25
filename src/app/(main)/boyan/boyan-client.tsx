@@ -78,16 +78,16 @@ export function BoyanClient({
           ) : null
         }
         below={
-          <div className="scroll-hide -mx-4 flex items-center gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-wrap lg:px-0">
+          <div className="scroll-hide -mx-4 flex items-center gap-1.5 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-wrap lg:px-0">
             <button
               onClick={() => setSort((s) => (s === "new" ? "old" : "new"))}
-              className="flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-medium text-ink transition hover:border-brand/40"
+              className="flex shrink-0 items-center gap-1 rounded-full border border-line bg-panel px-2.5 py-1 text-xs font-medium text-ink transition hover:border-brand/40"
               title={sort === "new" ? t("নতুন আগে", "Newest first") : t("পুরাতন আগে", "Oldest first")}
             >
-              <ArrowDownUp className="h-3.5 w-3.5 text-brand" />
+              <ArrowDownUp className="h-3 w-3 text-brand" />
               <span>{sort === "new" ? t("নতুন আগে", "Newest") : t("পুরাতন আগে", "Oldest")}</span>
             </button>
-            <div className="h-4 w-px shrink-0 bg-line" />
+            <div className="h-3.5 w-px shrink-0 bg-line" />
             <Chip active={cat === "all"} onClick={() => pickCat("all")} count={num(boyans.length, lang)}>
               {t("সব", "All")}
             </Chip>

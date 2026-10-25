@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ChevronRight, House, Loader2, Pause, Play, Search, X, type LucideIcon } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 import { sectionFor } from "@/lib/nav";
@@ -113,13 +113,13 @@ export function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm whitespace-nowrap transition",
-        active ? "border-brand bg-brand text-white" : "border-line bg-panel text-ink-2 hover:border-brand/50 hover:text-brand",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 sm:px-3.5 sm:py-1.5 text-xs font-medium whitespace-nowrap transition",
+        active ? "border-brand bg-brand text-white shadow-xs" : "border-line bg-panel text-ink-2 hover:border-brand/50 hover:text-brand",
       )}
     >
       {children}
       {count !== undefined && (
-        <span className={cn("rounded-full px-1.5 font-num text-[11px]", active ? "bg-white/20" : "bg-panel-2 text-ink-3")}>
+        <span className={cn("rounded-full px-1.5 font-num text-[10px] sm:text-[11px]", active ? "bg-white/20" : "bg-panel-2 text-ink-3")}>
           {count}
         </span>
       )}
@@ -338,8 +338,8 @@ export function SearchInput({ value, onChange, placeholder }: { value: string; o
 
 /**
  * Compact, app-style header for the media pages: title + count on one line,
- * icon actions and a search toggle on the right, an optional two-way switch
- * (audio / video) underneath. Sticks under the site header while scrolling.
+ * small search button in the top line that expands on click, plus actions.
+ * Sticks under the site header while scrolling with minimal height.
  */
 export function MediaHeader<T extends string>({
   title,
@@ -366,49 +366,135 @@ export function MediaHeader<T extends string>({
   below?: React.ReactNode;
 }) {
   const { t } = useLang();
+  const [searchOpen, setSearchOpen] = useState(Boolean(query));
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (query) setSearchOpen(true);
+  }, [query]);
+
+  const openSearch = () => {
+    setSearchOpen(true);
+    setTimeout(() => inputRef.current?.focus(), 60);
+  };
+
+  const closeSearch = () => {
+    onQuery("");
+    setSearchOpen(false);
+  };
 
   return (
-    <div className="sticky top-16 z-20 -mx-4 mb-4 space-y-2.5 border-b border-line/60 bg-canvas/95 px-4 pt-2 pb-3.5 backdrop-blur-xl sm:top-[72px] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      {/* Top Row: Title + Count + Primary Actions (e.g. Play All pill) */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <h1 className="truncate font-heading text-xl font-bold text-ink sm:text-2xl">{title}</h1>
-          {count !== undefined && (
-            <span className="shrink-0 rounded-full bg-brand-soft px-2.5 py-0.5 font-num text-xs font-semibold text-brand">
-              {count}
-            </span>
-          )}
-        </div>
-        {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
-      </div>
-
-      {/* Second Row: Seamless Integrated Search Bar */}
-      <div className="relative">
-        <label className="flex h-10 w-full items-center gap-2.5 rounded-2xl border border-line bg-panel px-3.5 text-sm shadow-xs transition-colors focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/15">
-          <Search className="h-4 w-4 shrink-0 text-ink-3" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => onQuery(e.target.value)}
-            placeholder={placeholder}
-            className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-ink-3 text-sm"
-          />
-          {query && (
+    <div className="sticky top-16 z-20 -mx-4 mb-3 space-y-2 border-b border-line/60 bg-canvas/95 px-4 pt-2 pb-2.5 backdrop-blur-xl sm:top-[72px] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      {/* ── Top Row: Title + Count + Search Button / Input + Actions ── */}
+      <div className="flex min-h-9 items-center justify-between gap-2 sm:gap-3">
+        {/* On Mobile: when search is open, show full-width input across the top line */}
+        {searchOpen ? (
+          <div className="flex w-full items-center gap-2 sm:hidden animate-in fade-in duration-150">
+            <div className="relative flex h-8 flex-1 items-center gap-2 rounded-full border border-brand/60 bg-panel px-3 text-xs shadow-xs ring-2 ring-brand/15">
+              <Search className="h-3.5 w-3.5 shrink-0 text-brand" />
+              <input
+                ref={inputRef}
+                type="search"
+                value={query}
+                onChange={(e) => onQuery(e.target.value)}
+                placeholder={placeholder}
+                className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-ink-3 text-xs"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onQuery("");
+                    inputRef.current?.focus();
+                  }}
+                  aria-label={t("মুছে ফেলুন", "Clear")}
+                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-ink"
+                >
+                  <X className="h-2.5 w-2.5" />
+                </button>
+              )}
+            </div>
             <button
               type="button"
-              onClick={() => onQuery("")}
-              aria-label={t("মুছে ফেলুন", "Clear")}
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-ink"
+              onClick={closeSearch}
+              className="shrink-0 rounded-full bg-panel-2 px-3 py-1 text-xs font-semibold text-ink-2 hover:bg-panel-3 hover:text-ink"
             >
-              <X className="h-3 w-3" />
+              {t("বাতিল", "Cancel")}
             </button>
-          )}
-        </label>
+          </div>
+        ) : null}
+
+        {/* Regular Top Bar Content (visible on sm: always; on mobile only when search is not open) */}
+        <div className={cn("items-center justify-between gap-3 w-full", searchOpen ? "hidden sm:flex" : "flex")}>
+          {/* Left: Title + Count */}
+          <div className="flex min-w-0 items-center gap-2">
+            <h1 className="truncate font-heading text-lg font-bold text-ink sm:text-xl lg:text-2xl">{title}</h1>
+            {count !== undefined && (
+              <span className="shrink-0 rounded-full bg-brand-soft px-2 py-0.5 font-num text-[11px] font-semibold text-brand sm:text-xs">
+                {count}
+              </span>
+            )}
+          </div>
+
+          {/* Right: Search + Actions */}
+          <div className="flex shrink-0 items-center gap-2">
+            {/* Expanded Search on Tablet/Desktop (sm:) */}
+            {searchOpen ? (
+              <div className="hidden sm:flex relative h-8 sm:h-9 w-60 sm:w-72 items-center gap-2 rounded-full border border-brand/60 bg-panel px-3 text-xs sm:text-sm shadow-xs ring-2 ring-brand/15 animate-in fade-in duration-150">
+                <Search className="h-3.5 w-3.5 shrink-0 text-brand" />
+                <input
+                  ref={inputRef}
+                  type="search"
+                  value={query}
+                  onChange={(e) => onQuery(e.target.value)}
+                  placeholder={placeholder}
+                  className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-ink-3 text-xs sm:text-sm"
+                />
+                {query ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onQuery("");
+                      inputRef.current?.focus();
+                    }}
+                    aria-label={t("মুছে ফেলুন", "Clear")}
+                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-ink"
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={closeSearch}
+                  aria-label={t("বন্ধ করুন", "Close")}
+                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-ink-3 hover:bg-panel-2 hover:text-ink"
+                  title={t("বন্ধ করুন", "Close")}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ) : (
+              /* Compact Search Button in the top line */
+              <button
+                type="button"
+                onClick={openSearch}
+                aria-label={t("অনুসন্ধান করুন", "Search")}
+                title={t("অনুসন্ধান করুন", "Search")}
+                className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-line bg-panel text-ink-2 shadow-xs transition hover:border-brand/50 hover:text-brand active:scale-95"
+              >
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </button>
+            )}
+
+            {/* Actions (Play All pill, etc.) */}
+            {actions}
+          </div>
+        </div>
       </div>
 
-      {/* Tabs Row (if audio/video tabs exist) */}
+      {/* Tabs Row (if audio/video tabs exist, e.g. clips & nasheed) */}
       {tabs && tab && onTab && (
-        <div role="tablist" className="grid grid-cols-2 rounded-2xl border border-line bg-panel-2 p-1 sm:inline-grid sm:min-w-[320px]">
+        <div role="tablist" className="inline-flex rounded-full border border-line bg-panel-2 p-0.5">
           {tabs.map((o) => {
             const on = o.value === tab;
             const Icon = o.icon;
@@ -419,14 +505,14 @@ export function MediaHeader<T extends string>({
                 aria-selected={on}
                 onClick={() => onTab(o.value)}
                 className={cn(
-                  "flex h-9 items-center justify-center gap-2 rounded-xl text-xs font-medium transition",
+                  "inline-flex h-7 sm:h-8 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition",
                   on ? "bg-brand font-semibold text-white shadow-xs" : "text-ink-2 hover:text-ink",
                 )}
               >
-                {Icon && <Icon className="h-3.5 w-3.5" />}
-                {o.label}
+                {Icon && <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />}
+                <span>{o.label}</span>
                 {o.count !== undefined && (
-                  <span className={cn("rounded-full px-1.5 font-num text-[11px]", on ? "bg-white/20" : "bg-panel text-ink-3")}>{o.count}</span>
+                  <span className={cn("rounded-full px-1.5 font-num text-[10px] sm:text-[11px]", on ? "bg-white/20" : "bg-panel text-ink-3")}>{o.count}</span>
                 )}
               </button>
             );
