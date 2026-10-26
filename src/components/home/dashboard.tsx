@@ -259,8 +259,10 @@ function PrayerRing({ prayer, size }: { prayer: Prayer; size: number }) {
       </svg>
       {/* Name, countdown, then what comes next — each on one line */}
       <div className="absolute inset-[14%] flex flex-col items-center justify-center text-center">
-        <p className="max-w-full truncate text-[15px] leading-tight font-semibold text-ink">{ph ? t(ph.bn, ph.en) : "—"}</p>
-        <p className="mt-1 font-num text-[22px] leading-none font-semibold tracking-tight text-ink" dir="ltr">
+        <p className="max-w-full truncate leading-tight font-semibold text-ink" style={{ fontSize: Math.min(15, size / 10.5) }}>
+          {ph ? t(ph.bn, ph.en) : "—"}
+        </p>
+        <p className="mt-1 font-num leading-none font-semibold tracking-tight text-ink" style={{ fontSize: Math.round(size / 7.8) }} dir="ltr">
           {prayer.now ? remainingClock(prayer.phaseRemaining, lang) : "--:--:--"}
         </p>
         {up && <p className="mt-1.5 max-w-full truncate text-[11.5px] leading-tight text-ink-3">{t(`পরবর্তী: ${up.bn}`, `Next: ${up.en}`)}</p>}
@@ -269,10 +271,23 @@ function PrayerRing({ prayer, size }: { prayer: Prayer; size: number }) {
   );
 }
 
-/** Hijri, Bangla and Gregorian dates, one per line. */
-function DateLines({ now, className }: { now: Date | null; className?: string }) {
-  const { lang } = useLang();
-  if (!now) return <div className={cn("h-[66px]", className)} />;
+/** Hijri, Bangla and Gregorian dates, one per line — or two lines when `compact`. */
+function DateLines({ now, className, compact }: { now: Date | null; className?: string; compact?: boolean }) {
+  const { t, lang } = useLang();
+  if (!now) return <div className={cn(compact ? "h-[44px]" : "h-[66px]", className)} />;
+  if (compact)
+    return (
+      <div className={cn("space-y-0.5", className)}>
+        <p className="text-[14px] leading-snug text-ink-2">
+          <span className="font-semibold text-ink">
+            {formatHijri(now, lang)} {t("হিজরি", "AH")}
+          </span>
+          <span className="mx-1.5 text-ink-3">·</span>
+          {formatBanglaDate(now, lang)}
+        </p>
+        <p className="text-[13px] text-ink-3">{formatDate(now.toISOString(), lang, { month: "long", weekday: "long" })}</p>
+      </div>
+    );
   return (
     <div className={cn("space-y-0.5", className)}>
       <p className="text-[15px] font-semibold text-ink">{formatHijri(now, lang)}</p>
@@ -287,16 +302,16 @@ function PhaseBadges({ prayer }: { prayer: Prayer }) {
   const { t } = useLang();
   const ph = prayer.phase;
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="inline-block rounded-full bg-brand-soft px-3.5 py-1 text-[13px] text-brand">{t("এখন", "Now")}</span>
+    <div className="flex items-center gap-1.5 whitespace-nowrap">
+      <span className="inline-block rounded-full bg-brand-soft px-3 py-0.5 text-[12.5px] text-brand">{t("এখন", "Now")}</span>
       {ph?.forbidden && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-[#d9653b]/12 px-3 py-1 text-[13px] font-medium text-[#c4552d]">
+        <span className="inline-flex items-center gap-1 rounded-full bg-[#d9653b]/12 px-2.5 py-0.5 text-[12.5px] font-medium text-[#c4552d]">
           <Ban className="h-3.5 w-3.5" />
           {t("নামাজ নিষেধ", "No prayer")}
         </span>
       )}
       {!ph?.forbidden && prayer.friday && (
-        <span className="inline-block rounded-full bg-gold-soft px-3 py-1 text-[13px] font-medium text-gold">{t("জুমার দিন", "Jumu'ah day")}</span>
+        <span className="inline-block rounded-full bg-gold-soft px-3 py-0.5 text-[12.5px] font-medium text-gold">{t("জুমার দিন", "Jumu'ah day")}</span>
       )}
     </div>
   );
@@ -308,19 +323,22 @@ function MobilePrayer({ prayer }: { prayer: Prayer }) {
   const ph = prayer.phase;
   return (
     <div className="lg:hidden">
+      {/* Waqt + city beside the ring; notice and dates run full width underneath */}
       <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <PhaseBadges prayer={prayer} />
-          <p className="mt-2 font-heading text-[32px] leading-tight text-ink">{ph ? t(ph.bn, ph.en) : "—"}</p>
-          {ph?.forbidden && <p className="mt-1 text-[12.5px] leading-snug text-[#c4552d]">{t(ph.noticeBn ?? "", ph.noticeEn ?? "")}</p>}
-          <p className="mt-2 flex items-center gap-1 text-sm text-ink-2">
+          <p className="mt-2.5 truncate font-heading text-[26px] leading-tight text-ink sm:text-[30px]">{ph ? t(ph.bn, ph.en) : "—"}</p>
+          <p className="mt-1.5 flex items-center gap-1 text-sm text-ink-2">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-brand" />
-            <CitySelect prayer={prayer} />
+            <CitySelect prayer={prayer} className="min-w-0 truncate" />
           </p>
-          <DateLines now={prayer.now} className="mt-3" />
         </div>
-        <PrayerRing prayer={prayer} size={148} />
+        <PrayerRing prayer={prayer} size={136} />
       </div>
+      {ph?.forbidden && (
+        <p className="mt-3 text-[13px] leading-snug text-[#c4552d]">{t(ph.noticeBn ?? "", ph.noticeEn ?? "")}</p>
+      )}
+      <DateLines now={prayer.now} compact className="mt-3" />
 
       <div className="mt-4 flex justify-center">
         <button

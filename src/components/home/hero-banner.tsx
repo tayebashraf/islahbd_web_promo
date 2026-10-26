@@ -42,7 +42,7 @@ export function HeroBanner() {
   }, [turns, reduce]);
 
   return (
-    <section className="hn relative isolate h-[316px] overflow-hidden sm:h-[515px] lg:mx-6 lg:mt-5 lg:rounded-t-[36px]">
+    <section className="hn relative isolate overflow-hidden lg:mx-6 lg:mt-5 lg:rounded-t-[36px]">
       {/* Concentric rings with orbiting dots */}
       <div aria-hidden className="hn-rings">
         {[0, 1, 2, 3].map((i) => (
@@ -142,7 +142,9 @@ export function HeroBanner() {
       </div>
 
       <style>{`
-        .hn { --rc-y: 214px; --ring: min(86vw, 420px); --ink-h: #34504a;
+        /* Phones: the rings hang a fixed gap below the header and scale with the width,
+           so narrow screens get no empty band on top. */
+        .hn { --ring: min(86vw, 420px); --rc-y: calc(var(--ring) / 2 + 18px); --ink-h: #34504a;
           --bg: #f3f8f5; --r0: #e9f4ee; --r1: #d4ece0; --r2: #bfe3d1; --r3: #a6d8bf; --edge: rgba(255,255,255,.85);
           background: radial-gradient(120% 90% at 50% 0%, #fbfdfb, var(--bg));
           -webkit-mask-image: linear-gradient(180deg, #000 90%, transparent 100%); mask-image: linear-gradient(180deg, #000 90%, transparent 100%) }
@@ -163,7 +165,8 @@ export function HeroBanner() {
           mask-image: linear-gradient(180deg, #000 92%, transparent 100%);
         }
 
-        @media (min-width: 640px) { .hn { --rc-y: 404px; --ring: min(92vw, 680px) } }
+        /* Tablet+: same rule with a wider gap; from 740px up this is the fixed 404px / 515px layout */
+        @media (min-width: 640px) { .hn { --ring: min(92vw, 680px); --rc-y: calc(var(--ring) / 2 + 64px); height: calc(var(--rc-y) + 111px) } }
 
         /* Rings: stacked discs, lit from the top edge */
         .hn-rings { position: absolute; left: 50%; top: var(--rc-y); width: var(--ring); aspect-ratio: 1; translate: -50% -50%;
@@ -195,12 +198,13 @@ export function HeroBanner() {
         .hn-mist { position: absolute; inset: auto 0 0 0; height: 46%; pointer-events: none;
           background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--bg) 80%, transparent) 40%, var(--bg) 85%) }
 
-        .hn-copy { position: absolute; inset-inline: 0; top: calc(var(--rc-y) - 44px) }
+        /* Phones: copy stays in flow, so a wrapped lineage line grows the hero instead of clipping the buttons */
+        .hn-copy { padding-top: calc(var(--rc-y) - 44px); padding-bottom: 34px }
         @media (min-width: 640px) {
           .hn-art { top: calc(var(--rc-y) + 14px - 312px) }
           .hn-art-nabawi { width: 340px; left: calc(50% - 126px) }
           .hn-art-kaaba { width: 459px; left: calc(50% - 230px) }
-          .hn-copy { top: calc(var(--rc-y) - 104px) }
+          .hn-copy { position: absolute; inset-inline: 0; top: calc(var(--rc-y) - 104px); padding: 0 1.25rem }
         }
 
         /* The name: solid deep theme green in light, luminous radiant white-emerald in dark */

@@ -31,15 +31,36 @@ export function formatTime(iso: string, lang: Lang): string {
   }).format(d);
 }
 
-/** Hijri date without the trailing era marker ("যুগ" / "AH"). */
-export function formatHijri(date: Date, lang: Lang): string {
+const HIJRI_MONTHS_BN = [
+  "মুহাররম", "সফর", "রবিউল আউয়াল", "রবিউস সানি", "জমাদিউল আউয়াল", "জমাদিউস সানি",
+  "রজব", "শাবান", "রমজান", "শাওয়াল", "জিলকদ", "জিলহজ্জ",
+];
+
+/** Umm al-Qura day / month (1–12) / year as numbers — no locale month names involved. */
+function hijriParts(date: Date): { day: number; month: number; year: number } {
+  const parts = new Intl.DateTimeFormat("en-US-u-ca-islamic-umalqura-nu-latn", { day: "numeric", month: "numeric", year: "numeric" }).formatToParts(date);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  return { day: get("day"), month: get("month"), year: get("year") };
+}
+
+/**
+ * Hijri date without the trailing era marker ("যুগ" / "AH"). Bangla month
+ * names come from our own table: Android's ICU has none and prints
+ * Gregorian ones ("১৫ মে, ১৪৪৮") instead.
+ */
+export function formatHijri(date: Date, lang: Lang, { short = false } = {}): string {
   try {
+    if (lang === "bn") {
+      const { day, month, year } = hijriParts(date);
+      const head = `${bnNum(day)} ${HIJRI_MONTHS_BN[month - 1]}`;
+      return short ? head : `${head} ${bnNum(year)}`;
+    }
     const base = lang === "en" ? "en-US" : INTL_LOCALE[lang].split("-u-")[0];
     const nu = lang === "ur" ? "-nu-arabext" : "";
     const parts = new Intl.DateTimeFormat(`${base}-u-ca-islamic-umalqura${nu}`, {
       day: "numeric",
-      month: "long",
-      year: "numeric",
+      month: short ? "short" : "long",
+      ...(short ? {} : { year: "numeric" }),
     }).formatToParts(date);
     return parts
       .filter((p) => p.type !== "era")
