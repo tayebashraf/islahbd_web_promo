@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <p
               style={{
-                fontFamily: 'var(--font-arabic)',
+                fontFamily: 'var(--sirat-font-arabic)',
                 fontSize: '1.1rem',
                 color: 'var(--color-brand-primary)',
                 marginTop: 'var(--space-2)',
@@ -43,7 +43,6 @@ export default function Footer() {
               <h3 className="footer__links-title">লেখক ও প্ল্যাটফর্ম</h3>
               <Link href="/blog/about" className="footer__link">আমাদের লক্ষ্য ও দর্শন</Link>
               <Link href="/blog/guidelines" className="footer__link">লেখার নীতিমালা</Link>
-              <Link href="/blog/apply" className="footer__link">লেখক হিসেবে আবেদন</Link>
               <Link href="/blog/dashboard" className="footer__link">লেখক ড্যাশবোর্ড</Link>
             </div>
 

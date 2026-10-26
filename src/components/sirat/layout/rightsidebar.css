@@ -21,7 +21,7 @@
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .fb-right-widget__header {
@@ -41,7 +41,7 @@
 }
 
 .fb-daily-hadith__arabic {
-  font-family: var(--font-arabic);
+  font-family: var(--sirat-font-arabic);
   font-size: 1.25rem;
   line-height: 1.7;
   direction: rtl;

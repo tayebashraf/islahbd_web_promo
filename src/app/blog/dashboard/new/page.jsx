@@ -25,12 +25,9 @@ export default function NewArticlePage() {
         <p style={{ fontSize: '15px', color: 'var(--color-text-secondary)', maxWidth: '480px', margin: '0 auto 24px', lineHeight: 1.6 }}>
           সীরাত.ব্লগে বিশুদ্ধ তাহকিক ও নির্ভরযোগ্য হাদিস শাস্ত্রীয় মানদণ্ড রক্ষার্থে কেবল যাচাইকৃত আলেম ও গবেষকবৃন্দ প্রবন্ধ প্রকাশ করতে পারেন।
         </p>
-        <Link href="/blog/apply">
-          <Button variant="primary" size="lg">
-            <span>লেখক হিসেবে আবেদন করুন</span>
-            <ChevronRight size={16} style={{ marginLeft: '6px' }} />
-          </Button>
-        </Link>
+        <p style={{ fontSize: '14px', color: 'var(--color-text-tertiary)' }}>
+          প্রবন্ধ প্রকাশ করা হয় ইসলাহ অ্যাডমিন প্যানেল থেকে।
+        </p>
       </div>
     );
   }

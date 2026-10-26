@@ -2,6 +2,7 @@
    সীরাত.ব্লগ — Kalpurush Typography System
    ============================================================ */
 
+@layer base {
 /* --- Harmonious Heading Hierarchy in Kalpurush --- */
 
 h1, .h1 {
@@ -58,11 +59,13 @@ h6, .h6 {
   margin: 0;
 }
 
+
 :is(.dark, :root[data-theme="dark"]) h1,
 :is(.dark, :root[data-theme="dark"]) h2,
 :is(.dark, :root[data-theme="dark"]) h3,
 :is(.dark, :root[data-theme="dark"]) h4 {
   color: var(--color-text-primary);
+}
 }
 
 /* --- Body Text (100% Justified in Kalpurush) --- */

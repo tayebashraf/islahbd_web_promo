@@ -56,7 +56,7 @@
   --color-info-bg: var(--brand-soft, #E4EFE3);
 
   /* Shadows - Minimalist & Soft */
-  --shadow-card: 0 1px 2px rgba(27, 36, 32, 0.03);
+  --sirat-shadow-card: 0 1px 2px rgba(27, 36, 32, 0.03);
   --shadow-dropdown: 0 10px 25px -5px rgba(27, 36, 32, 0.1), 0 8px 10px -6px rgba(27, 36, 32, 0.1);
   --shadow-hover: 0 4px 12px rgba(27, 36, 32, 0.06);
 
@@ -115,7 +115,7 @@ html.dark,
   --color-info: var(--brand-tint, #8EC2A5);
   --color-info-bg: rgba(65, 115, 96, 0.2);
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --sirat-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-dropdown: 0 12px 28px 0 rgba(0, 0, 0, 0.45);
   --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.4);
 
@@ -129,7 +129,7 @@ html.dark,
 :root {
   --font-bengali-body: var(--font-kalpurush), 'Kalpurush', sans-serif;
   --font-bengali-ui: var(--font-kalpurush), 'Kalpurush', sans-serif;
-  --font-arabic: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif;
+  --sirat-font-arabic: var(--font-amiri), 'Amiri', 'Noto Naskh Arabic', serif;
   --font-arabic-calligraphy: var(--font-arabic-calligraphy), 'Aref Ruqaa', 'Amiri', 'Traditional Arabic', serif;
   --font-arabic-kufi: var(--font-arabic-kufi), 'Reem Kufi', sans-serif;
   --font-latin: var(--font-latin), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -168,7 +168,7 @@ html.dark,
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
-  --radius-xl: 12px;
+  --sirat-radius-xl: 12px;
   --radius-full: 9999px;
 
   /* Layout Dimensions */

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { RamadanClient } from "./ramadan-client";
+import { ComingSoon } from "@/components/dashboard/ui";
 
 export const metadata: Metadata = {
-  title: "রমজান",
-  description: "রমজানের সাহরি ও ইফতারের সময়সূচি, কাউন্টডাউন, রোজার নিয়ত ও ইফতারের দোয়া।",
+  title: "রমজান — শীঘ্রই আসছে",
+  description: "রমজানের সাহরি ও ইফতারের সময়সূচি — শীঘ্রই আসছে।",
 };
 
+// The timetable (./ramadan-client.tsx) is kept for later; the feature is marked coming soon.
 export default function RamadanPage() {
-  return <RamadanClient />;
+  return <ComingSoon feature="ramadan" />;
 }

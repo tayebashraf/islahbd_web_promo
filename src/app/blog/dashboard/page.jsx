@@ -183,15 +183,10 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {isWriter ? (
+            {isWriter && (
               <Button variant="primary" size="sm" href="/dashboard/new">
                 <PenSquare size={15} />
                 <span>নতুন পোস্ট লিখুন</span>
-              </Button>
-            ) : (
-              <Button variant="primary" size="sm" href="/blog/apply" style={{ backgroundColor: '#059669', borderColor: '#047857' }}>
-                <ShieldCheck size={15} />
-                <span>লেখক হিসেবে আবেদন করুন</span>
               </Button>
             )}
           </div>
@@ -229,54 +224,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* If NOT an approved writer, display the prominent Writer Application CTA Banner */}
-        {!isWriter && (
-          <div
-            className="fb-card fade-in"
-            style={{
-              padding: '16px 20px',
-              marginBottom: 'var(--space-4)',
-              background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
-              border: '1.5px solid #A7F3D0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '14px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '240px' }}>
-              <div
-                style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  backgroundColor: '#059669',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <ShieldCheck size={24} />
-              </div>
-              <div>
-                <h3 style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '15px', fontWeight: 800, color: '#065F46', margin: '0 0 2px' }}>
-                  সীরাত.ব্লগে তাহকিক গবেষক ও লেখক হিসেবে যুক্ত হোন
-                </h3>
-                <p style={{ fontFamily: 'var(--font-kalpurush)', fontSize: '12.5px', color: '#047857', margin: 0, lineHeight: 1.5 }}>
-                  বিশুদ্ধ সিরাত প্রচার ও গবেষণামূলক প্রবন্ধ প্রকাশ করতে ভেরিফাইড লেখক হিসেবে অন্তর্ভুক্তি আবেদন করুন।
-                </p>
-              </div>
-            </div>
-
-            <Button variant="primary" href="/blog/apply" style={{ backgroundColor: '#059669', borderColor: '#047857', whiteSpace: 'nowrap' }}>
-              <span>লেখক হিসেবে আবেদন করুন</span>
-              <ArrowRight size={14} />
-            </Button>
-          </div>
-        )}
 
         {/* Tabs Card */}
         <div className="fb-card" style={{ padding: 'var(--space-2) var(--space-4) 0', marginBottom: 'var(--space-4)' }}>

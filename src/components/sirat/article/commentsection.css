@@ -27,7 +27,7 @@
 }
 
 .comment-prompt-card__arabic {
-  font-family: var(--font-arabic);
+  font-family: var(--sirat-font-arabic);
   font-size: 1.45rem;
   color: var(--color-brand-primary);
   margin-bottom: var(--space-2);

@@ -6,7 +6,7 @@ import { PageHeader, Panel, PanelHeader, Pill } from "@/components/dashboard/ui"
 import { calculatePrayerTimes, getNextPrayer } from "@/lib/prayer-times";
 import { BD_CITIES } from "@/lib/constants";
 import { formatDate, formatHijri, num } from "@/lib/format";
-import { PRAYER_BN, to12h, usePrayer } from "@/lib/use-prayer";
+import { prayerLabel, to12h, usePrayer } from "@/lib/use-prayer";
 import { cn } from "@/lib/utils";
 
 const ORDER = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
@@ -14,7 +14,8 @@ const ICON = { Fajr: Moon, Sunrise, Dhuhr: Sun, Asr: CloudSun, Maghrib: Sunset, 
 
 export function PrayerTimesClient() {
   const { t, lang } = useLang();
-  const { city, setCity, now, times, current, next, remaining, progress } = usePrayer();
+  const { city, setCity, now, times, current, next, remaining, progress, friday } = usePrayer();
+  const label = (name: string) => { const l = prayerLabel(name, friday); return t(l.bn, l.en); };
   const h = Math.floor(remaining / 3600);
   const m = Math.floor((remaining % 3600) / 60);
   const s = remaining % 60;
@@ -53,7 +54,7 @@ export function PrayerTimesClient() {
           <p className="relative mt-1 text-3xl font-semibold">
             {next ? (
               <>
-                {t(PRAYER_BN[next.name], next.name)} <span className="font-num">{num(to12h(next.time), lang)}</span>
+                {label(next.name)} <span className="font-num">{num(to12h(next.time), lang)}</span>
               </>
             ) : (
               "—"
@@ -73,8 +74,8 @@ export function PrayerTimesClient() {
           </div>
           <div className="relative mt-6">
             <div className="flex justify-between text-xs opacity-75">
-              <span>{current ? t(PRAYER_BN[current], current) : ""}</span>
-              <span>{next ? t(PRAYER_BN[next.name], next.name) : ""}</span>
+              <span>{current ? label(current) : ""}</span>
+              <span>{next ? label(next.name) : ""}</span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/15">
               <div className="h-full rounded-full bg-white transition-all" style={{ width: `${progress * 100}%` }} />
@@ -98,7 +99,7 @@ export function PrayerTimesClient() {
                     {isCur && <Pill className="bg-white/20">{t("চলমান", "Now")}</Pill>}
                     {isNext && !isCur && <Pill tone="soft">{t("পরবর্তী", "Next")}</Pill>}
                   </div>
-                  <p className={cn("mt-4 text-sm", isCur ? "text-white/80" : "text-ink-3")}>{t(PRAYER_BN[name], name)}</p>
+                  <p className={cn("mt-4 text-sm", isCur ? "text-white/80" : "text-ink-3")}>{label(name)}</p>
                   <p className={cn("font-num text-2xl font-semibold", !isCur && "text-ink")}>{times ? num(to12h(times[name]), lang) : "--:--"}</p>
                 </li>
               );
@@ -123,7 +124,7 @@ export function PrayerTimesClient() {
                 <p className="mt-0.5 text-xs text-ink-3">
                   {nx ? (
                     <>
-                      {t(PRAYER_BN[nx.name], nx.name)} · <span className="font-num text-brand">{num(to12h(nx.time), lang)}</span>
+                      {label(nx.name)} · <span className="font-num text-brand">{num(to12h(nx.time), lang)}</span>
                     </>
                   ) : (
                     " "

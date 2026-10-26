@@ -86,7 +86,7 @@
 
 /* Classical Arabic Ayats & Hadiths */
 .article-body-content .arabic-text {
-  font-family: var(--font-arabic-calligraphy), var(--font-arabic), serif;
+  font-family: var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif;
   font-size: 1.35rem;
   line-height: 1.85;
   direction: rtl;

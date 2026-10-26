@@ -19,7 +19,7 @@
 .fb-story-card {
   width: 105px;
   height: 165px;
-  border-radius: var(--radius-xl);
+  border-radius: var(--sirat-radius-xl);
   overflow: hidden;
   position: relative;
   flex-shrink: 0;

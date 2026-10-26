@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight, ChevronRight, House, Loader2, Pause, Play, Search, X, type LucideIcon } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
-import { sectionFor } from "@/lib/nav";
+import { LINKS, sectionFor } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
 export function Panel({ className, children, ...rest }: React.HTMLAttributes<HTMLElement>) {
@@ -366,12 +366,10 @@ export function MediaHeader<T extends string>({
   below?: React.ReactNode;
 }) {
   const { t } = useLang();
-  const [searchOpen, setSearchOpen] = useState(Boolean(query));
+  const [open, setSearchOpen] = useState(false);
+  // A non-empty query always keeps the search field open.
+  const searchOpen = open || Boolean(query);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (query) setSearchOpen(true);
-  }, [query]);
 
   const openSearch = () => {
     setSearchOpen(true);
@@ -537,5 +535,28 @@ export function HeaderIconButton({ label, onClick, children }: { label: string; 
     >
       {children}
     </button>
+  );
+}
+
+/** Placeholder for a feature that is not ready yet (pass its key in LINKS). */
+export function ComingSoon({ feature }: { feature: keyof typeof LINKS }) {
+  const { t } = useLang();
+  const link = LINKS[feature];
+  return (
+    <div className="mx-auto flex min-h-[55vh] max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
+      <span className="tone flex h-20 w-20 items-center justify-center rounded-3xl" style={{ ["--tone" as string]: link.tone }}>
+        <link.icon className="h-10 w-10" strokeWidth={1.8} />
+      </span>
+      <div className="space-y-1.5">
+        <h1 className="font-heading text-2xl font-bold text-ink">{t(link.bn, link.en)}</h1>
+        <span className="inline-block rounded-full bg-gold-soft px-3 py-1 text-[13px] font-medium text-gold">{t("শীঘ্রই আসছে", "Coming soon")}</span>
+      </div>
+      <p className="text-[14.5px] leading-relaxed text-ink-2">
+        {t("এই ফিচারটি নিয়ে কাজ চলছে। ইনশাআল্লাহ শীঘ্রই চালু হবে।", "We are working on this feature. It will be available soon, insha'Allah.")}
+      </p>
+      <Link href="/more" className="mt-1 inline-flex h-11 items-center rounded-2xl bg-brand px-6 text-sm font-medium text-white hover:bg-brand-strong">
+        {t("অন্যান্য ফিচার দেখুন", "See other features")}
+      </Link>
+    </div>
   );
 }

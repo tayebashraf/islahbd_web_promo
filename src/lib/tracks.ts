@@ -38,7 +38,7 @@ export const surahTrack = (qari: Qari, number: number): Track => {
     subtitle: qari.name,
     src: surahAudioUrl(qari, number),
     kind: "quran",
-    href: "/quran",
+    href: "/quran/audio",
   };
 };
 

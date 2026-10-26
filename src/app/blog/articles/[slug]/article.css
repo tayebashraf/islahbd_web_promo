@@ -369,7 +369,7 @@
 }
 
 .article-page__comment-prompt-arabic {
-  font-family: var(--font-arabic);
+  font-family: var(--sirat-font-arabic);
   direction: rtl;
   font-size: var(--text-base);
   color: var(--color-brand-primary);

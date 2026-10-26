@@ -11,6 +11,9 @@
        url('/fonts/kalpurush.ttf') format('truetype');
 }
 
+/* Element resets sit in the base layer so the site's Tailwind utilities
+   (header, buttons, spacing) keep winning once this sheet is loaded. */
+@layer base {
 /* --- Modern Reset --- */
 *,
 *::before,
@@ -76,6 +79,8 @@ ol {
   list-style: none;
 }
 
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -105,8 +110,8 @@ ol {
 /* Base Card Style */
 .fb-card {
   background-color: var(--color-bg-surface);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--sirat-radius-xl);
+  box-shadow: var(--sirat-shadow-card);
   border: 1px solid var(--color-border-primary);
   overflow: hidden;
   margin-bottom: var(--space-4);
@@ -191,7 +196,7 @@ ol {
   border: 1px solid var(--color-border-secondary);
   padding: 16px;
   margin-bottom: 16px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .fb-skeleton-pulse {
@@ -276,7 +281,7 @@ ol {
   padding: 24px 16px;
   margin: 16px 0 32px;
   text-align: center;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .fb-feed-end-banner__icon {

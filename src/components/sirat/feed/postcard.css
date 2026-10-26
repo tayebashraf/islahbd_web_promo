@@ -5,7 +5,7 @@
 .fb-post-card {
   background-color: var(--color-bg-surface);
   border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
   border: 1px solid var(--color-border-primary);
   margin-bottom: var(--space-4);
   overflow: visible;
@@ -274,7 +274,7 @@
 }
 
 .fb-post-hadith-arabic {
-  font-family: var(--font-arabic-calligraphy), var(--font-arabic), serif;
+  font-family: var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif;
   font-size: 1.28rem;
   line-height: 1.85;
   direction: rtl;
@@ -669,7 +669,7 @@
 }
 
 .fb-durood-ribbon-pill__ar {
-  font-family: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
+  font-family: var(--sirat-font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
   font-size: 0.95rem;
   font-weight: 500;
   direction: rtl;
@@ -849,7 +849,7 @@
 
 /* Harmonious Arabic Font Size in Comment Bubbles */
 .fb-comment-bubble__arabic-durood {
-  font-family: var(--font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
+  font-family: var(--sirat-font-arabic), 'Amiri', 'Noto Naskh Arabic', serif !important;
   font-size: 1.05rem !important;
   font-weight: 500 !important;
   line-height: 1.6 !important;

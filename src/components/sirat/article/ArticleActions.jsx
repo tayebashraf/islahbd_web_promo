@@ -136,14 +136,14 @@ export const ArticleActions = ({
               {currentReaction ? (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                   <currentReaction.Icon size={18} />
-                  <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--font-arabic), serif', fontSize: '1rem', fontWeight: 'bold' }}>
+                  <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1rem', fontWeight: 'bold' }}>
                     {currentReaction.arabic}
                   </span>
                 </span>
               ) : (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                   <CalligraphyJazakallahIcon size={18} />
-                  <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--font-arabic), serif', fontSize: '1rem', fontWeight: 'bold' }}>
+                  <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1rem', fontWeight: 'bold' }}>
                     جَزَاكَ ٱللَّٰهُ
                   </span>
                 </span>

@@ -329,7 +329,12 @@ function BottomNav({ pathname, onNavigate }: { pathname: string; onNavigate: () 
       aria-label={t(isBlog ? "ব্লগ নেভিগেশন" : "নিচের নেভিগেশন", isBlog ? "Blog navigation" : "Bottom navigation")}
       className="fixed inset-x-0 bottom-0 z-[55] border-t border-line bg-canvas-2/95 pb-safe backdrop-blur-xl lg:hidden font-kalpurush"
     >
-      <ul className="mx-auto grid h-16 max-w-lg grid-cols-5">
+      <ul
+        className={cn(
+          "mx-auto grid h-16 max-w-lg",
+          navList.length === 4 ? "grid-cols-4" : "grid-cols-5"
+        )}
+      >
         {navList.map((l) => {
           const active = isBlog ? isBlogTabActive(pathname, l.href) : isActive(pathname, l.href);
           const Icon = l.icon;

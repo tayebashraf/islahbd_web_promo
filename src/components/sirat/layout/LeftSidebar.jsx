@@ -114,14 +114,6 @@ export const LeftSidebar = () => {
             <span>প্ল্যাটফর্ম</span>
           </div>
 
-          {!isWriter && (
-            <Link href="/blog/apply" className="fb-sidebar-item">
-              <div className="fb-sidebar-icon-wrap" style={{ color: '#059669' }}>
-                <FileCheck size={20} />
-              </div>
-              <span style={{ fontWeight: 700, color: '#059669' }}>লেখক হওয়ার আবেদন</span>
-            </Link>
-          )}
 
           <Link href="/blog/guidelines" className="fb-sidebar-item">
             <div className="fb-sidebar-icon-wrap" style={{ color: '#65676B' }}>

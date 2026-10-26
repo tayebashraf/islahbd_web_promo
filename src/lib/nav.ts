@@ -72,7 +72,7 @@ export const LINKS = {
   amal: { href: "/amal", bn: "আমল", en: "Amal", icon: ScrollText, descBn: "আমল, ওয়াজিফা, সুন্নাত, ফযীলত", descEn: "Amal, wazifa, sunnah, virtues", tone: "#0284C7" },
   fazilat: { href: "/amal?section=fazilat", bn: "ফযীলত", en: "Virtues", icon: Award, descBn: "সূরা ও আমলের ফযীলত", descEn: "Virtues of surahs and deeds", tone: "#9333EA" },
   munajat: { href: "/munajat", bn: "মুনাজাতে মাকবুল", en: "Munajat-e-Maqbul", icon: BookHeart, descBn: "সপ্তাহের সাত মঞ্জিল", descEn: "Seven daily manzils", tone: "#BE185D" },
-  ramadan: { href: "/ramadan", bn: "রমজান", en: "Ramadan", icon: MoonStar, descBn: "সাহরি ও ইফতারের সময়সূচি", descEn: "Sehri & iftar timetable", tone: "#6D28D9" },
+  ramadan: { href: "/ramadan", bn: "রমজান", en: "Ramadan", icon: MoonStar, descBn: "শীঘ্রই আসছে", descEn: "Coming soon", tone: "#6D28D9", badgeBn: "শীঘ্রই আসছে", badgeEn: "Coming Soon", comingSoon: true },
   calendar: { href: "/calendar", bn: "ইসলামিক ক্যালেন্ডার", en: "Islamic Calendar", icon: CalendarDays, descBn: "হিজরি মাস ও গুরুত্বপূর্ণ দিন", descEn: "Hijri months & key days", tone: "#DC2626" },
   malfuzat: { href: "/malfuzat", bn: "মালফুযাত", en: "Malfuzat", icon: Quote, descBn: "হযরতের বাণী", descEn: "Sayings of the shaykh", tone: "#C08A2E" },
   poems: { href: "/poems", bn: "কবিতা ও কালাম", en: "Poetry", icon: Feather, descBn: "আধ্যাত্মিক কবিতা ও অনুবাদ", descEn: "Spiritual poetry with translation", tone: "#DB2777" },

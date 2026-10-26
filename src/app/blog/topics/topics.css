@@ -14,7 +14,7 @@
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .topics-hero__banner {
@@ -105,7 +105,7 @@
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   padding: 12px 16px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .topics-search-bar {
@@ -305,7 +305,7 @@
   justify-content: space-between;
   text-decoration: none;
   color: inherit;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
   transition: transform var(--duration-fast), border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
 
@@ -465,7 +465,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
 }
 
 .topics-writer-cta__text {

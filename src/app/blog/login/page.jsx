@@ -193,18 +193,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p style={{
-          textAlign: 'center',
-          marginTop: 'var(--space-8)',
-          fontFamily: 'var(--font-bengali-ui)',
-          fontSize: 'var(--text-sm)',
-          color: 'var(--color-text-secondary)',
-        }}>
-          নতুন লেখক হিসেবে যুক্ত হতে চান?{' '}
-          <Link href="/blog/apply" style={{ color: 'var(--color-brand-primary)', fontWeight: 'var(--weight-medium)' }}>
-            লেখক হিসেবে আবেদন করুন
-          </Link>
-        </p>
       </div>
     </div>
   );

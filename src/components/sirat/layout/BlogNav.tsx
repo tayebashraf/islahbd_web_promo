@@ -3,18 +3,20 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Layers, Users, Bookmark, Search, ArrowLeft, Sparkles } from "lucide-react";
+import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const BLOG_NAV_ITEMS = [
-  { href: "/blog", bn: "ফিড", en: "Feed", icon: BookOpen },
-  { href: "/blog/topics", bn: "বিষয়শ্রেণী", en: "Topics", icon: Layers, badge: "৮" },
-  { href: "/blog/authors", bn: "গবেষকবৃন্দ", en: "Scholars", icon: Users, badge: "৮" },
+  { href: "/", bn: "ইসলাহ ওয়েব", en: "Islah Web", icon: Globe },
+  { href: "/blog", bn: "নিউজফিড", en: "Newsfeed", icon: BookOpen },
   { href: "/blog/bookmarks", bn: "সংরক্ষিত", en: "Saved", icon: Bookmark },
   { href: "/blog/search", bn: "অনুসন্ধান", en: "Search", icon: Search },
 ];
 
 export function isBlogTabActive(pathname: string, href: string): boolean {
+  if (href === "/") {
+    return pathname === "/";
+  }
   if (href === "/blog") {
     return pathname === "/blog" || pathname.startsWith("/blog/articles");
   }

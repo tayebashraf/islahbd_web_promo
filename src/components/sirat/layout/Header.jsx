@@ -7,6 +7,7 @@ import {
   Search,
   Home,
   BookOpen,
+  Globe,
   Users,
   Bookmark,
   Sun,
@@ -188,10 +189,10 @@ export default function Header() {
   };
 
   const navTabs = [
+    { href: '/', icon: <Globe size={23} />, title: 'ইসলাহ ওয়েব' },
     { href: '/blog', icon: <Home size={23} />, title: 'নিউজ ফিড' },
-    { href: '/blog/topics', icon: <BookOpen size={23} />, title: 'সিরাত বিষয় ও ক্যাটাগরি' },
-    { href: '/blog/authors', icon: <Users size={23} />, title: 'লেখক ও গবেষকবৃন্দ' },
     { href: '/blog/bookmarks', icon: <Bookmark size={23} />, title: 'সংরক্ষিত প্রবন্ধসমূহ' },
+    { href: '/blog/search', icon: <Search size={23} />, title: 'অনুসন্ধান' },
   ];
 
   return (
@@ -490,22 +491,6 @@ export default function Header() {
 
                 {/* 4. Navigation & Shortcuts */}
                 <div className="fb-settings-links-list">
-                  {!isWriter && (
-                    <Link
-                      href="/blog/apply"
-                      className="fb-settings-apply-cta-btn"
-                      onClick={() => setSettingsOpen(false)}
-                    >
-                      <div className="fb-settings-apply-icon">
-                        <ShieldCheck size={18} />
-                      </div>
-                      <div className="fb-settings-apply-content">
-                        <strong>লেখক হিসেবে আবেদন করুন</strong>
-                        <span>তাহকিক লেখক ব্যাজ ও লেখার সুযোগ পান</span>
-                      </div>
-                      <ChevronRight size={15} className="fb-settings-arrow" />
-                    </Link>
-                  )}
 
                   {isWriter && (
                     <>

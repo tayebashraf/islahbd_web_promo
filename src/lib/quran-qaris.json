@@ -1,0 +1,2126 @@
+[
+{
+"id": "mp3quran_123",
+"name": "মিশারী রাশিদ আল-আফাসী",
+"en": "Mishary Rashid Alafasy",
+"ar": "مشاري العفاسي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/afs/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_54",
+"name": "আব্দুর রহমান আস-সুদাইস",
+"en": "Abdul Rahman Al-Sudais",
+"ar": "عبدالرحمن السديس",
+"ayah": "Abdurrahmaan_As-Sudais_192kbps",
+"server": "https://server11.mp3quran.net/sds/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_31",
+"name": "সায়ূদ আশ-শুরাইম",
+"en": "Saud Al-Shuraim",
+"ar": "سعود الشريم",
+"ayah": "Saood_ash-Shuraym_128kbps",
+"server": "https://server7.mp3quran.net/shur/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_102",
+"name": "মাহের আল-মুয়াইক্বলী",
+"en": "Maher Al-Muaiqly",
+"ar": "ماهر المعيقلي",
+"ayah": "MaherAlMuaiqly128kbps",
+"server": "https://server12.mp3quran.net/maher/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_51",
+"name": "আব্দুল বাসেত আব্দুল সামাদ",
+"en": "Abdul Basit Abdul Samad",
+"ar": "عبدالباسط عبدالصمد",
+"ayah": "Abdul_Basit_Murattal_192kbps",
+"server": "https://server7.mp3quran.net/basit/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_30",
+"name": "সা",
+"en": "Saad Al-Ghamdi",
+"ar": "سعد الغامدي",
+"ayah": "Ghamadi_40kbps",
+"server": "https://server7.mp3quran.net/s_gmd/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_4",
+"name": "আবু বকর আশ-শাতরী",
+"en": "Abu Bakr Al-Shatri",
+"ar": "أبو بكر الشاطري",
+"ayah": "Abu_Bakr_Ash-Shaatree_128kbps",
+"server": "https://server11.mp3quran.net/shatri/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_118",
+"name": "মাহমুদ খলিল আল-হুসারী",
+"en": "Mahmoud Khalil Al-Hussary",
+"ar": "محمود خليل الحصري",
+"ayah": "Husary_128kbps",
+"server": "https://server13.mp3quran.net/husr/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_112",
+"name": "মুহাম্মদ সিদ্দিক আল-মিনশাবী",
+"en": "Muhammad Siddiq Al-Minshawi",
+"ar": "محمد صديق المنشاوي",
+"ayah": "Minshawy_Murattal_128kbps",
+"server": "https://server10.mp3quran.net/minsh/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_109",
+"name": "মুহাম্মদ আইয়ুব",
+"en": "Muhammad Ayyub",
+"ar": "محمد أيوب",
+"ayah": "Muhammad_Ayyoub_128kbps",
+"server": "https://server16.mp3quran.net/ayyoub2/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_92",
+"name": "ইয়াসির আদ-দাওসারী",
+"en": "Yasser Al-Dosari",
+"ar": "ياسر الدوسري",
+"ayah": "Yasser_Ad-Dussary_128kbps",
+"server": "https://server11.mp3quran.net/yasser/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_86",
+"name": "নাসের আল-কাতামী",
+"en": "Nasser Al-Qatami",
+"ar": "ناصر القطامي",
+"ayah": "Nasser_Alqatami_128kbps",
+"server": "https://server6.mp3quran.net/qtm/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_74",
+"name": "আলী আল-হুজাইফী",
+"en": "Ali Alhuthaifi",
+"ar": "علي بن عبدالرحمن الحذيفي",
+"ayah": "Hudhaify_128kbps",
+"server": "https://server9.mp3quran.net/hthfi/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_5",
+"name": "আহমেদ আল-আজমি",
+"en": "Ahmad Al-Ajmy",
+"ar": "أحمد بن علي العجمي",
+"ayah": "Ahmed_ibn_Ali_al-Ajamy_128kbps_ketaballah.net",
+"server": "https://server10.mp3quran.net/ajm/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_76",
+"name": "আলী জাবের",
+"en": "Ali Jaber",
+"ar": "علي جابر",
+"ayah": "Ali_Jaber_64kbps",
+"server": "https://server11.mp3quran.net/a_jbr/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_89",
+"name": "হানি আর-রিফাঈ",
+"en": "Hani Arrifai",
+"ar": "هاني الرفاعي",
+"ayah": "Hani_Rifai_192kbps",
+"server": "https://server8.mp3quran.net/hani/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_62",
+"name": "আব্দুল্লাহ আল-জুহানি",
+"en": "Abdullah Al-Johany",
+"ar": "عبدالله عواد الجهني",
+"ayah": "Abdullaah_3awwaad_Al-Juhaynee_128kbps",
+"server": "https://server13.mp3quran.net/jhn/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_81",
+"name": "ফারেস আব্বাদ",
+"en": "Fares Abbad",
+"ar": "فارس عباد",
+"ayah": "Fares_Abbad_64kbps",
+"server": "https://server8.mp3quran.net/frs_a/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_43",
+"name": "সালাহ আল-বুদাইর",
+"en": "Salah Albudair",
+"ar": "صلاح البدير",
+"ayah": "Salah_Al_Budair_128kbps",
+"server": "https://server6.mp3quran.net/s_bud/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_111",
+"name": "মুহাম্মদ জিবরীল",
+"en": "Mohammed Jibreel",
+"ar": "محمد جبريل",
+"ayah": "Muhammad_Jibreel_128kbps",
+"server": "https://server8.mp3quran.net/jbrl/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_59",
+"name": "আব্দুল্লাহ আল-মতরওদ",
+"en": "Abdullah Al-Mattrod",
+"ar": "عبدالله المطرود",
+"ayah": "Abdullah_Matroud_128kbps",
+"server": "https://server8.mp3quran.net/mtrod/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_60",
+"name": "আব্দুল্লাহ বাসফার",
+"en": "Abdullah Basfer",
+"ar": "عبدالله بصفر",
+"ayah": "Abdullah_Basfar_192kbps",
+"server": "https://server6.mp3quran.net/bsfr/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_67",
+"name": "আব্দুল মুহসিন আল-কাসেম",
+"en": "Abdulmohsen Al-Qasim",
+"ar": "عبدالمحسن القاسم",
+"ayah": "Muhsin_Al_Qasim_192kbps",
+"server": "https://server8.mp3quran.net/qasm/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_9",
+"name": "আহমেদ নুয়াইনা",
+"en": "Ahmad Nauina",
+"ar": "أحمد نعينع",
+"ayah": "Ahmed_Neana_128kbps",
+"server": "https://server11.mp3quran.net/ahmad_nu/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_10",
+"name": "আকরাম আল-আলাকমি",
+"en": "Akram Alalaqmi",
+"ar": "أكرم العلاقمي",
+"ayah": "Akram_AlAlaqimy_128kbps",
+"server": "https://server9.mp3quran.net/akrm/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_77",
+"name": "আলী হাজ্জাজ আস-সুয়াইসী",
+"en": "Ali Hajjaj Alsouasi",
+"ar": "علي حجاج السويسي",
+"ayah": "Ali_Hajjaj_AlSuesy_128kbps",
+"server": "https://server9.mp3quran.net/hajjaj/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_1",
+"name": "ইব্রাহিম আল-আখদার",
+"en": "Ibrahim Al-Akdar",
+"ar": "إبراهيم الأخضر",
+"ayah": "Ibrahim_Akhdar_32kbps",
+"server": "https://server6.mp3quran.net/akdr/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_178",
+"name": "ইব্রাহিম আদ-দাওসারী",
+"en": "Ibrahim Aldosari",
+"ar": "إبراهيم الدوسري",
+"ayah": "Yasser_Ad-Dussary_128kbps",
+"server": "https://server10.mp3quran.net/ibrahim_dosri/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_106",
+"name": "মুহাম্মদ আত-তাবলাবী",
+"en": "Mohammad Al-Tablaway",
+"ar": "محمد الطبلاوي",
+"ayah": "Mohammad_al_Tablaway_128kbps",
+"server": "https://server12.mp3quran.net/tblawi/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_32",
+"name": "সাহল ইয়াসিন",
+"en": "Sahl Yassin",
+"ar": "سهل ياسين",
+"ayah": "Sahl_Yassin_128kbps",
+"server": "https://server6.mp3quran.net/shl/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_205",
+"name": "আহমেদ আল-হযইফই",
+"en": "Ahmad Alhuthaifi",
+"ar": "أحمد الحذيفي",
+"ayah": "Hudhaify_128kbps",
+"server": "https://server8.mp3quran.net/ahmad_huth/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_226",
+"name": "খালিদ আল-গআমদই",
+"en": "Khalid Algamdi",
+"ar": "خالد الغامدي",
+"ayah": "Ghamadi_40kbps",
+"server": "https://server6.mp3quran.net/ghamdi/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_218",
+"name": "খালিদ আল-রইমই",
+"en": "Khalid Al-Shoraimy",
+"ar": "خالد الشريمي",
+"ayah": "Saood_ash-Shuraym_128kbps",
+"server": "https://server12.mp3quran.net/shoraimy/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_35",
+"name": "সামি আদ-দাওসারি",
+"en": "Sami Al-Dosari",
+"ar": "سامي الدوسري",
+"ayah": "Yasser_Ad-Dussary_128kbps",
+"server": "https://server8.mp3quran.net/sami_dosr/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_188",
+"name": "আবদআলগনই আব্দুল্লাহ",
+"en": "Abdulghani Abdullah",
+"ar": "عبدالغني عبدالله",
+"ayah": "Hani_Rifai_192kbps",
+"server": "https://server12.mp3quran.net/malaysia/abdulgani/",
+"hasAyah": true
+},
+{
+"id": "mp3quran_49",
+"name": "আবদআলবআরই আল-সবইতই",
+"en": "Abdelbari Al-Toubayti",
+"ar": "عبدالبارئ الثبيتي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/thubti/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21199",
+"name": "আবদ আল-মজইব বনকইরআন",
+"en": "Abdelmoujib Benkirane",
+"ar": "عبد المجيب بنكيران",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/A-Benkirane/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_55",
+"name": "আব্দুল আজিজ আল-আহমেদ",
+"en": "Abdul Aziz Al-Ahmad",
+"ar": "عبدالعزيز الأحمد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/a_ahmed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21193",
+"name": "আব্দুর রহমান বন আব্দুর রাজ্জাক আল-বদর",
+"en": "Abdul Rahman bin Abdul Razzaq Al Badr",
+"ar": "عبدالرحمن بن عبدالرزاق البدر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/A-AlBadr/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_79",
+"name": "আব্দুল আজিজ আল-তরকই",
+"en": "Abdulaziz Alturki",
+"ar": "عبدالعزيز التركي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_turki/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_56",
+"name": "আব্দুল আজিজ আজ-জাহরানি",
+"en": "Abdulaziz Az-Zahrani",
+"ar": "عبدالعزيز الزهراني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/zahrani/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21148",
+"name": "আবদআলবদইআ গইলআন",
+"en": "Abdulbadi Ghailan",
+"ar": "عبدالبديع غيلان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/A-Ghailan/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_50",
+"name": "আবদআলবআরই মুহাম্মদ",
+"en": "Abdulbari Mohammad",
+"ar": "عبدالبارئ محمد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/bari/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_136",
+"name": "আবদআলইলহ বন আওন",
+"en": "Abdulelah bin Aoun",
+"ar": "عبدالإله بن عون",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_binaoun/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_70",
+"name": "আবদআলহআদই আহমেদ কনআকরই",
+"en": "Abdulhadi Kanakeri",
+"ar": "عبدالهادي أحمد كناكري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/kanakeri/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_304",
+"name": "আব্দুল কারীম আল-হআযমই",
+"en": "Abdulkareem Alhazmi",
+"ar": "عبدالكريم الحازمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_alhazmi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_98",
+"name": "আব্দুল্লাহ আবদল",
+"en": "Abdullah Abdal",
+"ar": "عبدالله عبدل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_abdl/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_202",
+"name": "আব্দুল্লাহ আল-কনদরই",
+"en": "Abdullah Al-Kandari",
+"ar": "عبدالله الكندري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/Abdullahk/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_244",
+"name": "আব্দুল্লাহ আল-খলফ",
+"en": "Abdullah Al-Khalaf",
+"ar": "عبدالله الخلف",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/khalf/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_243",
+"name": "আব্দুল্লাহ আল-মওসআ",
+"en": "Abdullah Al-Mousa",
+"ar": "عبدالله الموسى",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/mousa/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_58",
+"name": "আব্দুল্লাহ আল-বআইজআন",
+"en": "Abdullah Albuajan",
+"ar": "عبدالله البعيجان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/buajan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21136",
+"name": "আব্দুল্লাহ আল-করআফই",
+"en": "Abdullah Alqarafi",
+"ar": "عبدالله القرافي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_alqrafi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_267",
+"name": "আব্দুল্লাহ কআমল",
+"en": "Abdullah Kamel",
+"ar": "عبدالله كامل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/kamel/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_61",
+"name": "আব্দুল্লাহ খইআত",
+"en": "Abdullah Khayyat",
+"ar": "عبدالله خياط",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/kyat/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_63",
+"name": "আব্দুল্লাহ গইলআন",
+"en": "Abdullah Qaulan",
+"ar": "عبدالله غيلان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/gulan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_66",
+"name": "আব্দুল মুহসিন আল-হআরসই",
+"en": "Abdulmohsin Al-Harthy",
+"ar": "عبدالمحسن الحارثي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/mohsin_harthi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_69",
+"name": "আব্দুল মুহসিন আল-আবইকআন",
+"en": "Abdulmohsin Al-Obaikan",
+"ar": "عبدالمحسن العبيكان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/obk/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_236",
+"name": "আব্দুর রহমান আল-মআজদ",
+"en": "Abdulrahman Al-Majed",
+"ar": "عبدالرحمن الماجد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/a_majed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_225",
+"name": "আব্দুর রহমান আল-আওসই",
+"en": "Abdulrahman Aloosi",
+"ar": "عبدالرحمن العوسي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/aloosi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_287",
+"name": "আব্দুর রহমান আল-হআত",
+"en": "Abdulrahman Alshahhat",
+"ar": "عبدالرحمن الشحات",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_alshahhat/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_64",
+"name": "আব্দুর রশিদ সুফি",
+"en": "Abdulrasheed Soufi",
+"ar": "عبدالرشيد صوفي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/soufi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_71",
+"name": "আবদআলওদওদ হনইফ",
+"en": "Abdulwadood Haneef",
+"ar": "عبدالودود حنيف",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/wdod/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_72",
+"name": "আবদআলওলই আল-আরকআনই",
+"en": "Abdulwali Al-Arkani",
+"ar": "عبدالولي الأركاني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/arkani/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_208",
+"name": "আল-দওকআলই মুহাম্মদ আল-আআলম",
+"en": "Addokali Mohammad Alalim",
+"ar": "الدوكالي محمد العالم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server7.mp3quran.net/dokali/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_160",
+"name": "আদেল কালবানি",
+"en": "Adel Al-Khalbany",
+"ar": "عادل الكلباني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/a_klb/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_48",
+"name": "আদেল রায়ান",
+"en": "Adel Ryyan",
+"ar": "عادل ريان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/ryan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_259",
+"name": "আহমেদ আল-নফইস",
+"en": "Ahmad Al Nufais",
+"ar": "أحمد النفيس",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/nufais/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_6",
+"name": "আহমেদ আল-হাওয়াশি",
+"en": "Ahmad Al-Hawashi",
+"ar": "أحمد الحواشي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/hawashi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_265",
+"name": "আহমেদ দইবআন",
+"en": "Ahmad Deban",
+"ar": "أحمد ديبان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/deban/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_278",
+"name": "আহমেদ আইসআ আল-মআসরআওই",
+"en": "Ahmad Issa Al Maasaraawi",
+"ar": "أحمد عيسى المعصراوي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_maasaraawi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_8",
+"name": "আহমেদ সাবের",
+"en": "Ahmad Saber",
+"ar": "أحمد صابر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/saber/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_256",
+"name": "আহমেদ খলইল আহইন",
+"en": "Ahmad Shaheen",
+"ar": "أحمد خليل شاهين",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/shaheen/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_252",
+"name": "আহমেদ আল-সওইলম",
+"en": "Ahmed Al-Swailem",
+"ar": "أحمد السويلم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/swlim/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_201",
+"name": "আহমেদ আল-তরআবলসই",
+"en": "Ahmed Al-trabulsi",
+"ar": "أحمد الطرابلسي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/trabulsi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_203",
+"name": "আহমেদ আআমর",
+"en": "Ahmed Amer",
+"ar": "أحمد عامر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/Aamer/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_14",
+"name": "আল-ক্বারী ইয়াসিন",
+"en": "Al-Qaria Yassen",
+"ar": "القارئ ياسين",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/qari/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_211",
+"name": "আল-ফাতাহ মুহাম্মদ",
+"en": "Alfateh Alzubair",
+"ar": "الفاتح محمد الزبير",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/fateh/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21196",
+"name": "আলইজআন কওরই হমদআন",
+"en": "Alijon Qori",
+"ar": "عليجان قوري حمدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/Alijon/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_16",
+"name": "আল-উয়ুন আল-কুশী",
+"en": "Aloyoon Al-Koshi",
+"ar": "العيون الكوشي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/koshi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_13",
+"name": "আল-যইন মুহাম্মদ আহমেদ",
+"en": "Alzain Mohammad Ahmad",
+"ar": "الزين محمد أحمد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/alzain/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_302",
+"name": "আনস আল-আমআদই",
+"en": "Anas Alemadi",
+"ar": "أنس العمادي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_alemadi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21201",
+"name": "আআসম আল-লহদআন",
+"en": "Asim Al-Luhaidan",
+"ar": "عاصم اللحیدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server7.mp3quran.net/asim/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_254",
+"name": "বদর আল-তরকই",
+"en": "Bader Alturki",
+"ar": "بدر التركي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_217",
+"name": "বনদর বলইলহ",
+"en": "Bandar Balilah",
+"ar": "بندر بليله",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/balilah/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_25",
+"name": "দআওদ হমযহ",
+"en": "Dawood Hamza",
+"ar": "داود حمزة",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/hamza/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_78",
+"name": "ইমাদ জুহাইর হাফেজ",
+"en": "Emad Hafez",
+"ar": "عماد زهير حافظ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/hafz/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_301",
+"name": "ফইসল আল-হআজরই",
+"en": "Faisal Al-Hajry",
+"ar": "فيصل الهاجري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/f_hajry/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_281",
+"name": "ফউআদ আল-খআমরই",
+"en": "Fouad Alkhamery",
+"ar": "فؤاد الخامري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/f_khamery/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_273",
+"name": "হইসম আল-দখইন",
+"en": "Haitham Aldukhain",
+"ar": "هيثم الدخين",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/h_dukhain/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_286",
+"name": "হসন সআলহ",
+"en": "Hasan Saleh",
+"ar": "حسن صالح",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/h_saleh/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_280",
+"name": "হআম আবও দলআল",
+"en": "Hashim Abu Dalal",
+"ar": "هاشم أبو دلال",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/h_abudalal/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21183",
+"name": "হসন আল-দগরইরই",
+"en": "Hassan Aldaghriri",
+"ar": "حسن الدغريري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/H-Aldaghriri/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_163",
+"name": "হাতেম ফারিদ আল-ওয়ায়ের",
+"en": "Hatem Fareed Alwaer",
+"ar": "حاتم فريد الواعر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/hatem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_3",
+"name": "ইব্রাহিম আল-আসারি",
+"en": "Ibrahim Al-Asiri",
+"ar": "إبراهيم العسيري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/3siri/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_164",
+"name": "ইব্রাহিম আল-জারমি",
+"en": "Ibrahim Aljormy",
+"ar": "إبراهيم الجرمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/jormy/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_279",
+"name": "ইব্রাহিম কইদআন",
+"en": "Ibrahim Kshidan",
+"ar": "إبراهيم كشيدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/i_kshidan/Rewayat-Qalon-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_12",
+"name": "ইদ্রিস আবকার",
+"en": "Idrees Abkr",
+"ar": "إدريس أبكر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/abkr/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_288",
+"name": "আইসআ উমর সনআকও",
+"en": "Issa Omar Sanankoua",
+"ar": "عيسى عمر سناكو",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/i_sanankoua/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_181",
+"name": "জমআআন আল-আসইমই",
+"en": "Jamaan Alosaimi",
+"ar": "جمعان العصيمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/jaman/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_18",
+"name": "জমআল আকর আব্দুল্লাহ",
+"en": "Jamal Shaker Abdullah",
+"ar": "جمال شاكر عبدالله",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/jamal/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21186",
+"name": "জনইদ আদম আব্দুল্লাহ",
+"en": "Junaid Adam Abdullah",
+"ar": "جنيد آدم عبدالله",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/J-Abdullah/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21",
+"name": "খালিদ আল-কাহতানি",
+"en": "Khaled Al-Qahtani",
+"ar": "خالد القحطاني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/qht/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_22",
+"name": "খালিদ আব্দুল কাফি",
+"en": "Khalid Abdulkafi",
+"ar": "خالد عبدالكافي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/kafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_20",
+"name": "খালিদ আল-জলিল",
+"en": "Khalid Al-Jileel",
+"ar": "خالد الجليل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/jleel/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_159",
+"name": "খালিদ আল-মুহান্না",
+"en": "Khalid Almohana",
+"ar": "خالد المهنا",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/mohna/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21187",
+"name": "খালিদ আল-যইআদই",
+"en": "Khalid Alziyadi",
+"ar": "خالد الزيادي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/K-Alzadi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_283",
+"name": "খালিদ করইম মহমদই",
+"en": "Khalid Mohammadi",
+"ar": "خالد كريم محمدي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/kh_mohammadi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_24",
+"name": "খলিফা আত-তুনাইজি",
+"en": "Khalifa Altunaiji",
+"ar": "خليفة الطنيجي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/tnjy/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_151",
+"name": "মাহমুদ আশ-শিমি",
+"en": "Mahmood AlSheimy",
+"ar": "محمود الشيمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/sheimy/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_277",
+"name": "মাহমুদ আবদআলহকম",
+"en": "Mahmoud Abdul Hakam",
+"ar": "محمود عبدالحكم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/m_abdelhakam/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_121",
+"name": "মাহমুদ আলী আল-বান্না",
+"en": "Mahmoud Ali  Albanna",
+"ar": "محمود علي البنا",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/bna/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21202",
+"name": "মাহমুদ হরফও",
+"en": "Mahmoud Harfoush",
+"ar": "محمود حرفوش",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/M-Harfoush/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_139",
+"name": "মাজেদ আজ-জামিল",
+"en": "Majed Al-Zamil",
+"ar": "ماجد الزامل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/zaml/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_245",
+"name": "মনসুর আস-সালিমি",
+"en": "Mansour Al-Salemi",
+"ar": "منصور السالمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/mansor/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_237",
+"name": "মরওআন আল-আকরই",
+"en": "Marwan Alakri",
+"ar": "مروان العكري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/m_akri/Rewayat-Qalon-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_197",
+"name": "মুইদ আল-হারিসি",
+"en": "Moeedh Alharthi",
+"ar": "معيض الحارثي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/harthi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_115",
+"name": "মুহাম্মদ আব্দুল কারীম",
+"en": "Mohammad Abdullkarem",
+"ar": "محمد عبدالكريم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/m_krm/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_116",
+"name": "মুহাম্মদ আবদআলহকইম সআইদ আল-আব্দুল্লাহ",
+"en": "Mohammad Al-Abdullah",
+"ar": "محمد عبدالحكيم سعيد العبدالله",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/abdullah/Rewayat-AlDorai-A-n-Al-Kisa-ai/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_250",
+"name": "মুহাম্মদ আল-বখইত",
+"en": "Mohammad Albukheet",
+"ar": "محمد البخيت",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/bukheet/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_229",
+"name": "মুহাম্মদ খলইল আল-কআরই",
+"en": "Mohammad Khalil Al-Qari",
+"ar": "محمد خليل القارئ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/m_qari/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_198",
+"name": "মুহাম্মদ রআদ আল-রইফ",
+"en": "Mohammad Rashad Alshareef",
+"ar": "محمد رشاد الشريف",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/rashad/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_134",
+"name": "মুহাম্মদ সআইদ",
+"en": "Mohammad Saayed",
+"ar": "محمد سايد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/m_sayed/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_110",
+"name": "মুহাম্মদ সআলহ আআলম আহ",
+"en": "Mohammad Saleh Alim Shah",
+"ar": "محمد صالح عالم شاه",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/shah/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_275",
+"name": "মুহাম্মদ আল-আমিন",
+"en": "Mohammed Al-Amin Qeniwa",
+"ar": "محمد الأمين قنيوة",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/qeniwa/Rewayat-Qalon-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_107",
+"name": "মুহাম্মদ আল-লুহাইদান",
+"en": "Mohammed Al-Lohaidan",
+"ar": "محمد اللحيدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/lhdan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_108",
+"name": "মুহাম্মদ আল-মুহাইসিনী",
+"en": "Mohammed Al-Muhasny",
+"ar": "محمد المحيسني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/mhsny/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21197",
+"name": "মুহাম্মদ আল-যবইদই",
+"en": "Mohammed Al-Zubaidi",
+"ar": "محمد الزبيدي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/M-AlZubaidi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_206",
+"name": "মুহাম্মদ উসমান খান",
+"en": "Mohammed Osman Khan",
+"ar": "محمد عثمان خان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/khan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_161",
+"name": "মুসা বিলাল",
+"en": "Mousa Bilal",
+"ar": "موسى بلال",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/bilal/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_129",
+"name": "মিফতাহ আস-সুলতানি",
+"en": "Muftah Alsaltany",
+"ar": "مفتاح السلطني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/muftah_sultany/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_274",
+"name": "মুহাম্মদ আবও সনইনহ",
+"en": "Muhammad Abu Sneina",
+"ar": "محمد أبو سنينة",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/sneineh/Rewayat-Qalon-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21184",
+"name": "মুহাম্মদ আল-ফকইহ",
+"en": "Muhammad Al Faqih",
+"ar": "محمد الفقيه",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/M_Alfaqih/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21181",
+"name": "মুহাম্মদ বরহজই",
+"en": "Muhammad Burhaji",
+"ar": "محمد برهجي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/M_Burhaji/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_47",
+"name": "মখতআর আল-হআজ",
+"en": "Mukhtar Al-Haj",
+"ar": "مختار الحاج",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/mukhtar_haj/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_126",
+"name": "মুস্তফা আল-লাহোনী",
+"en": "Mustafa Al-Lahoni",
+"ar": "مصطفى اللاهوني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/lahoni/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_125",
+"name": "মুস্তফা ইসমাইল",
+"en": "Mustafa Ismail",
+"ar": "مصطفى إسماعيل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/mustafa/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_127",
+"name": "মুস্তফা রাদ",
+"en": "Mustafa raad Alazawy",
+"ar": "مصطفى رعد العزاوي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/ra3ad/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_251",
+"name": "নাসের আল-মাজিদ",
+"en": "Nasser Almajed",
+"ar": "ناصر الماجد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/nasser_almajed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_248",
+"name": "নাসের আল-উসফুর",
+"en": "Nasser Alosfor",
+"ar": "ناصر العصفور",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/alosfor/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_271",
+"name": "নযইর আল-মআলকই",
+"en": "Nathier Almalki",
+"ar": "نذير المالكي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net//nathier/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_88",
+"name": "নেয়ামাহ আল-হাসান",
+"en": "Neamah Al-Hassan",
+"ar": "نعمة الحسان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/namh/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_138",
+"name": "নওরইন মুহাম্মদ সদইক",
+"en": "Noreen Mohammad Siddiq",
+"ar": "نورين محمد صديق",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/nourin_siddig/Rewayat-Aldori-A-n-Abi-Amr/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_272",
+"name": "আকআহ কমইনই",
+"en": "Okasha Kameny",
+"ar": "عكاشة كميني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/okasha/Rewayat-Albizi-A-n-Ibn-Katheer/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_260",
+"name": "উমর আল-দরইওইয",
+"en": "Omar Al Darweez",
+"ar": "عمر الدريويز",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/darweez/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_80",
+"name": "উমর আল-কাজাবরি",
+"en": "Omar Al-Qazabri",
+"ar": "عمر القزابري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/omar_warsh/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_268",
+"name": "বইহ ওআ কআদর আল-করদই",
+"en": "Peshawa Qadr Al-Kurdi",
+"ar": "بيشه وا قادر الكردي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/peshawa/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_221",
+"name": "রআদ মুহাম্মদ আল-করদই",
+"en": "Raad Al Kurdi",
+"ar": "رعد محمد الكردي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/kurdi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_27",
+"name": "রইদ বলআআলইহ",
+"en": "Rachid Belalya",
+"ar": "رشيد بلعالية",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/bl3/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_230",
+"name": "রআমই আল-দআইস",
+"en": "Rami Aldeais",
+"ar": "رامي الدعيس",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/rami/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_257",
+"name": "সাদ আল-মুকরিন",
+"en": "Saad Almqren",
+"ar": "سعد المقرن",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/saad/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_39",
+"name": "সাবের আব্দুল হাকাম",
+"en": "Saber Abdulhakm",
+"ar": "صابر عبدالحكم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/hkm/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_44",
+"name": "সালাহ আল-হআম",
+"en": "Salah Alhashim",
+"ar": "صلاح الهاشم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/salah_hashim_m/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_42",
+"name": "সালেহ আল-হাবদান",
+"en": "Saleh Al-Habdan",
+"ar": "صالح الهبدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/habdan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_290",
+"name": "সআলহ আল-করইই",
+"en": "Saleh Alquraishi",
+"ar": "صالح القريشي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/s_alquraishi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_40",
+"name": "সালেহ আস-সাহুদ",
+"en": "Saleh Alsahood",
+"ar": "صالح الصاهود",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/sahood/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_300",
+"name": "সআলহ আল-মরআনই",
+"en": "Saleh Alshamrani",
+"ar": "صالح الشمراني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/shamrani/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_285",
+"name": "সলমআন আল-সদইক",
+"en": "Salman Alsadeiq",
+"ar": "سلمان الصديق",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/s_sadeiq/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_282",
+"name": "সইদ আহমেদ হআমই",
+"en": "Sayed Ahmad Hashemi",
+"ar": "سيد أحمد هاشمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/s_hashemi/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_36",
+"name": "সাইয়েদ রমাদান",
+"en": "Sayeed Ramadan",
+"ar": "سيد رمضان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/sayed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_38",
+"name": "ইরযআদ আব্দুর রহমান তআহর",
+"en": "Shirazad Taher",
+"ar": "شيرزاد عبدالرحمن طاهر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/taher/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_46",
+"name": "সালাহ বুখাতির",
+"en": "Slaah Bukhatir",
+"ar": "صلاح بو خاطر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/bu_khtr/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_212",
+"name": "তারেক আবদআলগনই দআওব",
+"en": "Tareq Abdulgani daawob",
+"ar": "طارق عبدالغني دعوب",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/tareq/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_17",
+"name": "তৌফিক আস-সায়িগ",
+"en": "Tawfeeq As-Sayegh",
+"ar": "توفيق الصايغ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/twfeeq/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_219",
+"name": "ওয়াদিউল ইয়ামানি",
+"en": "Wadeea Al-Yamani",
+"ar": "وديع اليمني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/wdee3/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_91",
+"name": "ওয়ালিদ আন-নাইহি",
+"en": "Waleed Alnaehi",
+"ar": "وليد النائحي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/waleed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_96",
+"name": "ইয়াহিয়া হাওয়া",
+"en": "Yahya Hawwa",
+"ar": "يحيى حوا",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/yahya/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_95",
+"name": "ইয়াসির আল-মাজরুই",
+"en": "Yasser Al-Mazroyee",
+"ar": "ياسر المزروعي ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/mzroyee/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_93",
+"name": "ইয়াসির আল-কুরাশি",
+"en": "Yasser Al-Qurashi",
+"ar": "ياسر القرشي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/qurashi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_97",
+"name": "ইউসুফ আশ-শোয়াই",
+"en": "Yousef Alshoaey",
+"ar": "يوسف الشويعي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/yousef/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_193",
+"name": "ইউসুফ বিন নুহ আহমদ",
+"en": "Yousef Bin Noah Ahmad",
+"ar": "يوسف بن نوح أحمد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/noah/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21182",
+"name": "ইউসুফ আল-আইদরওস",
+"en": "Yusuf ALaidroos",
+"ar": "يوسف العيدروس",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/Y_ALaidroos/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_33",
+"name": "জাকি দাগেস্তানি",
+"en": "Zaki Daghistani",
+"ar": "زكي داغستاني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/zaki/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_135",
+"name": "আব্দুর রহমান আল-সওইদ",
+"en": "Abdulrahman Alsuwayid",
+"ar": "عبدالرحمن السويّد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_swaiyd/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_15",
+"name": "আল-আরই আমরআন",
+"en": "Alashri Omran",
+"ar": "العشري عمران",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/omran/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_305",
+"name": "হআম আল-হরআয",
+"en": "Hicham Lharraz",
+"ar": "هشام الهراز",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/H-Lharraz/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21191",
+"name": "ইব্রাহিম আল-হরই",
+"en": "Ibrahim Al-Shahri",
+"ar": "إبراهيم الشهري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/Ibrahim-Al-Shahri/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_100",
+"name": "মাজেদ আল-এনেজি",
+"en": "Majed Al-Enezi",
+"ar": "ماجد العنزي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/majd_onazi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_104",
+"name": "মুহাম্মদ আল-আইরাউই",
+"en": "Mohammad Al-Airawy",
+"ar": "محمد الأيراوي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/earawi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_150",
+"name": "মুহাম্মদ আল-মনদ",
+"en": "Mohammad AlMonshed",
+"ar": "محمد المنشد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/monshed/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_253",
+"name": "ইসলাম সোবভী",
+"en": "Islam Sobhi",
+"ar": "إسلام صبحي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/islam/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_137",
+"name": "আহমেদ তআলব বন হমইদ",
+"en": "Ahmad Talib bin Humaid",
+"ar": "أحمد طالب بن حميد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_binhameed/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_2",
+"name": "ইব্রাহিম আল-জিবরীন",
+"en": "Ibrahim Al-Jebreen",
+"ar": "إبراهيم الجبرين",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/jbreen/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_255",
+"name": "হইসম আল-জদআআনই",
+"en": "Hitham Aljadani",
+"ar": "هيثم الجدعاني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/hitham/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_231",
+"name": "হাজ্জা আল-বালুশী",
+"en": "Hazza Al-Balushi",
+"ar": "هزاع البلوشي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/hazza/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_19",
+"name": "হমদ আল-দগরইরই",
+"en": "Hamad Al Daghriri",
+"ar": "حمد الدغريري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/hamad/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_94",
+"name": "ইআসর আল-ফইলকআওই",
+"en": "Yasser Al-Faylakawi",
+"ar": "ياسر الفيلكاوي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/fyl/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_85",
+"name": "লআফই আল-আওনই",
+"en": "Lafi Al-Oni",
+"ar": "لافي العوني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/lafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_29",
+"name": "আব্দুল্লাহ বখআরই",
+"en": "Abdullah Bukhari",
+"ar": "عبدالله بخاري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_bukhari/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_83",
+"name": "ফহদ আল-কনদরই",
+"en": "Fahad Al-Kandari",
+"ar": "فهد الكندري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/kndri/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_216",
+"name": "উসমান আল-আনসআরই",
+"en": "Othman Al-Ansary",
+"ar": "عثمان الأنصاري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/Othmn/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_240",
+"name": "সলমআন আল-আতইবই",
+"en": "Salman Alotaibi",
+"ar": "سلمان العتيبي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/salman/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_263",
+"name": "আব্দুল আজিজ আল-আসইরই",
+"en": "Abdulaziz Alasiri",
+"ar": "عبدالعزيز العسيري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/abdulazizasiri/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_21188",
+"name": "আল-ওলইদ আল-মসআন",
+"en": "Alwaleed Alshamsan",
+"ar": "الوليد الشمسان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/shamsan/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_57",
+"name": "আব্দুল্লাহ আল-বরইমই",
+"en": "Abdullah Al-Burimi",
+"ar": "عبدالله البريمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/brmi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_166",
+"name": "নআসর আল-আবইদ",
+"en": "Nasser Al obaid",
+"ar": "ناصر العبيد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/obaid/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_227",
+"name": "রমদআন কওর",
+"en": "Ramadan Shakoor",
+"ar": "رمضان شكور",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/shakoor/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_37",
+"name": "শাবান আস-সায়্যাহ",
+"en": "Shaban Al-Sayiaad",
+"ar": "شعبان الصياد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/shaban/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_264",
+"name": "ইউনুস আসওইলস",
+"en": "Younes Souilass",
+"ar": "يونس اسويلص",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/souilass/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_247",
+"name": "খালিদ আল-আরখ",
+"en": "Khalid Alsharekh",
+"ar": "خالد الشارخ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/sharekh/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_105",
+"name": "মুহাম্মদ আল-বাররাক",
+"en": "Mohammed Al-Barrak",
+"ar": "محمد البراك",
+"ayah": "Alafasy_128kbps",
+"server": "https://server13.mp3quran.net/braak/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_162",
+"name": "হসইন আল আল-ইখ",
+"en": "Hussain Alshaik",
+"ar": "حسين آل الشيخ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/alshaik/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_90",
+"name": "ওলইদ আল-দলইমই",
+"en": "Walid Al-Dulaimi",
+"ar": "وليد الدليمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/dlami/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_11",
+"name": "আল-হুসাইনি আল-আজাজি",
+"en": "Alhusayni Al-Azazi",
+"ar": "الحسيني العزازي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/3zazi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_289",
+"name": "হআরওন বকআইই",
+"en": "Haroon Baqai",
+"ar": "هارون بقائي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/h_baqai/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_204",
+"name": "ইব্রাহিম আল-সআদআন",
+"en": "Ibrahem Assadan",
+"ar": "إبراهيم السعدان",
+"ayah": "Alafasy_128kbps",
+"server": "https://server10.mp3quran.net/IbrahemSadan/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_26",
+"name": "রইদ ইফরআদ",
+"en": "Rasheed Ifrad",
+"ar": "رشيد إفراد",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/ifrad/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_228",
+"name": "আব্দুল মাজিদ আল-আরকআনই",
+"en": "Abdulmajeed Al-Arkani",
+"ar": "عبدالمجيد الأركاني",
+"ayah": "Alafasy_128kbps",
+"server": "https://server7.mp3quran.net/m_arkani/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_84",
+"name": "ফওআয আল-কআবই",
+"en": "Fawaz Alkabi",
+"ar": "فواز الكعبي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/fawaz/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_246",
+"name": "সালাহ মসলই",
+"en": "Salah Musali",
+"ar": "صلاح مصلي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/musali/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_41",
+"name": "সালেহ আল-তালিব",
+"en": "Saleh Al-Talib",
+"ar": "صالح آل طالب",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/tlb/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_241",
+"name": "মুহাম্মদ রফআত",
+"en": "Mohammad Refat",
+"ar": "محمد رفعت",
+"ayah": "Alafasy_128kbps",
+"server": "https://server14.mp3quran.net/refat/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_7",
+"name": "আহমেদ সৌদ",
+"en": "Ahmad Saud",
+"ar": "أحمد سعود",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/saud/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_34",
+"name": "সআমই আল-হসন",
+"en": "Sami Al-Hasn",
+"ar": "سامي الحسن",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/sami_hsn/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_207",
+"name": "ইউসুফ আল-দগও",
+"en": "Youssef Edghouch",
+"ar": "يوسف الدغوش",
+"ayah": "Alafasy_128kbps",
+"server": "https://server7.mp3quran.net/dgsh/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_23",
+"name": "খালিদ আল-ওহইবই",
+"en": "Khalid Al-Wehabi",
+"ar": "خالد الوهيبي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/whabi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_307",
+"name": "আব্দুল আজিজ সহইম",
+"en": "Abdelaziz sheim",
+"ar": "عبدالعزيز سحيم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_sheim/Rewayat-Warsh-A-n-Nafi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_73",
+"name": "আলী আবও হআম",
+"en": "Ali Abo-Hashim",
+"ar": "علي أبو هاشم",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/abo_hashim/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_306",
+"name": "আব্দুল্লাহ আল-মআল",
+"en": "Abdullah Al-Mishal",
+"ar": "عبدالله المشعل",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a-almishal/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_167",
+"name": "ওআসল আল-মযন",
+"en": "Wasel Almethen",
+"ar": "واصل المذن",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/wasel/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_82",
+"name": "ফহদ আল-আতইবই",
+"en": "Fahad Al-Otaibi",
+"ar": "فهد العتيبي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server8.mp3quran.net/fahad_otibi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_194",
+"name": "জমআল আল-দইন আল-যইলআই",
+"en": "Jamal Addeen Alzailaie",
+"ar": "جمال الدين الزيلعي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/zilaie/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_128",
+"name": "মআমর আল-আনদওনইসই",
+"en": "Muamar (From Indonesia)",
+"ar": "معمر الأندونيسي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/muamr/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_303",
+"name": "আব্দুল মালিক আল-আসকর",
+"en": "Abdulmalik Alaskar",
+"ar": "عبدالملك العسكر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server16.mp3quran.net/a_alaskar/Rewayat-Hafs-A-n-Assem/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_154",
+"name": "আসতআয যআমরই",
+"en": "Ustaz Zamri",
+"ar": "أستاذ زامري",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/zamri/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_28",
+"name": "যকরইআ হমআমহ",
+"en": "Zakaria Hamamah",
+"ar": "زكريا حمامة",
+"ayah": "Alafasy_128kbps",
+"server": "https://server9.mp3quran.net/zakariya/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_191",
+"name": "মুহাম্মদ হফস আলী",
+"en": "Mohammed Hafas Ali",
+"ar": "محمد حفص علي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/hfs/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_189",
+"name": "আব্দুল্লাহ ফহমই",
+"en": "Abdullah Fahmi",
+"ar": "عبدالله فهمي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/fhmi/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_68",
+"name": "আব্দুল মুহসিন আল-আসকর",
+"en": "Abdulmohsin Al-Askar",
+"ar": "عبدالمحسن العسكر",
+"ayah": "Alafasy_128kbps",
+"server": "https://server6.mp3quran.net/askr/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_153",
+"name": "আখইল আবদআলহই রওআ",
+"en": "Akhil Abdulhayy Rawa",
+"ar": "أخيل عبدالحي روا",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/akil/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_192",
+"name": "মুহাম্মদ খইর আল-নওর",
+"en": "Muhammed Khairul Anuar",
+"ar": "محمد خير النور",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/nor/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_183",
+"name": "রদইহ আব্দুর রহমান",
+"en": "Rodziah Abdulrahman",
+"ar": "رضية عبدالرحمن",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/rziah/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_187",
+"name": "সইদইন আব্দুর রহমান",
+"en": "Saidin Abdulrahman",
+"ar": "سيدين عبدالرحمن",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/sideen/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_185",
+"name": "সআবইনহ মআমআত",
+"en": "Sapinah Mamat",
+"ar": "سابينة مامات",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/mamat/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_190",
+"name": "মুহাম্মদ আল-হআফয",
+"en": "Muhammad Al-Hafiz",
+"ar": "محمد الحافظ",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/hafz/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_209",
+"name": "ওইআর হইদর আরবইলই",
+"en": "Wishear Hayder Arbili",
+"ar": "وشيار حيدر اربيلي",
+"ayah": "Alafasy_128kbps",
+"server": "https://server11.mp3quran.net/wishear/",
+"hasAyah": false
+},
+{
+"id": "mp3quran_184",
+"name": "রকইহ সওলওনক",
+"en": "Rogayah Sulong",
+"ar": "رقية سولونق",
+"ayah": "Alafasy_128kbps",
+"server": "https://server12.mp3quran.net/malaysia/rogiah/",
+"hasAyah": false
+}
+]

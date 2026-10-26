@@ -7,7 +7,7 @@
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--sirat-shadow-card);
   margin-bottom: 16px;
 }
 

@@ -950,14 +950,14 @@ export const PostCard = ({ article }) => {
             {currentReaction ? (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                 <currentReaction.Icon size={20} />
-                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
                   {currentReaction.arabic}
                 </span>
               </span>
             ) : (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                 <CalligraphyJazakallahIcon size={20} />
-                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
                   جَزَاكَ ٱللَّٰهُ
                 </span>
               </span>

@@ -28,7 +28,7 @@
 .modal-content {
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-xl);
+  border-radius: var(--sirat-radius-xl);
   box-shadow: var(--shadow-lg);
   max-width: 520px;
   width: 100%;

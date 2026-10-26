@@ -31,7 +31,7 @@ export default function BlogHero({
   return (
     <div className="w-full mb-6 font-kalpurush">
       {/* 1. Dignified Islamic Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-panel via-panel-2/80 to-brand-soft/25 p-4 sm:p-7 shadow-[var(--shadow-card)] backdrop-blur-sm transition-all duration-300">
+      <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-panel via-panel-2/80 to-brand-soft/25 p-4 sm:p-7 shadow-[var(--sirat-shadow-card)] backdrop-blur-sm transition-all duration-300">
         {/* Ambient subtle light glows */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand/10 blur-3xl" />
         <div className="pointer-events-none absolute -left-12 -bottom-12 h-44 w-44 rounded-full bg-emerald-500/10 blur-3xl" />
