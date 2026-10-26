@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "a5VaAezEsHsdR2uCSSuSxAFPJWbdz6_X13n8jUUrHvM",
     yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
   },
 };
