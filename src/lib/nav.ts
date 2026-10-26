@@ -107,7 +107,14 @@ export const MORE = LINKS.more;
 export const BOTTOM_NAV: NavLink[] = [LINKS.home, LINKS.live, LINKS.boyan, LINKS.paribar, MORE];
 
 /** Desktop header links. */
-export const TOP_NAV: NavLink[] = [LINKS.home, LINKS.boyan, LINKS.quran, LINKS.dua, LINKS.amal, LINKS.live];
+export const TOP_NAV: NavLink[] = [
+  LINKS.home,
+  LINKS.boyan,
+  LINKS.quran,
+  LINKS.live,
+  LINKS.member,
+  LINKS.blog,
+];
 
 /** Groups follow the app's feature categories. */
 export const NAV_GROUPS: { bn: string; en: string; links: NavLink[] }[] = [

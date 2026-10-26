@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
   { href: "/", bn: "হোম", en: "Home" },
-  { href: "/prayer-times", bn: "নামাজের সময়", en: "Prayer Times" },
-  { href: "/blog", bn: "ব্লগ", en: "Blog" },
-  { href: "/lifetime-member", bn: "আজীবন সদস্য", en: "Lifetime Member" },
-  { href: "/#features", bn: "ফিচার", en: "Features" },
-  { href: "/#about", bn: "আমাদের সম্পর্কে", en: "About" },
+  { href: "/boyan", bn: "বয়ান", en: "Boyan" },
+  { href: "/quran", bn: "কুরআন", en: "Quran" },
+  { href: "/listen", bn: "লাইভ", en: "Live" },
+  { href: "/lifetime-member", bn: "আজীবন সদস্য সম্মেলন", en: "Lifetime Member" },
+  { href: "/blog", bn: "ইসলাহ ব্লগ", en: "Islah Blog" },
 ];
 
 export function Navbar() {

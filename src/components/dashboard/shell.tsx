@@ -128,7 +128,7 @@ function Header({ pathname, onSearch }: { pathname: string; onSearch: () => void
                     href={l.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "block rounded-full px-4 py-2 text-[15px] whitespace-nowrap transition",
+                      "block rounded-full px-3.5 py-2 text-[14.5px] whitespace-nowrap transition xl:px-4 xl:text-[15px]",
                       active ? "bg-brand-soft font-semibold text-brand" : "text-ink-2 hover:text-ink",
                     )}
                   >
