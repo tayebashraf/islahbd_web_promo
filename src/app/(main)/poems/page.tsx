@@ -2,9 +2,29 @@ import type { Metadata } from "next";
 import { PoemsClient } from "./poems-client";
 import { POEMS, POETS } from "@/lib/poems";
 
+import { SITE_URL } from "@/lib/constants";
+
 export const metadata: Metadata = {
-  title: "কবিতা ও কালাম",
-  description: "আরিফবিল্লাহ হাকীম আখতার রহ., রুমি, ইকবাল, সাদী, জামি ও অন্যান্য বুযুর্গদের আধ্যাত্মিক কবিতা — মূল উর্দু/ফারসি ও বাংলা অনুবাদসহ।",
+  title: "ইসলামিক কবিতা, কালাম ও আশয়ার — আধ্যাত্মিক কবিতা ও বাংলা অনুবাদ",
+  description:
+    "আরিফবিল্লাহ হাকীম আখতার রহ., জালালুদ্দীন রুমি, আল্লামা ইকবাল, শেখ সাদী, জামি ও বুযুর্গদের আধ্যাত্মিক প্রেমময় কবিতা — মূল উর্দু/ফারসি ও সাবলীল বাংলা অনুবাদসহ।",
+  keywords: [
+    "ইসলামিক কবিতা",
+    "আধ্যাত্মিক কবিতা",
+    "উর্দু ফারসি কবিতা বাংলা অনুবাদ",
+    "জালালুদ্দীন রুমি কবিতা",
+    "আল্লামা ইকবাল আশয়ার",
+    "হাকীম আখতার রহ.",
+    "ইসলামিক কালাম",
+    "প্রেমময় আশয়ার",
+  ],
+  alternates: { canonical: `${SITE_URL}/poems` },
+  openGraph: {
+    title: "ইসলামিক কবিতা, কালাম ও আশয়ার | islahbd",
+    description: "রুমি, ইকবাল ও বুযুর্গদের আধ্যাত্মিক কবিতা ও বাংলা অনুবাদ।",
+    url: `${SITE_URL}/poems`,
+    type: "website",
+  },
 };
 
 export default async function PoemsPage({ searchParams }: { searchParams: Promise<{ poet?: string }> }) {

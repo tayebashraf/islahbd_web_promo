@@ -3,9 +3,29 @@ import { BookReader, type Book } from "@/components/book/book-reader";
 import { bnNum } from "@/lib/format";
 import munajat from "@/data/munajat.json";
 
+import { SITE_URL } from "@/lib/constants";
+
 export const metadata: Metadata = {
-  title: "মুনাজাতে মাকবুল",
-  description: "হাকীমুল উম্মত থানভী রহ. সংকলিত মুনাজাতে মাকবুল — সপ্তাহের সাত মঞ্জিল, আরবি ও বাংলা অনুবাদসহ।",
+  title: "মুনাজাতে মাকবুল — সপ্তাহের সাত মঞ্জিল আরবি ও বাংলা অনুবাদ | থানভী রহ.",
+  description:
+    "হাকীমুল উম্মত হযরত মাওলানা আশরাফ আলী থানভী রহ. সংকলিত ঐতিহ্যবাহী মুনাজাতে মাকবুল — সপ্তাহের সাত দিনের সাত মঞ্জিল, শুদ্ধ আরবি পাঠ ও সাবলীল বাংলা অনুবাদসহ।",
+  keywords: [
+    "মুনাজাতে মাকবুল",
+    "সাত মঞ্জিল মুনাজাত",
+    "মাওলানা আশরাফ আলী থানভী",
+    "মুনাজাত বই",
+    "আরবি মুনাজাত বাংলা অর্থ",
+    "রূহানি মুনাজাত",
+    "দোয়া ও মুনাজাত",
+    "Munajat e Maqbul",
+  ],
+  alternates: { canonical: `${SITE_URL}/munajat` },
+  openGraph: {
+    title: "মুনাজাতে মাকবুল — সপ্তাহের সাত মঞ্জিল | islahbd",
+    description: "হাকীমুল উম্মত থানভী রহ. সংকলিত মুনাজাতে মাকবুল — আরবি ও বাংলা অনুবাদ।",
+    url: `${SITE_URL}/munajat`,
+    type: "website",
+  },
 };
 
 interface Section {

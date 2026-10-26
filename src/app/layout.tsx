@@ -16,20 +16,27 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LangProvider } from "@/components/providers/lang-provider";
 import { SmartAppBanner } from "@/components/smart-app-banner";
 import { PlayerProvider } from "@/components/player/player-provider";
+import { GlobalJsonLd } from "@/components/seo/json-ld";
 
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
+    default: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী | মারকাযুল ইহসান`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "islahbd", "ইসলামিক অ্যাপ", "মারকাজুল ইহসান", "নামাজের সময়", "কুরআন", "আমল", "হজ্জ গাইড", "দোয়া",
-    "Islamic app Bangladesh", "prayer times", "Quran app", "islahbd app",
-    "Markazul Ihsan", "ইসলাম", "মুসলিম অ্যাপ", "বাংলাদেশ ইসলামিক অ্যাপ",
+    "islahbd", "মারকাযুল ইহসান", "মারকাজুল ইহসান", "ইসলামিক অ্যাপ বাংলাদেশ",
+    "বয়ান", "বাংলা ওয়াজ", "নতুন ওয়াজ ২০২৬", "ইসলামিক বয়ান", "আত্মশুদ্ধিকারী বয়ান",
+    "মাওলানা তৈয়্যেব আশরাফ", "জুমার খুতবা", "নসীহত", "ইসলাহী বয়ান",
+    "ইসলামিক গজল", "বাংলা গজল", "নতুন গজল ২০২৬", "হামদ ও নাত", "নাত এ রাসুল", "নাশিদ",
+    "নামাজের সময়সূচী", "পাঁচ ওয়াক্ত নামাজের সময়", "আজকের নামাজের সময় ঢাকা", "চিরস্থায়ী নামাজের ক্যালেন্ডার",
+    "আল কুরআন বাংলা অনুবাদ", "কুরআন শরীফ", "৩০ পারা কুরআন", "হাফেজী কুরআন শরীফ", "কুরআন তেলাওয়াত mp3",
+    "হিসনুল মুসলিম বাংলা", "প্রতিদিনের দোয়া", "সকাল সন্ধ্যার দোয়া", "বিপদ মুক্তির দোয়া", "মাসনূন আমল",
+    "রমজান ক্যালেন্ডার ২০২৬", "সেহরি ও ইফতারের সময়সূচি", "যাকাত ক্যালকুলেটর", "ডিজিটাল তাসবীহ", "কিবলা কম্পাস",
+    "Islamic app Bangladesh", "Bangla Waz", "Islamic Bayan", "Quran Bangla", "Prayer Times Dhaka", "Islamic Gojol",
   ],
   authors: [{ name: "Markazul Ihsan" }],
   creator: "islahbd",
@@ -39,13 +46,13 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
+    title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী | মারকাযুল ইহসান`,
     description: SITE_DESCRIPTION,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "islahbd — Markazul Ihsan Islamic App" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী`,
+    title: `${SITE_NAME} — আপনার ইসলামিক ডিজিটাল সঙ্গী | মারকাযুল ইহসান`,
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
@@ -71,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="bn" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col antialiased">
+        <GlobalJsonLd />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LangProvider>
             <PlayerProvider>
