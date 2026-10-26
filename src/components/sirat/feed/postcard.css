@@ -1284,6 +1284,8 @@
   font-size: 13px;
   color: #047857;
   line-height: 1.6;
+  /* Daily quiz explanations end with a "সূত্র: ..." line. */
+  white-space: pre-line;
 }
 
 :is(.dark, :root[data-theme="dark"]) .seerah-quiz-celebration-sub {

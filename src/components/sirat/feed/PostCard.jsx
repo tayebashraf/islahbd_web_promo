@@ -842,7 +842,7 @@ export const PostCard = ({ article }) => {
                 <div style={{ fontSize: '15px', fontWeight: 800, color: '#991B1B', marginBottom: '4px' }}>
                   পরবর্তী প্রশ্নের জন্য শুভকামনা!
                 </div>
-                <div style={{ fontSize: '12.5px', color: '#7F1D1D', marginBottom: '8px', lineHeight: 1.5 }}>
+                <div style={{ fontSize: '12.5px', color: '#7F1D1D', marginBottom: '8px', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
                   সঠিক উত্তরটি সবুজ রঙে চিহ্নিত করা হয়েছে। {article.quizData.explanation || ''}
                 </div>
                 <div style={{ marginTop: '4px', fontSize: '11px', color: '#991B1B', opacity: 0.85, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
