@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ZakatClient } from "./zakat-client";
+import { ComingSoon } from "@/components/dashboard/ui";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/constants";
 
@@ -43,11 +43,12 @@ const ZAKAT_FAQS = [
   },
 ];
 
+// Zakat calculator is marked as coming soon while maintaining FAQ Schema for SEO
 export default function ZakatPage() {
   return (
     <>
       <FaqJsonLd faqs={ZAKAT_FAQS} />
-      <ZakatClient />
+      <ComingSoon feature="zakat" />
     </>
   );
 }
