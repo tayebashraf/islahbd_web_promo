@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { QuranClient } from "./quran-client";
+import { QuranHome } from "./quran-home";
 import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "কুরআন তিলাওয়াত — ১১৪ সূরা অডিও",
-  description: "বিশ্বখ্যাত ক্বারীদের কণ্ঠে সম্পূর্ণ কুরআনের ১১৪ সূরা ব্রাউজারে শুনুন।",
+  title: "আল-কুরআন — ডিজিটাল কুরআন, তাফসীর ও অডিও",
+  description: "আরবি টেক্সট, শব্দে শব্দে অর্থ, বাংলা অনুবাদ, ১৪টি তাফসীর ও বিশ্বখ্যাত ক্বারীদের তিলাওয়াত।",
   alternates: { canonical: `${SITE_URL}/quran` },
 };
 
 export default function QuranPage() {
-  return <QuranClient />;
+  return <QuranHome />;
 }
