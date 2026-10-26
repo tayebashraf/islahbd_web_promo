@@ -3,15 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { sampleArticles, getAuthorById } from '@/lib/sirat/sampleData';
-import { getArticleBySlug } from '@/lib/sirat/firestore';
+import { sampleArticles } from '@/lib/sirat/sampleData';
+import { fetchSiratArticleBySlug, fetchSiratArticles } from '@/lib/sirat/sirat-api';
 import ReadingProgressBar from '@/components/sirat/ui/ReadingProgressBar';
 import ArticleHeader from '@/components/sirat/article/ArticleHeader';
 import ArticleBody from '@/components/sirat/article/ArticleBody';
 import ArticleActions from '@/components/sirat/article/ArticleActions';
 import ArticleReferences from '@/components/sirat/article/ArticleReferences';
 import CommentSection from '@/components/sirat/article/CommentSection';
-import AuthorCard from '@/components/sirat/author/AuthorCard';
 import PostCard from '@/components/sirat/feed/PostCard';
 import Button from '@/components/sirat/ui/Button';
 
@@ -22,16 +21,22 @@ export default function ArticlePage() {
   const [article, setArticle] = useState(() => {
     return sampleArticles.find((a) => a.slug === slug) || null;
   });
+  const [related, setRelated] = useState([]);
   const [fontSize, setFontSize] = useState('normal');
 
+  // Posts written from the admin apps live in the API; samples are the offline fallback.
   useEffect(() => {
-    async function loadArticle() {
-      const found = await getArticleBySlug(slug);
-      if (found) {
-        setArticle(found);
-      }
-    }
-    loadArticle();
+    let alive = true;
+    fetchSiratArticleBySlug(slug).then((found) => {
+      if (!alive || !found) return;
+      setArticle(found);
+      fetchSiratArticles({ topicSlug: found.topicSlug }).then(
+        (list) => alive && setRelated(list.filter((a) => a.slug !== found.slug).slice(0, 2))
+      );
+    });
+    return () => {
+      alive = false;
+    };
   }, [slug]);
 
   if (!article) {
@@ -52,14 +57,7 @@ export default function ArticlePage() {
     );
   }
 
-  const author = getAuthorById(article.authorId);
-  const relatedArticles = sampleArticles
-    .filter(
-      (a) =>
-        a.id !== article.id &&
-        (a.topicSlug === article.topicSlug || a.authorId === article.authorId)
-    )
-    .slice(0, 2);
+  const relatedArticles = related;
 
   return (
     <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush fade-in">
@@ -68,7 +66,7 @@ export default function ArticlePage() {
       {/* Main Reading Card */}
       <div className="fb-card p-4 sm:p-7">
         {/* Header */}
-        <ArticleHeader article={article} author={author} />
+        <ArticleHeader article={article} />
 
         {/* Body */}
         <ArticleBody content={article.content} fontSize={fontSize} />
@@ -82,15 +80,8 @@ export default function ArticlePage() {
           initialJazakallah={article.jazakallahCount || 24}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
-          commentCount={2}
+          commentCount={article.commentCount ?? 0}
         />
-
-        {/* Author Card Footer */}
-        {author && (
-          <div style={{ marginTop: 'var(--space-8)', paddingTop: 'var(--space-6)', borderTop: '1px solid var(--color-border-secondary)' }}>
-            <AuthorCard author={author} />
-          </div>
-        )}
 
         {/* In-feed Comments Section */}
         <CommentSection articleId={article.id} />
