@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AboutClient } from "./about-client";
-
+import { MadrasaLocalBusinessJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -26,5 +26,10 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <AboutClient />;
+  return (
+    <>
+      <MadrasaLocalBusinessJsonLd />
+      <AboutClient />
+    </>
+  );
 }

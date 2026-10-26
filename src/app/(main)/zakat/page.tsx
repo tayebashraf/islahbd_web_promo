@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ZakatClient } from "./zakat-client";
-
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+const ZAKAT_FAQS = [
+  {
+    question: "যাকাত কার ওপর এবং কখন ফরজ হয়?",
+    answer:
+      "প্রয়োজনীয় খরচের অতিরিক্ত নিসাব পরিমাণ (সাড়ে সাত তোলা স্বর্ণ বা সাড়ে বায়ান্ন তোলা রূপা বা এর সমমূল্যের নগদ অর্থ/ব্যবসায়িক সম্পদ) সম্পদের মালিক যদি পূর্ণ এক চান্দ্রবছর তা ধরে রাখেন, তবে তার ওপর ২.৫% হারে যাকাত প্রদান ফরজ।",
+  },
+  {
+    question: "স্বর্ণ ও রূপার যাকাতের হিসাব কীভাবে করতে হয়?",
+    answer:
+      "বর্তমান বাজারদর অনুযায়ী আপনার মোট স্বর্ণ বা রূপার মূল্য নির্ধারণ করে তার মোট মূল্যের ২.৫% (১/৪০ অংশ) যাকাত হিসেবে প্রদান করতে হবে।",
+  },
+  {
+    question: "ব্যবসায়িক পণ্যের যাকাত কীভাবে নির্ধারণ করব?",
+    answer:
+      "যাকাত হিসাবের দিনে দোকানে বা গুদামে থাকা বিক্রয়যোগ্য পণ্যের পাইকারি বাজারমূল্য এবং নগদ ক্যাশ যোগ করে, তাৎক্ষণিক প্রদেয় ঋণ বাদ দিয়ে অবশিষ্ট পরিমাণের ২.৫% যাকাত দিতে হবে।",
+  },
+];
+
 export default function ZakatPage() {
-  return <ZakatClient />;
+  return (
+    <>
+      <FaqJsonLd faqs={ZAKAT_FAQS} />
+      <ZakatClient />
+    </>
+  );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/dashboard/ui";
-
+import { RamadanClient } from "./ramadan-client";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -27,7 +27,29 @@ export const metadata: Metadata = {
   },
 };
 
-// The timetable (./ramadan-client.tsx) is kept for later; the feature is marked coming soon.
+const RAMADAN_FAQS = [
+  {
+    question: "রমজানের সেহরি ও ইফতারের সময়সূচি IslahBD-তে কীভাবে হিসাব করা হয়?",
+    answer:
+      "IslahBD ইসলামিক ফাউন্ডেশন বাংলাদেশ ও আন্তর্জাতিক জ্যোতির্বৈজ্ঞানিক মানদণ্ডের সাথে সমন্বয় করে ঢাকা ও বাংলাদেশের সকল জেলার অক্ষাংশ-দ্রাঘিমাংশ অনুযায়ী নির্ভুল সেহরি ও ইফতারের সময়সূচি প্রদান করে।",
+  },
+  {
+    question: "রোজার সঠিক ও সহীহ নিয়ত কি মুখে বলতে হয়?",
+    answer:
+      "রোজার আসল নিয়ত হলো অন্তরের সংকল্প। অর্থাৎ মনে মনে আল্লাহর সন্তুষ্টির জন্য রোজা রাখার ইচ্ছা করাই যথেষ্ট। তবে মুখে 'নাওয়াইতু আন আসুমা...' বা বাংলাতেও নিয়ত করা যায়।",
+  },
+  {
+    question: "ইফতারের সময় পঠিত মাসনূন দোয়া কোনটি?",
+    answer:
+      "রাসূলুল্লাহ ﷺ ইফতারের সময় বলতেন: 'আল্লাহুম্মা লাকা সুমতু ওয়া আলা রিযক্বিকা আফতারতু' এবং 'যাহাবাজ জামাউ ওয়াবতাল্লাতিল উরূকু ওয়া ছাবাতাল আজরু ইনশাআল্লাহ' (আবু দাউদ)।",
+  },
+];
+
 export default function RamadanPage() {
-  return <ComingSoon feature="ramadan" />;
+  return (
+    <>
+      <FaqJsonLd faqs={RAMADAN_FAQS} />
+      <RamadanClient />
+    </>
+  );
 }

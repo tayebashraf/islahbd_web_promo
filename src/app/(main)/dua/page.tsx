@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BookReader, type Book } from "@/components/book/book-reader";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import dua from "@/data/dua.json";
 
 import { SITE_URL } from "@/lib/constants";
@@ -30,7 +31,30 @@ export const metadata: Metadata = {
   },
 };
 
+const DUA_FAQS = [
+  {
+    question: "সকাল-সন্ধ্যার হেফাজতের দোয়া কোনগুলো?",
+    answer:
+      "আয়াতুল কুরসী, সূরা ইখলাস, ফালাক, নাস এবং 'বিসমিল্লাহিল্লাজি লা ইয়াদুররু মা'আসমিহি...' ৩ বার এবং 'আউজু বিকালিমাাতিল্লাহিত তাম্মাাতি...' ৩ বার পাঠ করলে সকল অনিষ্ট থেকে হেফাজতে থাকা যায়।",
+  },
+  {
+    question: "বিপদ মুক্তির দোয়া হিসেবে কোন দোয়াটি সবচেয়ে বেশি পঠিত হয়?",
+    answer:
+      "হযরত ইউনুস (আ.)-এর দোয়া 'লা ইলাহা ইল্লা আনতা সুবহানাকা ইন্নি কুনতু মিনাজ জোয়ালিমিন' (দোয়ায়ে ইউনুস) এবং 'হাসবুনাল্লাহু ওয়া নি'মাল ওয়াকিল'।",
+  },
+  {
+    question: "ঘুম থেকে ওঠার পর ও ঘুমাতে যাওয়ার সুন্নত দোয়া কি?",
+    answer:
+      "ঘুমানোর দোয়া: 'আল্লাহুম্মা বিসমিকা আমূতু ওয়া আহ্ইয়াহ' এবং ঘুম থেকে ওঠার পর: 'আলহামদু লিল্লাহিল্লাজি আহইয়ানা বা'দা মা আমাতানা ওয়া ইলাইহিন নুশূর'।",
+  },
+];
+
 export default async function DuaPage({ searchParams }: { searchParams: Promise<{ c?: string }> }) {
   const { c } = await searchParams;
-  return <BookReader book={dua as Book} initialCat={c} title={["দোয়া", "Duas"]} unit={["দোয়া", "duas"]} />;
+  return (
+    <>
+      <FaqJsonLd faqs={DUA_FAQS} />
+      <BookReader book={dua as Book} initialCat={c} title={["দোয়া", "Duas"]} unit={["দোয়া", "duas"]} />
+    </>
+  );
 }

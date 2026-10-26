@@ -77,6 +77,19 @@ export function AboutClient() {
               />
               <Address title={t("স্থায়ী কমপ্লেক্স (নির্মাণাধীন)", "Permanent campus (under construction)")} text={t("পাইটি, ডেমরা, ঢাকা", "Paiti, Demra, Dhaka")} q="Paiti, Demra, Dhaka" />
             </ul>
+            <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-panel-2">
+              <iframe
+                title="Jamea Markazul Ihsan Permanent Campus Map"
+                src="https://maps.google.com/maps?q=Paiti,+Demra,+Dhaka&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="240"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full opacity-90 transition hover:opacity-100"
+              />
+            </div>
           </Panel>
         </div>
 

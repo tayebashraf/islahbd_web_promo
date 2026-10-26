@@ -17,8 +17,9 @@ export function GlobalJsonLd() {
     ],
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Demra",
-      addressRegion: "Dhaka",
+      streetAddress: "Paiti, Demra",
+      addressLocality: "Dhaka",
+      addressRegion: "Dhaka Division",
       addressCountry: "BD",
     },
     contactPoint: {
@@ -97,6 +98,69 @@ export function BreadcrumbJsonLd({
       name: item.name,
       item: item.url.startsWith("http") ? item.url : `${SITE_URL}${item.url}`,
     })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export function FaqJsonLd({ faqs }: { faqs: FaqItem[] }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function MadrasaLocalBusinessJsonLd() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": ["EducationalOrganization", "Place"],
+    name: "জামেআ মারকাযুল ইহসান ঢাকা",
+    alternateName: "Jamea Markazul Ihsan Dhaka",
+    url: `${SITE_URL}/about`,
+    logo: `${SITE_URL}/icon-512.png`,
+    image: `${SITE_URL}/og-image.png`,
+    description:
+      "ইসলামি শিক্ষা ও দাওয়াহ প্রতিষ্ঠান। প্রায় এক হাজার তালিবুল ইলম দ্বীনি শিক্ষা গ্রহণ করছে। ডেমরায় স্থায়ী কমপ্লেক্সের কাজ চলছে।",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Paiti, Demra",
+      addressLocality: "Dhaka",
+      addressRegion: "Dhaka Division",
+      postalCode: "1360",
+      addressCountry: "BD",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 23.7228041,
+      longitude: 90.4810611,
+    },
+    hasMap:
+      "https://www.google.com/maps/search/Paiti,+Demra,+Dhaka/@23.7228041,90.4810611,16z",
   };
 
   return (

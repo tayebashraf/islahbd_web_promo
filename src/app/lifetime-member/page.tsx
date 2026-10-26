@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LifetimeMemberClient } from "./lifetime-member-client";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -31,6 +32,29 @@ export const metadata: Metadata = {
   },
 };
 
+const LIFETIME_FAQS = [
+  {
+    question: "মারকাযুল ইহসানের আজীবন সদস্য হওয়ার ফায়দা কি?",
+    answer:
+      "জামেআ মারকাযুল ইহসানের প্রায় এক হাজার তালিবুল ইলমের কুরআন শিক্ষা ও দ্বীনি শিক্ষার নিরবচ্ছিন্ন খেদমতে আপনার দান সদকায়ে জারিয়া হিসেবে অব্যাহত থাকবে, এমনকি মৃত্যুর পরও যার সওয়াব পৌঁছাবে ইনশাআল্লাহ।",
+  },
+  {
+    question: "আজীবন সদস্য হতে কত অনুদান দিতে হয়?",
+    answer:
+      "যেকোনো সক্ষম দ্বীনদার ব্যক্তি সামর্থ্য অনুযায়ী এককালীন বা বাৎসরিক কিস্তিতে আজীবন সদস্য হতে পারেন। অনলাইনে বিভিন্ন স্তরের সদস্যপদের বিস্তারিত বিবরণ ও ফরম রয়েছে।",
+  },
+  {
+    question: "অনলাইনে আজীবন সদস্যের অনুদান কীভাবে পাঠানো যায়?",
+    answer:
+      "ওয়েবসাইটের মাধ্যমে বিকাশ (bKash), নগদ, রকেট অথবা সরাসরি ব্যাংক একাউন্ট ও SSLCommerz গেটওয়ের মাধ্যমে নিরাপদে অনুদান প্রদান ও সদস্য নিবন্ধন করা যায়।",
+  },
+];
+
 export default function LifetimeMemberPage() {
-  return <LifetimeMemberClient />;
+  return (
+    <>
+      <FaqJsonLd faqs={LIFETIME_FAQS} />
+      <LifetimeMemberClient />
+    </>
+  );
 }

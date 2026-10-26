@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BoyanClient } from "./boyan-client";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { getBoyanCategories, getBoyans } from "@/lib/api";
 import { SITE_URL } from "@/lib/constants";
 
@@ -32,7 +33,30 @@ export const metadata: Metadata = {
   },
 };
 
+const BOYAN_FAQS = [
+  {
+    question: "হযরত মাওলানা তৈয়্যেব আশরাফ সাহেবের বয়ান কীভাবে শুনব?",
+    answer:
+      "IslahBD ওয়েবসাইটে এবং মোবাইল অ্যাপে সরাসরি বিল্ট-ইন প্লেয়ারে অনলাইন স্ট্রিমিং ও ব্যাকগ্রাউন্ডে অডিও শোনা যায় এবং যেকোনো বয়ান বিনামূল্যে ডাউনলোড করা যায়।",
+  },
+  {
+    question: "ইসলাহী বয়ান ও আত্মশুদ্ধির গুরুত্ব কি?",
+    answer:
+      "আত্মশুদ্ধি বা তাযকিয়ায়ে নফস একজন মুমিনের ঈমানি সুরক্ষার জন্য অপরিহার্য। দিল নরম করা, গোনাহ থেকে বেঁচে থাকা এবং আল্লাহর ভালোবাসা অর্জনে ইসলাহী বয়ান বিশেষ ভূমিকা পালন করে।",
+  },
+  {
+    question: "মারকাযুল ইহসানের ইসলাহী মাহফিল কখন অনুষ্ঠিত হয়?",
+    answer:
+      "প্রতি ইংরেজি মাসের তৃতীয় বৃহস্পতিবার জামেআ মারকাযুল ইহসান ঢাকাতে মাসিক ইসলাহী মজলিস ও মাহফিল অনুষ্ঠিত হয়।",
+  },
+];
+
 export default async function BoyanPage({ searchParams }: { searchParams: Promise<{ play?: string; category?: string }> }) {
   const [{ play, category }, boyans, categories] = await Promise.all([searchParams, getBoyans(), getBoyanCategories()]);
-  return <BoyanClient boyans={boyans} categories={categories} initialPlay={play ? Number(play) : undefined} initialCategory={category} />;
+  return (
+    <>
+      <FaqJsonLd faqs={BOYAN_FAQS} />
+      <BoyanClient boyans={boyans} categories={categories} initialPlay={play ? Number(play) : undefined} initialCategory={category} />
+    </>
+  );
 }

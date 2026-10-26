@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PrayerTimesClient } from "./prayer-times-client";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -26,6 +27,29 @@ export const metadata: Metadata = {
   },
 };
 
+const PRAYER_FAQS = [
+  {
+    question: "আজকের পাঁচ ওয়াক্ত নামাজের সময় কীভাবে জানব?",
+    answer:
+      "IslahBD-তে জিপিএস ও স্বয়ংক্রিয় শহর নির্বাচনের মাধ্যমে ঢাকা, চট্টগ্রাম, সিলেটসহ বাংলাদেশের ৬৪ জেলার ফজর, যোহর, আসর, মাগরিব ও এশার ওয়াক্ত শুরু ও শেষ সময় নির্ভুলভাবে দেখতে পাবেন।",
+  },
+  {
+    question: "দিনের কোন কোন সময়ে নামাজ পড়া নিষিদ্ধ বা হারাম?",
+    answer:
+      "সূর্যোদয়ের সময় (সূর্য উদিত হওয়ার সময় থেকে প্রায় ১৫ মিনিট), ঠিক দ্বিপ্রহরের সময় (ইস্তিখারা বা সূর্য মাথার উপর থাকার সময়) এবং সূর্যাস্তের সময় (সূর্য হলুদ বর্ণ ধারণ থেকে সম্পূর্ণ অস্ত যাওয়া পর্যন্ত) সব ধরণের নামাজ পড়া নিষিদ্ধ।",
+  },
+  {
+    question: "তাহাজ্জুদ নামাজের সর্বোত্তম সময় কোনটি?",
+    answer:
+      "এশার নামাজের পর ঘুমানোর পর রাতের শেষ তৃতীয়াংশে (ফজরের ওয়াক্ত শুরু হওয়ার পূর্ব পর্যন্ত) তাহাজ্জুদ নামাজ আদায় করা সবচেয়ে উত্তম ও ফজিলতপূর্ণ।",
+  },
+];
+
 export default function PrayerTimesPage() {
-  return <PrayerTimesClient />;
+  return (
+    <>
+      <FaqJsonLd faqs={PRAYER_FAQS} />
+      <PrayerTimesClient />
+    </>
+  );
 }
