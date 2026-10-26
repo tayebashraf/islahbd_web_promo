@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles } from "lucide-react";
+import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles, Heart, Feather, Compass, Layers, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface BlogNavItem {
@@ -19,6 +19,18 @@ export const BLOG_NAV_ITEMS: BlogNavItem[] = [
   { href: "/blog", bn: "নিউজফিড", en: "Newsfeed", icon: BookOpen },
   { href: "/blog/bookmarks", bn: "সংরক্ষিত", en: "Saved", icon: Bookmark },
   { href: "/blog/search", bn: "অনুসন্ধান", en: "Search", icon: Search },
+];
+
+/** Topic filters for the feed; the header's blog menu links to `/blog?topic=<slug>`. */
+export const BLOG_CATEGORIES: { slug: string; name: string; icon: BlogNavItem["icon"] }[] = [
+  { slug: "all", name: "সব প্রবন্ধ", icon: Sparkles },
+  { slug: "sirat", name: "সিরাত চর্চা", icon: BookOpen },
+  { slug: "akhlaq", name: "আখলাক ও শামায়েল", icon: Heart },
+  { slug: "hadith", name: "হাদিস ও সুন্নাহ", icon: Feather },
+  { slug: "makki-jiban", name: "মক্কী জীবন", icon: Compass },
+  { slug: "madani-jiban", name: "মাদানী জীবন", icon: Layers },
+  { slug: "tafsir", name: "তাফসির ও আয়াত", icon: Bookmark },
+  { slug: "islamic-history", name: "ইতিহাস ও ঐতিহ্য", icon: ShieldCheck },
 ];
 
 export function isBlogTabActive(pathname: string, href: string): boolean {

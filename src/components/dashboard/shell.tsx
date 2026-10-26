@@ -4,14 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Check, ChevronDown, Download, Globe, Moon, Search, Sun, X } from "lucide-react";
+import { Check, ChevronDown, Download, Globe, Menu, Moon, Search, Sun, X } from "lucide-react";
 import { LANGS, useLang } from "@/components/providers/lang-provider";
 import { usePlayer } from "@/components/player/player-provider";
 import { PlayerBar } from "@/components/player/player-bar";
 import { ALL_LINKS, BOTTOM_NAV, LINKS, MORE, NAV_GROUPS, TOP_NAV, isActive, type NavLink } from "@/lib/nav";
-import { BLOG_NAV_ITEMS, isBlogTabActive } from "@/components/sirat/layout/BlogNav";
+import { BLOG_CATEGORIES, BLOG_NAV_ITEMS, isBlogTabActive } from "@/components/sirat/layout/BlogNav";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/constants";
 import { SOCIAL } from "@/data/paribar";
 import { cn } from "@/lib/utils";
@@ -142,6 +143,7 @@ function Header({ pathname, onSearch }: { pathname: string; onSearch: () => void
         </nav>
 
         <div className="ms-auto flex items-center gap-1.5 sm:gap-2 lg:ms-0">
+          {pathname.startsWith("/blog") && <BlogMenu />}
           <RoundButton label={t("খুঁজুন", "Search")} onClick={onSearch}>
             <Search className="h-[19px] w-[19px]" />
           </RoundButton>
@@ -183,6 +185,102 @@ function ThemeButton() {
     <RoundButton label={t("থিম পরিবর্তন", "Toggle theme")} onClick={() => setTheme(dark ? "light" : "dark")}>
       {dark ? <Sun className="h-[19px] w-[19px]" /> : <Moon className="h-[19px] w-[19px]" />}
     </RoundButton>
+  );
+}
+
+/**
+ * Blog pages: hamburger that opens the topic filters as a side sheet. Portaled
+ * to <body> because the header's backdrop-filter would trap a fixed sheet.
+ */
+function BlogMenu() {
+  const { t } = useLang();
+  const [open, setOpen] = useState(false);
+  const [topic, setTopic] = useState("all");
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const show = () => {
+    setTopic(window.location.pathname === "/blog" ? new URLSearchParams(window.location.search).get("topic") ?? "all" : "");
+    setOpen(true);
+  };
+
+  return (
+    <>
+      <RoundButton label={t("বিষয়ভিত্তিক শ্রেণী", "Topics")} onClick={show} aria-expanded={open}>
+        <Menu className="h-[19px] w-[19px]" />
+      </RoundButton>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <>
+                <motion.div
+                  key="scrim"
+                  className="fixed inset-0 z-[70] bg-black/40"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setOpen(false)}
+                />
+                <motion.aside
+                  key="sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={t("বিষয়ভিত্তিক শ্রেণী", "Topics")}
+                  className="fixed inset-y-0 end-0 z-[71] flex w-[min(320px,86vw)] flex-col bg-panel font-kalpurush shadow-[var(--shadow-float)]"
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "tween", duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="flex h-16 items-center justify-between border-b border-line px-5">
+                    <p className="text-[17px] font-semibold text-ink">{t("বিষয়ভিত্তিক শ্রেণী", "Topics")}</p>
+                    <button
+                      onClick={() => setOpen(false)}
+                      aria-label={t("বন্ধ করুন", "Close")}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-panel-2 text-ink-2 hover:text-ink"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <nav className="flex-1 overflow-y-auto p-3">
+                    <ul className="space-y-1">
+                      {BLOG_CATEGORIES.map((c) => {
+                        const on = c.slug === topic;
+                        const Icon = c.icon;
+                        return (
+                          <li key={c.slug}>
+                            <Link
+                              href={c.slug === "all" ? "/blog" : `/blog?topic=${c.slug}`}
+                              onClick={() => setOpen(false)}
+                              aria-current={on ? "page" : undefined}
+                              className={cn(
+                                "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] transition",
+                                on ? "bg-brand-soft font-semibold text-brand" : "text-ink hover:bg-panel-2",
+                              )}
+                            >
+                              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full", on ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
+                                <Icon className="h-4 w-4" />
+                              </span>
+                              {c.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
+    </>
   );
 }
 

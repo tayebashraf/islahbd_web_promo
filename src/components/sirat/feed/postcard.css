@@ -1355,3 +1355,46 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+
+/* ============================================================
+   PHONES — posts, quizzes and quote cards run edge to edge:
+   no side border, radius or shadow; a thin gap separates posts.
+   ============================================================ */
+
+@media (max-width: 639px) {
+  .fb-post-card,
+  .fb-post-card:hover {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: none;
+    margin-bottom: 8px;
+  }
+
+  .fb-post-body {
+    padding: 0 16px 12px;
+  }
+
+  .seerah-quiz-container,
+  .fb-colored-quote-card {
+    margin-inline: -16px;
+    width: auto;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: none;
+  }
+
+  .seerah-quiz-container {
+    padding: 16px;
+  }
+
+  .seerah-quiz-options-grid {
+    gap: 8px;
+  }
+
+  .seerah-quiz-option-btn {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+}

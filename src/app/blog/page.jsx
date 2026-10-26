@@ -1,29 +1,33 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { Suspense, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { sampleArticles, sampleTopics } from '@/lib/sirat/sampleData';
+import { sampleArticles } from '@/lib/sirat/sampleData';
 import { EmptyState } from '@/components/dashboard/ui';
-import BlogHero from '@/components/sirat/layout/BlogHero';
-import { BookOpen, Sparkles, Heart, Feather, Compass, Layers, Bookmark, ShieldCheck } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import BlogNav, { BLOG_CATEGORIES } from '@/components/sirat/layout/BlogNav';
+import { BookOpen, X } from 'lucide-react';
 
 const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
 
-const BLOG_CATEGORIES = [
-  { slug: 'all', name: 'সব প্রবন্ধ', icon: Sparkles },
-  { slug: 'sirat', name: 'সিরাত চর্চা', icon: BookOpen },
-  { slug: 'akhlaq', name: 'আখলাক ও শামায়েল', icon: Heart },
-  { slug: 'hadith', name: 'হাদিস ও সুন্নাহ', icon: Feather },
-  { slug: 'makki-jiban', name: 'মক্কী জীবন', icon: Compass },
-  { slug: 'madani-jiban', name: 'মাদানী জীবন', icon: Layers },
-  { slug: 'tafsir', name: 'তাফসির ও আয়াত', icon: Bookmark },
-  { slug: 'islamic-history', name: 'ইতিহাস ও ঐতিহ্য', icon: ShieldCheck },
-];
-
+/** The topic filter lives in the header's blog menu, which links here with `?topic=`. */
 export default function HomePage() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  return (
+    <Suspense>
+      <TopicFeed />
+    </Suspense>
+  );
+}
+
+function TopicFeed() {
+  const topic = useSearchParams().get('topic') || 'all';
+  // A new topic remounts the feed so paging starts over.
+  return <Feed key={topic} selectedCategory={topic} />;
+}
+
+function Feed({ selectedCategory }) {
   const [feedPosts, setFeedPosts] = useState(sampleArticles);
   const [displayedCount, setDisplayedCount] = useState(INITIAL_BATCH_SIZE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -35,12 +39,6 @@ export default function HomePage() {
     if (selectedCategory === 'all') return feedPosts;
     return feedPosts.filter((art) => art.topicSlug === selectedCategory);
   }, [feedPosts, selectedCategory]);
-
-  // Reset displayed count when category changes
-  const handleSelectCategory = (slug) => {
-    setSelectedCategory(slug);
-    setDisplayedCount(INITIAL_BATCH_SIZE);
-  };
 
   // Continuous infinite stream: As reader scrolls, stream earlier archive
   const loadMorePosts = useCallback(() => {
@@ -86,45 +84,26 @@ export default function HomePage() {
   }, [loadMorePosts, isLoadingMore]);
 
   const visiblePosts = filteredPosts.slice(0, displayedCount);
+  const category = selectedCategory !== 'all' ? BLOG_CATEGORIES.find((c) => c.slug === selectedCategory) : null;
 
   return (
-    <div className="w-full max-w-[760px] mx-auto py-2 sm:py-4 px-2 sm:px-0 font-kalpurush">
-      {/* 1. Dignified Islamic Blog Hero & Desktop Tab Nav */}
-      <BlogHero />
+    // Phones: cancel the shell's side padding so posts run edge to edge.
+    <div className="blog-feed -mx-4 w-auto max-w-[760px] py-1 font-kalpurush sm:mx-auto sm:w-full sm:py-4">
+      <BlogNav />
 
-      {/* 2. Sleek Horizontal Category Filters */}
-      <div className="mb-5">
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <span className="text-xs sm:text-sm font-semibold text-ink-2 flex items-center gap-1.5">
-            <span>🏷️ বিষয়শ্রেণী ফিল্টার</span>
-          </span>
-          <span className="text-xs text-ink-3">
+      {category && (
+        <div className="mb-3 flex items-center justify-between gap-3 px-4 sm:px-1">
+          <p className="text-sm text-ink-2">
+            <span className="font-semibold text-ink">{category.name}</span>
+            <span className="mx-1.5 text-ink-3">·</span>
             {filteredPosts.length} টি প্রবন্ধ
-          </span>
+          </p>
+          <Link href="/blog" className="inline-flex items-center gap-1 rounded-full bg-panel-2 px-3 py-1 text-xs font-semibold text-ink-2 hover:text-brand">
+            <X className="h-3.5 w-3.5" />
+            সব প্রবন্ধ
+          </Link>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-          {BLOG_CATEGORIES.map((cat) => {
-            const active = selectedCategory === cat.slug;
-            const Icon = cat.icon;
-            return (
-              <button
-                key={cat.slug}
-                type="button"
-                onClick={() => handleSelectCategory(cat.slug)}
-                className={cn(
-                  "inline-flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-xs sm:text-sm font-semibold transition active:scale-95 cursor-pointer shadow-2xs",
-                  active
-                    ? "bg-brand text-white shadow-sm ring-2 ring-brand/20"
-                    : "border border-line bg-panel text-ink hover:border-brand/40 hover:bg-brand-soft/40"
-                )}
-              >
-                <Icon className={cn("h-3.5 w-3.5", active ? "text-white" : "text-brand")} />
-                <span>{cat.name}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      )}
 
       {/* 3. Feed Posts Stream */}
       {visiblePosts.length === 0 ? (
@@ -134,7 +113,7 @@ export default function HomePage() {
           hint="অন্য কোনো বিষয় বা 'সব প্রবন্ধ' নির্বাচন করে পড়ুন।"
         />
       ) : (
-        <div className="fb-posts-stream space-y-4">
+        <div className="fb-posts-stream sm:space-y-4">
           {visiblePosts.map((article) => (
             <PostCard key={article.id} article={article} />
           ))}
