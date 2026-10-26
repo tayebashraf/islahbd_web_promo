@@ -87,6 +87,28 @@ export interface SiratCommentItem {
 // In-Memory store for offline state updates
 let localArticles: any[] = [...sampleArticles];
 
+/**
+ * A page of the quiz bank for the news feed (empty while the admins have the
+ * quiz switched off). `every`: posts the feed shows between two questions.
+ */
+export async function fetchSiratQuizFeed(
+  offset = 0,
+  limit = 10
+): Promise<{ every: number; total: number; results: SiratArticleItem[] }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/sirat/quiz-items/feed/?offset=${offset}&limit=${limit}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data?.results)) return { every: data.every || 2, total: data.total || 0, results: data.results };
+    }
+  } catch (err) {
+    // Network fallback
+  }
+  return { every: 2, total: 0, results: [] };
+}
+
 export async function fetchSiratArticles(params: {
   topicSlug?: string;
   authorId?: string;

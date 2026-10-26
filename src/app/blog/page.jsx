@@ -1,20 +1,23 @@
 'use client';
 
-import React, { Suspense, useState, useEffect, useRef } from 'react';
+import React, { Suspense, useCallback, useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratTopics } from '@/lib/sirat/sirat-api';
+import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratQuizFeed, fetchSiratTopics } from '@/lib/sirat/sirat-api';
 import { EmptyState } from '@/components/dashboard/ui';
 import BlogNav from '@/components/sirat/layout/BlogNav';
 import { BookOpen, Megaphone, X } from 'lucide-react';
 
 const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
+const QUIZ_PAGE_SIZE = 10;
 
 /**
- * The feed of published posts. Posts belong to topic profiles; the header's
- * blog menu links here with `?topic=<profile slug>` to show one profile.
+ * The feed: every profile's posts together, newest first. While the admins
+ * have the quiz on, a question of the quiz bank follows every few posts, in
+ * order, and the rest of the questions follow once the posts run out.
+ * A profile's name links here with `?topic=<profile slug>` to show its posts.
  */
 export default function HomePage() {
   return (
@@ -63,11 +66,25 @@ function Announcement() {
   );
 }
 
+/** Posts with a quiz after every `every` posts; leftover quizzes at the end. */
+function interleave(posts, quizzes, every) {
+  const out = [];
+  let q = 0;
+  posts.forEach((post, i) => {
+    out.push(post);
+    if ((i + 1) % every === 0 && q < quizzes.length) out.push(quizzes[q++]);
+  });
+  return out.concat(quizzes.slice(q));
+}
+
 function Feed({ topic }) {
   const [posts, setPosts] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [quiz, setQuiz] = useState({ every: 2, total: 0, items: [] });
+  const quizLoading = useRef(false);
   const [displayedCount, setDisplayedCount] = useState(INITIAL_BATCH_SIZE);
   const sentinelRef = useRef(null);
+  const withQuiz = topic === 'all';
 
   useEffect(() => {
     let alive = true;
@@ -80,20 +97,48 @@ function Feed({ topic }) {
     };
   }, [topic]);
 
+  const loadQuizzes = useCallback((offset) => {
+    if (quizLoading.current) return;
+    quizLoading.current = true;
+    fetchSiratQuizFeed(offset, QUIZ_PAGE_SIZE).then(({ every, total, results }) => {
+      quizLoading.current = false;
+      setQuiz((q) => ({ every, total, items: [...q.items.slice(0, offset), ...results] }));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (withQuiz) loadQuizzes(0);
+  }, [withQuiz, loadQuizzes]);
+
+  const items = useMemo(
+    () => (posts && withQuiz ? interleave(posts, quiz.items, quiz.every) : posts ?? []),
+    [posts, withQuiz, quiz.items, quiz.every]
+  );
   const total = posts?.length ?? 0;
-  const hasMore = displayedCount < total;
+  const moreQuizzes = withQuiz && quiz.items.length < quiz.total;
+  const hasMore = displayedCount < items.length || moreQuizzes;
+
+  // Fetch the next questions before the reader reaches the place of the first missing one.
+  useEffect(() => {
+    if (!posts || !moreQuizzes) return;
+    const loaded = quiz.items.length;
+    const slot = (loaded + 1) * quiz.every <= posts.length ? (loaded + 1) * quiz.every + loaded : posts.length + loaded;
+    if (slot <= displayedCount + LOAD_MORE_BATCH_SIZE * 2) loadQuizzes(loaded);
+  }, [posts, moreQuizzes, quiz.items.length, quiz.every, displayedCount, loadQuizzes]);
 
   // Reveal more posts as the reader nears the end of the list.
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || !hasMore) return;
     const observer = new IntersectionObserver(
-      (entries) => entries[0].isIntersecting && setDisplayedCount((n) => n + LOAD_MORE_BATCH_SIZE),
+      // While the next questions are still loading there is nothing more to reveal.
+      (entries) =>
+        entries[0].isIntersecting && setDisplayedCount((n) => (n < items.length ? n + LOAD_MORE_BATCH_SIZE : n)),
       { rootMargin: '350px' }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, displayedCount]);
+  }, [hasMore, displayedCount, items.length]);
 
   return (
     // Phones: cancel the shell's side padding so posts run edge to edge.
@@ -120,15 +165,15 @@ function Feed({ topic }) {
 
       {posts === null ? (
         <FeedSkeleton />
-      ) : total === 0 ? (
+      ) : items.length === 0 ? (
         <EmptyState
           icon={BookOpen}
           title="এখানে এখনো কোনো পোস্ট নেই"
-          hint="শীঘ্রই নতুন লেখা আসছে, ইনশাআল্লাহ। অন্য বিষয়গুলো দেখতে উপরের মেনু খুলুন।"
+          hint="শীঘ্রই নতুন লেখা আসছে, ইনশাআল্লাহ।"
         />
       ) : (
         <div className="fb-posts-stream sm:space-y-4">
-          {posts.slice(0, displayedCount).map((article) => (
+          {items.slice(0, displayedCount).map((article) => (
             <PostCard key={article.id} article={article} />
           ))}
         </div>
