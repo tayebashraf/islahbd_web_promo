@@ -212,6 +212,21 @@ export async function recordArticleView(slug: string): Promise<{ viewCount: numb
   return { viewCount: art ? art.viewCount || 1 : 1 };
 }
 
+/** Blog-wide settings saved from the admin panel (announcement banner, ...). */
+export interface SiratPlatformSettings {
+  announcementActive?: boolean;
+  announcementText?: string;
+  announcementLink?: string;
+}
+
+export async function fetchSiratPlatformSettings(): Promise<SiratPlatformSettings> {
+  try {
+    const res = await fetch(`${API_BASE}/api/sirat/settings/platform/`);
+    if (res.ok) return (await res.json()).data ?? {};
+  } catch {}
+  return {};
+}
+
 export async function fetchSiratTopics(): Promise<SiratTopicItem[]> {
   try {
     const res = await fetch(`${API_BASE}/api/sirat/topics/`, {

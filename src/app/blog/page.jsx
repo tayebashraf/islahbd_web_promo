@@ -4,10 +4,10 @@ import React, { Suspense, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { fetchSiratArticles, fetchSiratTopics } from '@/lib/sirat/sirat-api';
+import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratTopics } from '@/lib/sirat/sirat-api';
 import { EmptyState } from '@/components/dashboard/ui';
 import BlogNav from '@/components/sirat/layout/BlogNav';
-import { BookOpen, X } from 'lucide-react';
+import { BookOpen, Megaphone, X } from 'lucide-react';
 
 const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
@@ -27,7 +27,40 @@ export default function HomePage() {
 function TopicFeed() {
   const topic = useSearchParams().get('topic') || 'all';
   // A new topic remounts the feed so paging starts over.
-  return <Feed key={topic} topic={topic} />;
+  return (
+    <>
+      <Announcement />
+      <Feed key={topic} topic={topic} />
+    </>
+  );
+}
+
+/** Banner set from the admin panel (ইসলাহ ব্লগ → সেটিংস). */
+function Announcement() {
+  const [note, setNote] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    fetchSiratPlatformSettings().then((s) => alive && s.announcementActive && s.announcementText && setNote(s));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  if (!note) return null;
+  const body = (
+    <>
+      <Megaphone className="mt-0.5 h-4 w-4 shrink-0" />
+      <span>{note.announcementText}</span>
+    </>
+  );
+  const cls =
+    '-mx-4 mb-3 flex max-w-[760px] items-start gap-2.5 bg-brand-soft px-4 py-3 font-kalpurush text-sm leading-relaxed font-semibold text-brand sm:mx-auto sm:rounded-2xl';
+  return note.announcementLink ? (
+    <Link href={note.announcementLink} className={`${cls} hover:underline`}>
+      {body}
+    </Link>
+  ) : (
+    <div className={cls}>{body}</div>
+  );
 }
 
 function Feed({ topic }) {
