@@ -14,7 +14,6 @@ import {
   Bookmark,
   MoreHorizontal,
   Send,
-  Globe,
   Sparkles,
   HelpCircle,
   Check,
@@ -574,7 +573,10 @@ export const PostCard = ({ article }) => {
             <div className="fb-post-time-row">
               <span>{formatTimestamp(currentArticle.publishedAt)}</span>
               <span>•</span>
-              <Globe size={11} />
+              <span className="fb-post-views" title="এই পোস্টটি যতজন দেখেছেন">
+                <Eye size={12} />
+                {toBanglaNum(viewCount * VIEW_COUNT_MULTIPLIER)}
+              </span>
             </div>
           </div>
         </div>
@@ -903,16 +905,6 @@ export const PostCard = ({ article }) => {
         )}
       </div>
 
-
-      {/* 3. Engagement Counters Row with Overlapping Round Circles (FB Style) */}
-      <div className="fb-post-stats">
-        <div className="fb-post-stats-right">
-          <span className="fb-post-views" title="এই পোস্টটি যতজন দেখেছেন">
-            <Eye size={14} />
-            {toBanglaNum(viewCount * VIEW_COUNT_MULTIPLIER)}
-          </span>
-        </div>
-      </div>
 
       {/* 4. Action Buttons Bar (Unified: جَزَاكَ ٱللَّٰهُ, মন্তব্য ও দরূদ, শেয়ার) */}
       <div className="fb-post-actions-bar">
