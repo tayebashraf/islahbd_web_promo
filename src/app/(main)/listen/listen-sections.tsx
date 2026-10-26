@@ -124,12 +124,13 @@ export function RecurringMajlisList({ majlis }: { majlis: RecurringMajlis[] }) {
   const badge = (d: number | null) => (d === null ? "" : d === 0 ? t("আজ", "Today") : d === 1 ? t("আগামীকাল", "Tomorrow") : t(`${num(d, lang)} দিন পর`, `in ${d} days`));
 
   return (
-    <section>
+    <section id="regular-majlis" className="scroll-mt-20">
       <BarTitle title={t("নিয়মিত মজলিস", "Regular majlis")} sub={t("সাপ্তাহিক ও মাসিক ইসলাহী মজলিসের সময়সূচি", "Weekly and monthly islahi gatherings")} />
       <ul className="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
         {rows.map(({ m, next, days }, i) => {
           const expanded = open === m.id;
           const details = m.details.filter((d) => d.is_active).sort((a, b) => a.order - b.order);
+          const allTimes = details.map((d) => d.time).filter(Boolean).join(" ও ");
           return (
             <li key={m.id} className={cn("overflow-hidden rounded-2xl border bg-panel transition", i === 0 ? "border-brand/40" : "border-line")}>
               <button onClick={() => setOpen(expanded ? null : m.id)} aria-expanded={expanded} className="flex w-full items-center gap-3 p-3.5 text-start">
@@ -146,7 +147,7 @@ export function RecurringMajlisList({ majlis }: { majlis: RecurringMajlis[] }) {
                   </span>
                   <span className="mt-0.5 block truncate text-[13px] text-ink-3">
                     {when(m)}
-                    {details[0] && ` · ${details[0].time}`}
+                    {allTimes && ` · ${allTimes}`}
                   </span>
                 </span>
                 <ChevronDown className={cn("h-5 w-5 shrink-0 text-ink-3 transition", expanded && "rotate-180")} />

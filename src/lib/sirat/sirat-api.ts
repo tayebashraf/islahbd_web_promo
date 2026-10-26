@@ -106,9 +106,8 @@ export async function fetchSiratArticles(params: {
     });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        return data;
-      }
+      // An empty list is a real answer (e.g. a new profile with no posts yet).
+      if (Array.isArray(data)) return data;
     }
   } catch (err) {
     // Network fallback

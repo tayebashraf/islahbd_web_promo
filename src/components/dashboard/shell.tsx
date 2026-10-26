@@ -13,6 +13,7 @@ import { usePlayer } from "@/components/player/player-provider";
 import { PlayerBar } from "@/components/player/player-bar";
 import { ALL_LINKS, BOTTOM_NAV, LINKS, MORE, NAV_GROUPS, TOP_NAV, isActive, type NavLink } from "@/lib/nav";
 import { BLOG_CATEGORIES, BLOG_NAV_ITEMS, isBlogTabActive } from "@/components/sirat/layout/BlogNav";
+import { fetchSiratTopics } from "@/lib/sirat/sirat-api";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/constants";
 import { SOCIAL } from "@/data/paribar";
 import { cn } from "@/lib/utils";
@@ -196,6 +197,9 @@ function BlogMenu() {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState("all");
+  const [profiles, setProfiles] = useState<{ slug: string; name: string; avatar?: string | null; icon?: string }[]>(() =>
+    BLOG_CATEGORIES.slice(1).map(({ slug, name }) => ({ slug, name })),
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -207,6 +211,8 @@ function BlogMenu() {
   const show = () => {
     setTopic(window.location.pathname === "/blog" ? new URLSearchParams(window.location.search).get("topic") ?? "all" : "");
     setOpen(true);
+    // Profiles are managed from the admin apps; refresh the list on each open.
+    fetchSiratTopics().then((list) => list.length && setProfiles(list));
   };
 
   return (
@@ -250,9 +256,11 @@ function BlogMenu() {
                   </div>
                   <nav className="flex-1 overflow-y-auto p-3">
                     <ul className="space-y-1">
-                      {BLOG_CATEGORIES.map((c) => {
+                      {[BLOG_CATEGORIES[0], ...profiles].map((c) => {
                         const on = c.slug === topic;
-                        const Icon = c.icon;
+                        const Icon = BLOG_CATEGORIES.find((k) => k.slug === c.slug)?.icon;
+                        const avatar = "avatar" in c ? c.avatar : null;
+                        const emoji = "icon" in c && typeof c.icon === "string" && c.icon ? c.icon : "📖";
                         return (
                           <li key={c.slug}>
                             <Link
@@ -264,8 +272,15 @@ function BlogMenu() {
                                 on ? "bg-brand-soft font-semibold text-brand" : "text-ink hover:bg-panel-2",
                               )}
                             >
-                              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full", on ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
-                                <Icon className="h-4 w-4" />
+                              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full", on ? "bg-brand text-white" : "bg-icon-bg text-brand")}>
+                                {avatar ? (
+                                  // eslint-disable-next-line @next/next/no-img-element -- admin-supplied URL, any host
+                                  <img src={avatar} alt="" className="h-full w-full object-cover" />
+                                ) : Icon ? (
+                                  <Icon className="h-4 w-4" />
+                                ) : (
+                                  <span className="text-base">{emoji}</span>
+                                )}
                               </span>
                               {c.name}
                             </Link>

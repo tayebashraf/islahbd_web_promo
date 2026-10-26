@@ -20,18 +20,19 @@ function formatTimestamp(ts) {
   }).format(date);
 }
 
-export const ArticleHeader = ({ article, author, onListenClick }) => {
+export const ArticleHeader = ({ article, onListenClick }) => {
   if (!article) return null;
+
+  // Posts are published under a topic profile ("সিরাত চর্চা", ...), not a person.
+  const topic = article.topicDetails;
+  const profileName = topic?.name || article.topicName || article.authorName;
+  const profileHref = `/blog?topic=${article.topicSlug}`;
 
   return (
     <header className="article-header">
-      {/* Streamlined Compact Category & Breadcrumb in 1 Line */}
       <div className="article-header__meta-top">
-        <Link href={`/blog/topics/${article.topicSlug}`} className="article-header__topic-badge">
-          {article.topicName}
-        </Link>
         <span className="article-header__breadcrumb-text">
-          <Link href="/blog">হোম</Link> › <Link href="/blog/topics">বিষয়সমূহ</Link>
+          <Link href="/blog">ব্লগ</Link> › <Link href={profileHref}>{profileName}</Link>
         </span>
       </div>
 
@@ -46,20 +47,13 @@ export const ArticleHeader = ({ article, author, onListenClick }) => {
       {/* Author Row Directly Below Title (Zero Space Wastage) */}
       <div className="article-header__author-row">
         <div className="article-header__author-meta">
-          <Avatar
-            src={author?.photoURL}
-            name={article.authorName}
-            size="sm"
-          />
+          <Avatar src={topic?.avatar} name={profileName} size="sm" />
           <div className="article-header__author-info">
             <div className="article-header__author-name-row">
-              <Link
-                href={`/blog/authors/${article.authorId}`}
-                className="article-header__author-name"
-              >
-                {article.authorName}
+              <Link href={profileHref} className="article-header__author-name">
+                {profileName}
               </Link>
-              <VerifiedBadge status={author?.writerStatus} isVerified={author?.isVerified ?? author?.verified} size={15} showLabel={false} />
+              {topic?.isVerified !== false && <VerifiedBadge isVerified size={15} showLabel={false} />}
             </div>
             <div className="article-header__date-row">
               <span>{formatTimestamp(article.publishedAt)}</span>

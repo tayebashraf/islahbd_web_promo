@@ -182,8 +182,22 @@ export function LiveChat({ open }: { open: boolean }) {
     }
   };
 
-  // Always confirm who is commenting (fields come pre-filled from last time).
-  const begin = () => setStep("identity");
+  // If visitor already has a saved identity, default to write mode so they don't get prompted again.
+  useEffect(() => {
+    if (savedName || mode === "anon") {
+      setStep("write");
+    }
+  }, [savedName, mode]);
+
+  // If already identified, go directly to write step. Otherwise prompt for name.
+  const begin = () => {
+    if ((savedName && savedName.trim()) || mode === "anon") {
+      setStep("write");
+    } else {
+      setStep("identity");
+    }
+  };
+
   const asNamed = () => {
     saveName(name.trim());
     saveLocation(location.trim());
@@ -272,9 +286,40 @@ export function LiveChat({ open }: { open: boolean }) {
               <UserX className="h-4 w-4" />
               {t("অপরিচিত হিসেবে মেসেজ করুন", "Message anonymously")}
             </button>
+            {(savedName || mode === "anon") && (
+              <button
+                type="button"
+                onClick={() => setStep("write")}
+                className="mt-1 h-8 w-full text-xs text-ink-3 hover:text-ink transition"
+              >
+                {t("বাতিল / আগের নামে লিখুন", "Cancel")}
+              </button>
+            )}
           </motion.div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
+            {/* Identity bar */}
+            <div className="flex items-center justify-between px-2 text-[12px] text-ink-3">
+              <span className="flex items-center gap-1.5 min-w-0">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                <span className="truncate">
+                  {mode === "anon" ? (
+                    t("অপরিচিত হিসেবে মন্তব্য করছেন", "Commenting anonymously")
+                  ) : (
+                    <span>
+                      {t("মন্তব্য করছেন", "Posting as")}: <strong className="font-semibold text-ink">{name}</strong> {location ? `(${location})` : ""}
+                    </span>
+                  )}
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setStep("identity")}
+                className="shrink-0 text-brand hover:underline font-medium text-[11.5px] ms-2"
+              >
+                {t("নাম/ঠিকানা পরিবর্তন", "Change")}
+              </button>
+            </div>
             <div className="scroll-hide -mx-1 flex gap-1.5 overflow-x-auto px-1">
               {QUICK.map((q) => (
                 <button key={q} type="button" disabled={sending} onClick={() => send(q)} className="shrink-0 rounded-full border border-line bg-panel px-3 py-1 text-[13px] text-ink-2 transition hover:border-brand/40 hover:text-brand disabled:opacity-40">

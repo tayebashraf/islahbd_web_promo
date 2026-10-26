@@ -55,6 +55,12 @@ function formatTimestamp(ts) {
 }
 
 // Pre-defined Quick Durood Suggestions (কুরআনুল কারীমের খাঁটি আরবি ফন্টে)
+/** The API sends `{}` for a post's unused quiz / quote data; treat that as none. */
+function normalizePost(article) {
+  const filled = (d) => (d && typeof d === 'object' && Object.keys(d).length > 0 ? d : null);
+  return { ...article, quizData: filled(article.quizData), quoteData: filled(article.quoteData) };
+}
+
 export const DUROOD_SUGGESTIONS = [
   {
     id: 'd1',
@@ -84,7 +90,7 @@ export const DUROOD_SUGGESTIONS = [
 ];
 
 export const PostCard = ({ article }) => {
-  const [currentArticle, setCurrentArticle] = useState(article);
+  const [currentArticle, setCurrentArticle] = useState(() => normalizePost(article));
   const [isDeleted, setIsDeleted] = useState(false);
 
   const author = getAuthorById(currentArticle.authorId);
@@ -530,28 +536,32 @@ export const PostCard = ({ article }) => {
   }
 
   const rawText = currentArticle.content?.replace(/<[^>]+>/g, '') || currentArticle.excerpt || '';
+  // Posts belong to a topic profile ("সিরাত কুইজ", "আত্মশুদ্ধি", ...), not a person.
+  const topic = currentArticle.topicDetails;
+  const profile = {
+    name: topic?.name || currentArticle.topicName || currentArticle.authorName,
+    avatar: topic?.avatar || null,
+    isVerified: topic ? topic.isVerified !== false : true,
+  };
+  const profileHref = `/blog?topic=${currentArticle.topicSlug}`;
 
   return (
     <article className="fb-post-card">
-      {/* 1. Post Header (Author Row) */}
+      {/* 1. Post Header — the topic profile the post is published under */}
       <div className="fb-post-header">
         <div className="fb-post-header__left">
-          <Link href={`/blog/authors/${currentArticle.authorId}`}>
-            <Avatar src={author?.photoURL} name={currentArticle.authorName} size="md" />
+          <Link href={profileHref}>
+            <Avatar src={profile.avatar} name={profile.name} size="md" />
           </Link>
           <div className="fb-post-author-info">
-            <Link href={`/blog/authors/${currentArticle.authorId}`} className="fb-post-author-name">
-              <span>{currentArticle.authorName}</span>
-              <VerifiedBadge status={author?.writerStatus} isVerified={author?.isVerified} size={15} showLabel={false} />
+            <Link href={profileHref} className="fb-post-author-name">
+              <span>{profile.name}</span>
+              {profile.isVerified && <VerifiedBadge isVerified size={15} showLabel={false} />}
             </Link>
             <div className="fb-post-time-row">
               <span>{formatTimestamp(currentArticle.publishedAt)}</span>
               <span>•</span>
               <Globe size={11} />
-              <span>•</span>
-              <Link href={`/blog/topics/${currentArticle.topicSlug}`} className="fb-post-topic-tag">
-                {currentArticle.topicName}
-              </Link>
             </div>
           </div>
         </div>

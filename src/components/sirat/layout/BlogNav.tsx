@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles, Heart, Feather, Compass, Layers, ShieldCheck } from "lucide-react";
+import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles, Heart, Feather, HelpCircle, Quote, Languages, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface BlogNavItem {
@@ -21,16 +21,20 @@ export const BLOG_NAV_ITEMS: BlogNavItem[] = [
   { href: "/blog/search", bn: "অনুসন্ধান", en: "Search", icon: Search },
 ];
 
-/** Topic filters for the feed; the header's blog menu links to `/blog?topic=<slug>`. */
+/**
+ * Topic profiles shown in the header's blog menu (it links to
+ * `/blog?topic=<slug>`). The live list comes from the API; this is the
+ * offline fallback and supplies an icon per known profile.
+ */
 export const BLOG_CATEGORIES: { slug: string; name: string; icon: BlogNavItem["icon"] }[] = [
-  { slug: "all", name: "সব প্রবন্ধ", icon: Sparkles },
+  { slug: "all", name: "সব পোস্ট", icon: Sparkles },
+  { slug: "sirat-quiz", name: "সিরাত কুইজ", icon: HelpCircle },
   { slug: "sirat", name: "সিরাত চর্চা", icon: BookOpen },
-  { slug: "akhlaq", name: "আখলাক ও শামায়েল", icon: Heart },
-  { slug: "hadith", name: "হাদিস ও সুন্নাহ", icon: Feather },
-  { slug: "makki-jiban", name: "মক্কী জীবন", icon: Compass },
-  { slug: "madani-jiban", name: "মাদানী জীবন", icon: Layers },
-  { slug: "tafsir", name: "তাফসির ও আয়াত", icon: Bookmark },
-  { slug: "islamic-history", name: "ইতিহাস ও ঐতিহ্য", icon: ShieldCheck },
+  { slug: "atmashuddhi", name: "আত্মশুদ্ধি", icon: Heart },
+  { slug: "hadith", name: "হাদিসের ব্যাখ্যা", icon: Feather },
+  { slug: "akabir-ukti", name: "বড়দের উক্তি", icon: Quote },
+  { slug: "arabic-grammar", name: "আরবি গ্রামার", icon: Languages },
+  { slug: "arabic-ramya", name: "আরবি রম্য রচনা", icon: Smile },
 ];
 
 export function isBlogTabActive(pathname: string, href: string): boolean {

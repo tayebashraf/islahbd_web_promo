@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Hls from "hls.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, CalendarClock, Loader2, MapPin, Pause, Play, Users } from "lucide-react";
+import { AlertCircle, CalendarClock, ChevronLeft, ChevronRight, Loader2, MapPin, Pause, Play, Users } from "lucide-react";
 import type { Boyan, LiveStatus as ApiLiveStatus, RecurringMajlis } from "@/lib/api";
 import { useLang } from "@/components/providers/lang-provider";
 import { EXCLUSIVE_AUDIO_EVENT, usePlayer } from "@/components/player/player-provider";
@@ -211,10 +211,28 @@ export function ListenClient({ recentBoyans, majlis }: { recentBoyans: Boyan[]; 
 
   const live = status?.isLive ?? false;
   const recordings = status?.recordings?.length ? status.recordings : status?.recording ? [status.recording] : [];
-  const upcoming = majlis
-    .map((m) => ({ m, next: nextOccurrence(m) }))
-    .filter((r) => r.next)
-    .sort((a, b) => a.next!.getTime() - b.next!.getTime())[0];
+
+  const upcomingSessions = useMemo<UpcomingSession[]>(() => {
+    const list: UpcomingSession[] = [];
+    for (const m of majlis) {
+      const next = nextOccurrence(m);
+      if (!next) continue;
+      const activeDetails = m.details.filter((d) => d.is_active).sort((a, b) => a.order - b.order);
+      if (activeDetails.length === 0) {
+        list.push({ majlisId: m.id, title: m.title, time: "", location: "", next });
+      } else {
+        for (const d of activeDetails) {
+          list.push({ majlisId: m.id, title: m.title, time: d.time, location: d.location, next });
+        }
+      }
+    }
+    list.sort((a, b) => a.next.getTime() - b.next.getTime());
+    if (list.length === 0) return [];
+    // If multiple sessions occur on the earliest upcoming date (e.g. বাদ জোহর & আসর থেকে মাগরিব)
+    const earliestTime = list[0].next.getTime();
+    const sameDay = list.filter((s) => s.next.getTime() === earliestTime);
+    return sameDay.length > 1 ? sameDay : list.slice(0, 3);
+  }, [majlis]);
 
   return (
     <div className="space-y-8 pb-6 sm:space-y-10">
@@ -291,16 +309,8 @@ export function ListenClient({ recentBoyans, majlis }: { recentBoyans: Boyan[]; 
                     </p>
                   )}
                 </>
-              ) : upcoming ? (
-                <p className="mx-auto mt-2 inline-flex max-w-full items-center gap-2 rounded-2xl border border-line bg-panel px-3 py-2 text-[13.5px] text-ink-2">
-                  <CalendarClock className="h-4 w-4 shrink-0 text-brand" />
-                  <span className="truncate">
-                    {t("পরবর্তী মজলিস", "Next majlis")}: {upcoming.m.title} · {formatDate(upcoming.next!.toISOString(), lang, { weekday: "short", year: undefined, timeZone: undefined })}
-                    {upcoming.m.details[0]?.time && ` · ${upcoming.m.details[0].time}`}
-                  </span>
-                </p>
               ) : (
-                <p className="mt-1 text-[14px] text-ink-3">{t("লাইভ শুরু হলে এখানেই শুনতে পারবেন", "You can listen here once the live starts")}</p>
+                <UpcomingMajlisCarousel sessions={upcomingSessions} />
               )}
 
               <AnimatePresence>
@@ -325,3 +335,114 @@ export function ListenClient({ recentBoyans, majlis }: { recentBoyans: Boyan[]; 
     </div>
   );
 }
+
+interface UpcomingSession {
+  majlisId: number;
+  title: string;
+  time: string;
+  location: string;
+  next: Date;
+}
+
+function UpcomingMajlisCarousel({ sessions }: { sessions: UpcomingSession[] }) {
+  const { t, lang } = useLang();
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (sessions.length <= 1 || paused) return;
+    const timer = setInterval(() => {
+      setIdx((prev) => (prev + 1) % sessions.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [sessions.length, paused]);
+
+  if (sessions.length === 0) {
+    return <p className="mt-1 text-[14px] text-ink-3">{t("লাইভ শুরু হলে এখানেই শুনতে পারবেন", "You can listen here once the live starts")}</p>;
+  }
+
+  const current = sessions[idx % sessions.length];
+  const isMultiple = sessions.length > 1;
+
+  const nextSession = () => setIdx((prev) => (prev + 1) % sessions.length);
+  const prevSession = () => setIdx((prev) => (prev - 1 + sessions.length) % sessions.length);
+
+  return (
+    <div
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+      className="mx-auto mt-2.5 flex max-w-full flex-col items-center"
+    >
+      <div className="relative flex w-full max-w-lg items-center justify-center gap-1.5 px-2">
+        {isMultiple && (
+          <button
+            onClick={prevSession}
+            type="button"
+            aria-label={t("পূর্ববর্তী মজলিস", "Previous majlis")}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-brand hover:bg-brand-soft transition"
+          >
+            <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
+          </button>
+        )}
+
+        <AnimatePresence mode="wait">
+          <motion.a
+            key={`${current.majlisId}-${current.time}-${idx}`}
+            href="#regular-majlis"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.25 }}
+            className="group flex max-w-full items-center gap-2 rounded-2xl border border-brand/35 bg-panel px-3.5 py-2 text-[13.5px] text-ink-2 shadow-xs transition hover:border-brand/70 hover:bg-brand-soft/30 hover:text-brand"
+          >
+            <CalendarClock className="h-4 w-4 shrink-0 text-brand" />
+            <span className="min-w-0 truncate text-start">
+              <span className="font-semibold text-brand">
+                {t("পরবর্তী মজলিস", "Next majlis")}
+                {isMultiple && ` (${num(idx + 1, lang)}/${num(sessions.length, lang)})`}:
+              </span>{" "}
+              <span className="font-medium text-ink">{current.title}</span>
+              {" · "}
+              <span>{formatDate(current.next.toISOString(), lang, { weekday: "short", day: "numeric", month: "short", year: undefined, timeZone: undefined })}</span>
+              {current.time && (
+                <span className="ms-1.5 inline-block rounded-md bg-brand-soft px-1.5 py-0.5 text-[12px] font-semibold text-brand">
+                  {current.time}
+                </span>
+              )}
+            </span>
+          </motion.a>
+        </AnimatePresence>
+
+        {isMultiple && (
+          <button
+            onClick={nextSession}
+            type="button"
+            aria-label={t("পরবর্তী মজলিস", "Next majlis")}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-panel-2 text-ink-3 hover:text-brand hover:bg-brand-soft transition"
+          >
+            <ChevronRight className="h-4 w-4 rtl:rotate-180" />
+          </button>
+        )}
+      </div>
+
+      {isMultiple && (
+        <div className="mt-2 flex items-center gap-1.5">
+          {sessions.map((s, i) => (
+            <button
+              key={`${s.majlisId}-${s.time}-${i}`}
+              onClick={() => setIdx(i)}
+              aria-label={t(`মজলিস ${i + 1}`, `Majlis ${i + 1}`)}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                i === idx % sessions.length ? "w-5 bg-brand" : "w-1.5 bg-line hover:bg-ink-3"
+              )}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
