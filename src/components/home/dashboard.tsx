@@ -1071,26 +1071,22 @@ function PhoneMockup3D() {
         <div className="absolute h-[260px] w-[260px] rounded-full bg-brand-soft/40 blur-sm dark:bg-brand-soft/10" />
       </div>
 
-      {/* 2. 3D Floating Phone Stage */}
-      <div className="relative z-10 [perspective:1400px]">
+      {/* 2. Floating Phone Stage (Upright & Straight) */}
+      <div className="relative z-10">
         {/* Ground Depth Contact Shadow */}
         <div
-          className="pointer-events-none absolute -bottom-9 left-1/2 h-10 w-[82%] -translate-x-1/2 -rotate-2 rounded-full bg-black/45 blur-2xl dark:bg-black/85"
+          className="pointer-events-none absolute -bottom-8 left-1/2 h-9 w-[78%] -translate-x-1/2 rounded-full bg-black/35 blur-2xl dark:bg-black/75"
           aria-hidden="true"
         />
 
-        {/* 3D Motion Device */}
+        {/* Upright Motion Device */}
         <motion.div
           className="relative cursor-pointer select-none"
-          style={{ transformStyle: "preserve-3d" }}
           animate={
             reduce
               ? undefined
               : {
-                  y: [-8, 8, -8],
-                  rotateY: [-14, -8, -14],
-                  rotateX: [10, 6, 10],
-                  rotateZ: [-3, -1.5, -3],
+                  y: [-7, 7, -7],
                 }
           }
           transition={{
@@ -1099,51 +1095,43 @@ function PhoneMockup3D() {
             ease: "easeInOut",
           }}
           whileHover={{
-            scale: 1.035,
-            rotateY: -5,
-            rotateX: 4,
-            transition: { duration: 0.35, ease: "easeOut" },
+            scale: 1.025,
+            y: -4,
+            transition: { duration: 0.3, ease: "easeOut" },
           }}
         >
-          {/* Hardware Buttons - Left Edge (Subtle Action & Volume Buttons) */}
+          {/* Hardware Buttons - Left Edge */}
           <span
             className="absolute -start-[3px] top-[95px] h-[18px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
             aria-hidden="true"
           />
           <span
-            className="absolute -start-[3px] top-[128px] h-[40px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
+            className="absolute -start-[3px] top-[128px] h-[38px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
             aria-hidden="true"
           />
           <span
-            className="absolute -start-[3px] top-[178px] h-[40px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
+            className="absolute -start-[3px] top-[174px] h-[38px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
             aria-hidden="true"
           />
 
-          {/* Hardware Button - Right Edge (Power/Side Button facing 3D extrusion) */}
+          {/* Hardware Button - Right Edge (Power/Side Button) */}
           <span
-            className="absolute -end-[4px] top-[135px] h-[54px] w-[4px] rounded-e-sm bg-gradient-to-b from-[#4a524e] to-[#1a1e1b] shadow-md"
+            className="absolute -end-[3.5px] top-[135px] h-[52px] w-[3.5px] rounded-e-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
             aria-hidden="true"
           />
 
-          {/* Phone Outer Chassis with 3D Extruded Box Shadow on Right and Bottom */}
+          {/* Phone Outer Chassis with Premium Upright Bezel & Symmetrical Shadow */}
           <div
             className="relative w-[255px] rounded-[48px] bg-[#121513] p-[8px] sm:w-[285px] sm:rounded-[52px] sm:p-[9px]"
             style={{
               boxShadow: `
-                1px 1px 0px #404844,
-                2px 2px 0px #373f3b,
-                3px 3px 0px #2f3632,
-                4px 4px 0px #272d2a,
-                5px 5px 0px #202522,
-                6px 6px 0px #191d1b,
-                7px 7px 0px #131614,
-                8px 8px 0px #0e100f,
-                9px 9px 2px rgba(0, 0, 0, 0.45),
-                inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
-                inset -1.5px 0 1.5px rgba(255, 255, 255, 0.25),
-                inset 1.5px -1.5px 2px rgba(0, 0, 0, 0.75),
-                18px 26px 50px -10px rgba(65, 115, 96, 0.38),
-                28px 48px 80px -18px rgba(0, 0, 0, 0.6)
+                0 0 0 1px rgba(255, 255, 255, 0.12),
+                0 0 0 3px #232926,
+                0 0 0 4px #121513,
+                0 24px 60px -12px rgba(0, 0, 0, 0.38),
+                0 12px 28px -8px rgba(20, 68, 52, 0.22),
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.4),
+                inset 0 -1.5px 2px rgba(0, 0, 0, 0.75)
               `,
             }}
           >
@@ -1161,16 +1149,16 @@ function PhoneMockup3D() {
                 className="block h-auto w-full object-cover"
               />
 
-              {/* 3D Glass Specular Reflection Glare Overlay */}
+              {/* Glass Specular Reflection Glare Overlay */}
               <div
                 className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-[40px] sm:rounded-[43px]"
                 aria-hidden="true"
               >
                 <div
-                  className="absolute -inset-full opacity-70 dark:opacity-40"
+                  className="absolute -inset-full opacity-55 dark:opacity-30"
                   style={{
                     background:
-                      "linear-gradient(125deg, transparent 35%, rgba(255,255,255,0.32) 44%, rgba(255,255,255,0.08) 53%, transparent 62%)",
+                      "linear-gradient(135deg, transparent 38%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.05) 54%, transparent 64%)",
                   }}
                 />
                 {/* Bezel Inner Ring Highlight */}
