@@ -6,7 +6,15 @@ import { usePathname } from "next/navigation";
 import { BookOpen, Bookmark, Search, Globe, ArrowLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const BLOG_NAV_ITEMS = [
+export interface BlogNavItem {
+  href: string;
+  bn: string;
+  en: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number | string }>;
+  badge?: string;
+}
+
+export const BLOG_NAV_ITEMS: BlogNavItem[] = [
   { href: "/", bn: "ইসলাহ ওয়েব", en: "Islah Web", icon: Globe },
   { href: "/blog", bn: "নিউজফিড", en: "Newsfeed", icon: BookOpen },
   { href: "/blog/bookmarks", bn: "সংরক্ষিত", en: "Saved", icon: Bookmark },
