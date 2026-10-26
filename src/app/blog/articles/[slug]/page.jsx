@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { sampleArticles } from '@/lib/sirat/sampleData';
 import { fetchSiratArticleBySlug, fetchSiratArticles } from '@/lib/sirat/sirat-api';
 import ReadingProgressBar from '@/components/sirat/ui/ReadingProgressBar';
 import ArticleHeader from '@/components/sirat/article/ArticleHeader';
@@ -18,9 +17,8 @@ export default function ArticlePage() {
   const params = useParams();
   const slug = params.slug;
 
-  const [article, setArticle] = useState(() => {
-    return sampleArticles.find((a) => a.slug === slug) || null;
-  });
+  const [article, setArticle] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   const [related, setRelated] = useState([]);
   const [fontSize, setFontSize] = useState('normal');
 
@@ -28,7 +26,9 @@ export default function ArticlePage() {
   useEffect(() => {
     let alive = true;
     fetchSiratArticleBySlug(slug).then((found) => {
-      if (!alive || !found) return;
+      if (!alive) return;
+      setLoaded(true);
+      if (!found) return;
       setArticle(found);
       fetchSiratArticles({ topicSlug: found.topicSlug }).then(
         (list) => alive && setRelated(list.filter((a) => a.slug !== found.slug).slice(0, 2))
@@ -38,6 +38,10 @@ export default function ArticlePage() {
       alive = false;
     };
   }, [slug]);
+
+  if (!article && !loaded) {
+    return <div className="mx-auto w-full max-w-[760px] py-16 text-center text-sm text-ink-3 font-kalpurush">লোড হচ্ছে…</div>;
+  }
 
   if (!article) {
     return (
@@ -76,15 +80,14 @@ export default function ArticlePage() {
 
         {/* Actions Bar */}
         <ArticleActions
-          articleId={article.id}
-          initialJazakallah={article.jazakallahCount || 24}
+          article={article}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
           commentCount={article.commentCount ?? 0}
         />
 
         {/* In-feed Comments Section */}
-        <CommentSection articleId={article.id} />
+        <CommentSection slug={article.slug} />
       </div>
 
       {/* Related Posts */}

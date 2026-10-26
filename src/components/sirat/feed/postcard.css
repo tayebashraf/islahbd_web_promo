@@ -194,10 +194,10 @@
 /* Post Title: Harmonious Serif, gentle 1.05rem, eye-soothing slate-ink */
 .fb-post-title {
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
-  font-size: 1.05rem; /* ~16.8px — 1 gentle size above body, perfectly balanced */
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1E293B;
-  line-height: 1.55;
+  line-height: 1.5;
   letter-spacing: -0.01em;
   margin: 0 0 8px 0;
   transition: color var(--duration-fast);
@@ -229,10 +229,13 @@
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
   font-size: 0.95rem; /* ~15.2px */
   font-weight: 400;
-  line-height: 1.7;
+  line-height: 1.65;
   color: #334155; /* Soft deep charcoal slate — completely eliminates harsh glare */
-  /* Start-aligned: justifying Bangla spreads letters and words unevenly. */
-  text-align: start;
+  /* Justified between words only (inter-character justification spread Bangla letters apart). */
+  text-align: justify;
+  text-justify: inter-word;
+  /* Each line takes its own direction, so Urdu / Arabic lines run right to left. */
+  unicode-bidi: plaintext;
   word-break: break-word;
   overflow-wrap: break-word;
   margin: 0;
@@ -243,13 +246,16 @@
 }
 
 .fb-post-text p {
-  text-align: start;
+  text-align: justify;
+  text-justify: inter-word;
+  unicode-bidi: plaintext;
   word-break: break-word;
   overflow-wrap: break-word;
-  margin-bottom: 10px;
+  margin-bottom: 0.6em;
 }
 
 .fb-post-text--clamped {
+  white-space: pre-line;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
@@ -1397,4 +1403,83 @@
     padding: 10px 12px;
     gap: 8px;
   }
+}
+
+
+/* ============================================================
+   REACTIONS — জাযাকাল্লাহ button, picker and view counter
+   ============================================================ */
+
+.fb-reaction-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.fb-reaction-btn-label {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.fb-reaction-btn-count {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+}
+
+.fb-calligraphy-popup-item {
+  flex-direction: column;
+  gap: 3px;
+  width: 50px;
+  padding: 4px 0 2px;
+  border-radius: 14px;
+}
+
+.fb-calligraphy-popup-item:hover {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.fb-calligraphy-popup-item.is-selected {
+  background: var(--color-brand-subtle, rgba(16, 185, 129, 0.12));
+}
+
+.fb-calligraphy-popup-label {
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.fb-arabic-reaction-popup {
+  gap: 2px;
+  padding: 6px 6px 4px;
+  border-radius: 20px;
+}
+
+.fb-commenter-name {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-primary);
+  font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.fb-commenter-name:focus {
+  border-color: var(--color-brand-primary);
+}
+
+.fb-comment-empty {
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  padding: 8px 0;
 }

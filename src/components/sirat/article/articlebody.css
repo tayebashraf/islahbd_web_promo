@@ -10,7 +10,7 @@
 .article-body-content {
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
   font-size: 1.05rem; /* ~16.8px — comfortable reading size */
-  line-height: 1.75;
+  line-height: 1.7;
   color: #334155; /* Soft deep charcoal slate — prevents eye strain */
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -20,13 +20,15 @@
   color: #CBD5E1;
 }
 
-/* Start-aligned: justifying Bangla spreads letters and words unevenly. */
+/* Justified between words only; each line takes its own direction (Urdu / Arabic run RTL). */
 .article-body-content p {
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
-  text-align: start;
+  text-align: justify;
+  text-justify: inter-word;
+  unicode-bidi: plaintext;
   word-break: break-word;
   overflow-wrap: break-word;
-  margin-bottom: 14px;
+  margin-bottom: 0.75em;
 }
 
 /* Subheadings: Kalpurush, 1-2 Sizes Larger than Body */

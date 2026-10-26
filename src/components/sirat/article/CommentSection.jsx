@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@/components/sirat/ui/Avatar';
-import VerifiedBadge from '@/components/sirat/author/VerifiedBadge';
-import { Sparkles, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useToast } from '@/components/sirat/ui/ToastContext';
 import { DUROOD_SUGGESTIONS } from '@/components/sirat/feed/PostCard';
 import { getAdabTerminology } from '@/lib/sirat/adabUtils';
+import { fetchSiratComments, postSiratComment } from '@/lib/sirat/sirat-api';
 import './commentsection.css';
 
 function toBanglaNum(num) {
@@ -14,77 +14,116 @@ function toBanglaNum(num) {
   return String(num || 0).replace(/[0-9]/g, (d) => banglaDigits[d]);
 }
 
-const initialComments = [
-  {
-    id: 'c1',
-    authorName: 'মুহাম্মাদ খালিদ',
-    authorAvatar: '',
-    isVerified: true,
-    time: '২ ঘন্টা আগে',
-    text: 'মাশাআল্লাহ, অত্যন্ত চমৎকার ও প্রামাণ্য আলোচনা। বিশেষ করে তায়েফের ঘটনার শিক্ষাগুলো আমাদের জীবনের জন্য দিকনির্দেশনা স্বরূপ।',
-    jazakallahCount: 14,
-    isDurood: false,
-  },
-  {
-    id: 'c2',
-    authorName: 'তাহমিদ হাসান',
-    authorAvatar: '',
-    isVerified: false,
-    time: '৫ ঘন্টা আগে',
-    text: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
-    jazakallahCount: 8,
-    isDurood: true,
-  },
-];
+const COMMENTER_KEY = 'sirat_commenter_name';
+const isDuroodText = (t) => t.includes('صَلَّى') || t.includes('صَلِّ') || t.includes('ﷺ');
 
-export const CommentSection = ({ articleId }) => {
-  const [comments, setComments] = useState(initialComments);
+function timeAgo(iso) {
+  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (!iso || Number.isNaN(mins) || mins < 1) return 'এইমাত্র';
+  if (mins < 60) return `${toBanglaNum(mins)} মিনিট আগে`;
+  if (mins < 1440) return `${toBanglaNum(Math.floor(mins / 60))} ঘণ্টা আগে`;
+  return `${toBanglaNum(Math.floor(mins / 1440))} দিন আগে`;
+}
+
+const toComment = (c) => ({
+  id: c.id,
+  authorName: c.authorName,
+  time: timeAgo(c.createdAt),
+  text: c.text,
+  isDurood: isDuroodText(c.text || ''),
+  replies: (c.replies || []).map(toComment),
+});
+
+/** Readers' comments on a post, saved on the server (none are invented). */
+export const CommentSection = ({ slug }) => {
+  const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [commentName, setCommentName] = useState('');
+  const [replyTo, setReplyTo] = useState(null);
   const { success, error } = useToast();
 
-  const handleQuickDurood = (item) => {
-    const newComment = {
-      id: 'c_' + Date.now(),
-      authorName: commentName.trim() || 'মুফতী আব্দুল্লাহ',
-      authorAvatar: '',
-      isVerified: false,
-      time: 'এইমাত্র',
-      text: item.arabic,
-      jazakallahCount: 0,
-      isDurood: true,
+  useEffect(() => {
+    let alive = true;
+    if (slug) fetchSiratComments(slug).then((list) => alive && setComments(list.map(toComment)));
+    try {
+      const saved = localStorage.getItem(COMMENTER_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- restore the saved name after hydration
+      if (saved) setCommentName(saved);
+    } catch {}
+    return () => {
+      alive = false;
     };
-    setComments([newComment, ...comments]);
-    success(`صلى الله عليه وسلم — "${item.arabic}" দরূদ শরীফ পেশ করা হয়েছে!`);
+  }, [slug]);
+
+  const send = async (text) => {
+    const name = commentName.trim();
+    if (!name) {
+      error('মন্তব্য করার আগে আপনার নাম লিখুন');
+      return false;
+    }
+    try {
+      localStorage.setItem(COMMENTER_KEY, name);
+    } catch {}
+    const saved = await postSiratComment(slug, { authorName: name, text, ...(replyTo ? { parent: replyTo.id } : {}) });
+    if (!saved?.id) {
+      error('মন্তব্য পাঠানো যায়নি, আবার চেষ্টা করুন');
+      return false;
+    }
+    if (saved.status && saved.status !== 'approved') {
+      success('ধন্যবাদ! অনুমোদনের পর মন্তব্যটি দেখা যাবে');
+    } else {
+      const entry = toComment(saved);
+      setComments((prev) =>
+        replyTo ? prev.map((c) => (c.id === replyTo.id ? { ...c, replies: [...c.replies, entry] } : c)) : [entry, ...prev]
+      );
+      success('আপনার মন্তব্য প্রকাশিত হয়েছে। জাযাকাল্লাহ!');
+    }
+    setReplyTo(null);
+    return true;
   };
 
-  const handleAddComment = (e) => {
+  const handleQuickDurood = (item) => send(item.arabic);
+
+  const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) {
       error('দয়া করে মন্তব্য বা দরূদ লিখুন');
       return;
     }
+    if (await send(commentText.trim())) setCommentText('');
+  };
 
-    const isArabicDurood =
-      commentText.includes('صَلَّى') ||
-      commentText.includes('صَلِّ') ||
-      commentText.includes('ﷺ');
-
-    const newComment = {
-      id: 'c_' + Date.now(),
-      authorName: commentName.trim() || 'মুফতী আব্দুল্লাহ',
-      authorAvatar: '',
-      isVerified: false,
-      time: 'এইমাত্র',
-      text: commentText.trim(),
-      jazakallahCount: 0,
-      isDurood: isArabicDurood,
-    };
-
-    setComments([newComment, ...comments]);
-    setCommentText('');
-    setCommentName('');
-    success('আপনার মন্তব্য প্রকাশিত হয়েছে। জাযাকাল্লাহ!');
+  const renderComment = (comment, isReply = false) => {
+    const cAdab = getAdabTerminology({
+      currentUser: { name: 'পাঠক', seniorityRank: 2 },
+      targetPerson: { name: comment.authorName, seniorityRank: 1 },
+      isReplying: true,
+    });
+    return (
+      <div key={comment.id} className="fb-comment-bubble-row" style={isReply ? { marginLeft: 36 } : undefined}>
+        <Avatar name={comment.authorName} size="sm" />
+        <div className="fb-comment-bubble-content">
+          <div className={`fb-comment-bubble ${comment.isDurood ? 'fb-comment-bubble--durood' : ''}`}>
+            <div className="fb-comment-bubble__head">
+              <span className="fb-comment-bubble__author-name">{comment.authorName}</span>
+            </div>
+            <p className={comment.isDurood ? 'fb-comment-bubble__arabic-durood' : 'fb-comment-bubble__text'}>{comment.text}</p>
+          </div>
+          <div className="fb-comment-action-row">
+            {!isReply && (
+              <>
+                <button type="button" className="fb-comment-action-btn" onClick={() => setReplyTo(comment)}>
+                  {cAdab.replyBtnLabel}
+                </button>
+                <span className="fb-comment-dot">•</span>
+              </>
+            )}
+            <span className="fb-comment-time">{comment.time}</span>
+          </div>
+          {comment.replies?.map((r) => renderComment(r, true))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -110,9 +149,26 @@ export const CommentSection = ({ articleId }) => {
         </div>
       </div>
 
-      {/* Modern Facebook-Style Comment Form */}
+      {replyTo && (
+        <div className="fb-comment-replying-banner fade-in">
+          <span>{replyTo.authorName}-এর মন্তব্যে উত্তর দিচ্ছেন</span>
+          <button type="button" className="fb-comment-replying-cancel" onClick={() => setReplyTo(null)}>
+            ✕ বাতিল
+          </button>
+        </div>
+      )}
+
+      <input
+        className="fb-commenter-name"
+        type="text"
+        placeholder="আপনার নাম"
+        value={commentName}
+        onChange={(e) => setCommentName(e.target.value)}
+        maxLength={60}
+        aria-label="আপনার নাম"
+      />
       <form className="fb-comment-input-row" onSubmit={handleAddComment}>
-        <Avatar name="মুফতী আব্দুল্লাহ" size="sm" />
+        <Avatar name={commentName || 'পাঠক'} size="sm" />
         <div className="fb-comment-input-wrap">
           <input
             type="text"
@@ -120,87 +176,18 @@ export const CommentSection = ({ articleId }) => {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
           />
-          <button
-            type="submit"
-            className="fb-comment-send-btn"
-            aria-label="মন্তব্য পাঠান"
-            disabled={!commentText.trim()}
-          >
+          <button type="submit" className="fb-comment-send-btn" aria-label="মন্তব্য পাঠান" disabled={!commentText.trim()}>
             <Send size={15} />
           </button>
         </div>
       </form>
 
-      {/* Comments Bubble Stream */}
       <div className="fb-comment-bubble-list" style={{ marginTop: '16px' }}>
-        {comments.map((comment) => {
-          const cAdab = getAdabTerminology({
-            currentUser: { name: 'মুফতী আব্দুল্লাহ', seniorityRank: 2 },
-            targetPerson: { name: comment.authorName, seniorityRank: comment.seniorityRank || 1 },
-            isReplying: true,
-          });
-
-          return (
-            <div key={comment.id} className="fb-comment-bubble-row">
-              <Avatar name={comment.authorName} size="sm" />
-              <div className="fb-comment-bubble-content">
-                <div
-                  className={`fb-comment-bubble ${
-                    comment.isDurood ? 'fb-comment-bubble--durood' : ''
-                  }`}
-                >
-                  <div className="fb-comment-bubble__head">
-                    <span className="fb-comment-bubble__author-name">
-                      {comment.authorName}
-                    </span>
-                    {comment.isVerified && <VerifiedBadge size={10} showLabel={false} />}
-                  </div>
-
-                  {comment.isDurood ? (
-                    <p className="fb-comment-bubble__arabic-durood">{comment.text}</p>
-                  ) : (
-                    <p className="fb-comment-bubble__text">{comment.text}</p>
-                  )}
-                </div>
-
-                {/* Clean Action Row (জাযাকাল্লাহ • আরজ/প্রস্তাবনা/উত্তর • সময়) */}
-                <div className="fb-comment-action-row">
-                  <button
-                    type="button"
-                    className="fb-comment-action-btn fb-comment-action-btn--jazakallah"
-                    onClick={() => {
-                      setComments((prev) =>
-                        prev.map((item) =>
-                          item.id === comment.id
-                            ? { ...item, jazakallahCount: (item.jazakallahCount || 0) + 1 }
-                            : item
-                        )
-                      );
-                      success('মন্তব্যে জাযাকাল্লাহ জানানো হয়েছে');
-                    }}
-                  >
-                    <span>জাযাকাল্লাহ</span>
-                    {comment.jazakallahCount > 0 && (
-                      <span className="fb-comment-action-count">
-                        {toBanglaNum(comment.jazakallahCount)}
-                      </span>
-                    )}
-                  </button>
-                  <span className="fb-comment-dot">•</span>
-                  <button
-                    type="button"
-                    className="fb-comment-action-btn"
-                    onClick={() => setCommentText(`@${comment.authorName} `)}
-                  >
-                    {cAdab.replyBtnLabel}
-                  </button>
-                  <span className="fb-comment-dot">•</span>
-                  <span className="fb-comment-time">{comment.time}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {comments.length === 0 ? (
+          <p className="fb-comment-empty">এখনো কোনো মন্তব্য নেই — প্রথম মন্তব্যটি আপনার হোক।</p>
+        ) : (
+          comments.map((c) => renderComment(c))
+        )}
       </div>
     </section>
   );

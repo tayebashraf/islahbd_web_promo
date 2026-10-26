@@ -86,7 +86,6 @@ export interface SiratCommentItem {
 
 // In-Memory store for offline state updates
 let localArticles: any[] = [...sampleArticles];
-let localComments: Record<string, SiratCommentItem[]> = {};
 
 export async function fetchSiratArticles(params: {
   topicSlug?: string;
@@ -113,21 +112,8 @@ export async function fetchSiratArticles(params: {
     // Network fallback
   }
 
-  // Fallback to local memory / sample data
-  let list = localArticles;
-  if (params.topicSlug) {
-    list = list.filter((a) => a.topicSlug === params.topicSlug);
-  }
-  if (params.authorId) {
-    list = list.filter((a) => a.authorId === params.authorId);
-  }
-  if (params.status) {
-    list = list.filter((a) => (a.status || "published") === params.status);
-  }
-  if (params.featured !== undefined) {
-    list = list.filter((a) => Boolean(a.featured) === params.featured);
-  }
-  return list;
+  // No demo posts: when the API is unreachable the feed is simply empty.
+  return [];
 }
 
 export async function fetchSiratArticleBySlug(slug: string): Promise<SiratArticleItem | null> {
@@ -142,7 +128,7 @@ export async function fetchSiratArticleBySlug(slug: string): Promise<SiratArticl
     // Network fallback
   }
 
-  return localArticles.find((a) => a.slug === slug) || null;
+  return null;
 }
 
 export async function recordJazakallah(slug: string, deviceId: string = "web-client"): Promise<{ jazakallahCount: number }> {
@@ -238,7 +224,7 @@ export async function fetchSiratTopics(): Promise<SiratTopicItem[]> {
     }
   } catch (err) {}
 
-  return sampleTopics as any;
+  return [];
 }
 
 export async function fetchSiratAuthors(): Promise<SiratAuthorItem[]> {
@@ -307,18 +293,13 @@ export async function fetchSiratComments(slug: string): Promise<SiratCommentItem
     }
   } catch (err) {}
 
-  return localComments[slug] || [
-    {
-      id: "demo-comment-1",
-      authorName: "মাওলানা আব্দুল কাদের",
-      text: "জাযাকাল্লাহ খাইরান। অত্যন্ত সময়োপযোগী এবং প্রামাণ্য রচনা। আল্লাহ লেখককে উত্তম প্রতিদান দান করুন।",
-      likes: 12,
-      createdAt: "১ দিন আগে",
-    },
-  ];
+  return [];
 }
 
-export async function postSiratComment(slug: string, commentData: { authorName: string; text: string; authorEmail?: string }): Promise<SiratCommentItem> {
+export async function postSiratComment(
+  slug: string,
+  commentData: { authorName: string; text: string; authorEmail?: string; parent?: number | string },
+): Promise<(SiratCommentItem & { status?: string }) | null> {
   try {
     const res = await fetch(`${API_BASE}/api/sirat/articles/${slug}/comments/`, {
       method: "POST",
@@ -330,16 +311,8 @@ export async function postSiratComment(slug: string, commentData: { authorName: 
     }
   } catch (err) {}
 
-  const newComment: SiratCommentItem = {
-    id: `c-${Date.now()}`,
-    authorName: commentData.authorName,
-    text: commentData.text,
-    likes: 0,
-    createdAt: "এইমাত্র",
-  };
-  if (!localComments[slug]) localComments[slug] = [];
-  localComments[slug].unshift(newComment);
-  return newComment;
+  // Nothing is faked: the caller reports the failure.
+  return null;
 }
 
 export async function fetchSiratAnalytics(): Promise<any> {

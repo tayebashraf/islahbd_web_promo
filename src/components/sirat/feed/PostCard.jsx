@@ -7,13 +7,7 @@ import VerifiedBadge from '@/components/sirat/author/VerifiedBadge';
 import Modal from '@/components/sirat/ui/Modal';
 import { useToast } from '@/components/sirat/ui/ToastContext';
 import { getAuthorById } from '@/lib/sirat/sampleData';
-import {
-  ARABIC_CALLIGRAPHY_LIST,
-  ARABIC_CALLIGRAPHY_MAP,
-  CalligraphyJazakallahIcon,
-  CalligraphyMashaallahIcon,
-  CalligraphySalawatIcon,
-} from '@/components/sirat/ui/ArabicCalligraphyIcons';
+import { ReactionButton, useReaction } from '@/components/sirat/ui/Reactions';
 import {
   MessageSquare,
   Share2,
@@ -35,7 +29,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { useAuth } from '@/lib/sirat/auth';
-import { recordArticleView } from '@/lib/sirat/sirat-api';
+import { fetchSiratComments, postSiratComment, recordArticleView } from '@/lib/sirat/sirat-api';
 import { sampleTopics } from '@/lib/sirat/sampleData';
 import { getQuoteFontSize } from './CreatePostBox';
 import { getAdabTerminology } from '@/lib/sirat/adabUtils';
@@ -72,6 +66,21 @@ function formatTimestamp(ts) {
 const VIEW_COUNT_MULTIPLIER = 3;
 
 // Pre-defined Quick Durood Suggestions (কুরআনুল কারীমের খাঁটি আরবি ফন্টে)
+const COMMENTER_KEY = 'sirat_commenter_name';
+const isDuroodText = (t) => t.includes('صَلَّى') || t.includes('صَلِّ') || t.includes('ﷺ');
+
+/** API comment → the shape the comment list renders. */
+function toComment(c) {
+  return {
+    id: c.id,
+    name: c.authorName,
+    text: c.text,
+    time: c.createdAt ? formatTimestamp(c.createdAt) : 'এইমাত্র',
+    isDurood: isDuroodText(c.text || ''),
+    replies: (c.replies || []).map(toComment),
+  };
+}
+
 /** The API sends `{}` for a post's unused quiz / quote data; treat that as none. */
 function normalizePost(article) {
   const filled = (d) => (d && typeof d === 'object' && Object.keys(d).length > 0 ? d : null);
@@ -112,7 +121,7 @@ export const PostCard = ({ article }) => {
 
   const author = getAuthorById(currentArticle.authorId);
   const postAdab = getAdabTerminology({
-    currentUser: { name: 'মুফতী আব্দুল্লাহ', seniorityRank: 2 },
+    currentUser: { name: 'পাঠক', seniorityRank: 2 },
     targetPerson: author,
   });
 
@@ -131,30 +140,11 @@ export const PostCard = ({ article }) => {
 
   const [expanded, setExpanded] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [reactionPopupOpen, setReactionPopupOpen] = useState(false);
   const [duroodDraftOpen, setDuroodDraftOpen] = useState(false);
-  const [currentReaction, setCurrentReaction] = useState(null);
-  const [reactionsCount, setReactionsCount] = useState(currentArticle.jazakallahCount || 35);
-  const [comments, setComments] = useState([
-    {
-      id: 'c1',
-      name: 'তাহমিদ হাসান',
-      seniorityRank: 1,
-      text: 'মাশাআল্লাহ, অত্যন্ত চমৎকার ও প্রামাণ্য আলোচনা। জাযাকাল্লাহু খাইরান!',
-      time: '১ ঘন্টা আগে',
-      isDurood: false,
-      replies: [],
-    },
-    {
-      id: 'c2',
-      name: 'শায়খ আহমাদ আলী',
-      seniorityRank: 3,
-      text: 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ',
-      time: '৩ ঘন্টা আগে',
-      isDurood: true,
-      replies: [],
-    },
-  ]);
+  const reaction = useReaction(article);
+  const [comments, setComments] = useState([]);
+  // Commenter name: the signed-in account, else the name this reader typed before.
+  const [commenterName, setCommenterName] = useState('');
   const [commentInput, setCommentInput] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -182,6 +172,24 @@ export const PostCard = ({ article }) => {
   const cardRef = useRef(null);
   const [viewCount, setViewCount] = useState(article.viewCount || 0);
 
+  // Real comments from the server (none are invented here).
+  useEffect(() => {
+    let alive = true;
+    if (article.slug) {
+      fetchSiratComments(article.slug).then((list) => alive && setComments(list.map(toComment)));
+    }
+    let saved = '';
+    try {
+      saved = localStorage.getItem(COMMENTER_KEY) || '';
+    } catch {}
+    const name = user?.displayName || userProfile?.displayName || saved;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- restore the saved name after hydration
+    if (name) setCommenterName(name);
+    return () => {
+      alive = false;
+    };
+  }, [article.slug, user?.displayName, userProfile?.displayName]);
+
   // Count a view once per browser session when the post is actually seen.
   useEffect(() => {
     const el = cardRef.current;
@@ -207,7 +215,6 @@ export const PostCard = ({ article }) => {
     return () => observer.disconnect();
   }, [article.slug]);
   const { success, error, info } = useToast();
-  const hoverTimeoutRef = useRef(null);
   const commentInputRef = useRef(null);
 
   // Close options dropdown on outside click
@@ -390,57 +397,39 @@ export const PostCard = ({ article }) => {
     }
   };
 
-  const handleMouseEnterContainer = () => {
-    clearTimeout(hoverTimeoutRef.current);
-    setReactionPopupOpen(true);
-  };
-
-  const handleMouseLeaveContainer = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setReactionPopupOpen(false);
-    }, 250);
-  };
-
-  const handleDefaultReactionToggle = (e) => {
-    e.stopPropagation();
-    if (currentReaction) {
-      setCurrentReaction(null);
-      setReactionsCount((c) => Math.max(0, c - 1));
-    } else {
-      const defaultReact = ARABIC_CALLIGRAPHY_MAP.jazakallah;
-      setCurrentReaction(defaultReact);
-      setReactionsCount((c) => c + 1);
-      success(`${defaultReact.arabic} — জানানো হয়েছে`);
+  /** Saves a comment (or reply) on the server, then shows it. */
+  const sendComment = async (text, parent) => {
+    const name = commenterName.trim();
+    if (!name) {
+      error('মন্তব্য করার আগে আপনার নাম লিখুন');
+      return false;
     }
-  };
-
-  const handleSelectReaction = (e, reactObj) => {
-    e.stopPropagation();
-    if (!currentReaction) {
-      setReactionsCount((c) => c + 1);
+    try {
+      localStorage.setItem(COMMENTER_KEY, name);
+    } catch {}
+    const saved = await postSiratComment(currentArticle.slug, { authorName: name, text, ...(parent ? { parent } : {}) });
+    if (!saved?.id || String(saved.id).startsWith('local')) {
+      error('মন্তব্য পাঠানো যায়নি, আবার চেষ্টা করুন');
+      return false;
     }
-    setCurrentReaction(reactObj);
-    setReactionPopupOpen(false);
-    success(`${reactObj.arabic} (${reactObj.bangla})`);
+    if (saved.status && saved.status !== 'approved') {
+      success('ধন্যবাদ! অনুমোদনের পর মন্তব্যটি দেখা যাবে');
+      return true;
+    }
+    const entry = toComment(saved);
+    setComments((prev) =>
+      parent ? prev.map((c) => (c.id === parent ? { ...c, replies: [...(c.replies || []), entry] } : c)) : [entry, ...prev]
+    );
+    return true;
   };
 
-  const handleQuickDuroodSend = (duroodItem) => {
-    const newComment = {
-      id: 'c_' + Date.now(),
-      name: 'মুফতী আব্দুল্লাহ',
-      text: duroodItem.arabic,
-      time: 'এইমাত্র',
-      isDurood: true,
-      replies: [],
-    };
-    // New comments & Durood always added at the top
-    setComments((prev) => [newComment, ...prev]);
-    success(`صلى الله عليه وسلم — "${duroodItem.arabic}" দরূদ শরীফ শীর্ষে যুক্ত হয়েছে!`);
+  const handleQuickDuroodSend = async (duroodItem) => {
+    if (await sendComment(duroodItem.arabic)) success('দরূদ শরীফ যুক্ত হয়েছে');
   };
 
   const handleStartReply = (comment) => {
     const replyAdab = getAdabTerminology({
-      currentUser: { name: 'মুফতী আব্দুল্লাহ', seniorityRank: 2 },
+      currentUser: { name: 'পাঠক', seniorityRank: 2 },
       targetPerson: { name: comment.name, seniorityRank: comment.seniorityRank },
       isReplying: true,
     });
@@ -456,42 +445,14 @@ export const PostCard = ({ article }) => {
     }
   };
 
-  const handleAddComment = (e) => {
+  const handleAddComment = async (e) => {
     e.preventDefault();
-    if (!commentInput.trim()) return;
-
-    const isArabicDurood =
-      commentInput.includes('صَلَّى') ||
-      commentInput.includes('صَلِّ') ||
-      commentInput.includes('ﷺ');
-
-    const newEntry = {
-      id: 'c_' + Date.now(),
-      name: 'মুফতী আব্দুল্লাহ',
-      text: commentInput.trim(),
-      time: 'এইমাত্র',
-      isDurood: isArabicDurood,
-      replies: [],
-    };
-
-    if (replyingTo) {
-      // Direct nested reply appended under that specific comment
-      setComments((prev) =>
-        prev.map((c) =>
-          c.id === replyingTo.id
-            ? { ...c, replies: [...(c.replies || []), newEntry] }
-            : c
-        )
-      );
-      success(`${replyingTo.name}-এর মন্তব্যে উত্তর দেওয়া হয়েছে`);
+    const text = commentInput.trim();
+    if (!text) return;
+    if (await sendComment(text, replyingTo?.id)) {
       setReplyingTo(null);
-    } else {
-      // New top-level comment added to the very top
-      setComments((prev) => [newEntry, ...prev]);
-      success('আপনার নতুন মন্তব্যটি শীর্ষে যুক্ত হয়েছে');
+      setCommentInput('');
     }
-
-    setCommentInput('');
   };
 
   const handleCopyLink = () => {
@@ -579,7 +540,15 @@ export const PostCard = ({ article }) => {
     return null;
   }
 
-  const rawText = currentArticle.content?.replace(/<[^>]+>/g, '') || currentArticle.excerpt || '';
+  // Keep line breaks so each line (e.g. an Urdu line above Bangla) keeps its own direction.
+  const rawText =
+    currentArticle.content
+      ?.replace(/<br\s*\/?>|<\/p>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\n{2,}/g, '\n')
+      .trim() ||
+    currentArticle.excerpt ||
+    '';
   // Posts belong to a topic profile ("সিরাত কুইজ", "আত্মশুদ্ধি", ...), not a person.
   const topic = currentArticle.topicDetails;
   const profile = {
@@ -937,91 +906,17 @@ export const PostCard = ({ article }) => {
 
       {/* 3. Engagement Counters Row with Overlapping Round Circles (FB Style) */}
       <div className="fb-post-stats">
-        <div className="fb-stats-badge-cluster">
-          <div className="fb-overlapping-circles">
-            <span className="fb-overlapping-circle-wrap" style={{ zIndex: 3 }} title="جَزَاكَ ٱللَّٰهُ">
-              <CalligraphyJazakallahIcon size={19} />
-            </span>
-            <span className="fb-overlapping-circle-wrap" style={{ zIndex: 2 }} title="مَا شَاءَ ٱللَّٰهُ">
-              <CalligraphyMashaallahIcon size={19} />
-            </span>
-            <span className="fb-overlapping-circle-wrap" style={{ zIndex: 1 }} title="ﷺ صَلَّى ٱللَّٰهُ">
-              <CalligraphySalawatIcon size={19} />
-            </span>
-          </div>
-
-          <span style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 'var(--weight-semibold)' }}>
-            {toBanglaNum(reactionsCount)}
-          </span>
-        </div>
-
         <div className="fb-post-stats-right">
           <span className="fb-post-views" title="এই পোস্টটি যতজন দেখেছেন">
             <Eye size={14} />
             {toBanglaNum(viewCount * VIEW_COUNT_MULTIPLIER)}
-          </span>
-          <span onClick={() => setCommentsOpen(!commentsOpen)} style={{ cursor: 'pointer' }}>
-            {toBanglaNum(comments.length)} টি {postAdab.actionBtnLabel}
           </span>
         </div>
       </div>
 
       {/* 4. Action Buttons Bar (Unified: جَزَاكَ ٱللَّٰهُ, মন্তব্য ও দরূদ, শেয়ার) */}
       <div className="fb-post-actions-bar">
-        {/* Arabic Reaction Container */}
-        <div
-          className="fb-arabic-reaction-container"
-          onMouseEnter={handleMouseEnterContainer}
-          onMouseLeave={handleMouseLeaveContainer}
-        >
-          {/* Circular Reaction Popup Bar */}
-          {reactionPopupOpen && (
-            <div className="fb-arabic-reaction-popup" role="tooltip" onMouseEnter={handleMouseEnterContainer}>
-              {ARABIC_CALLIGRAPHY_LIST.map((react) => {
-                const IconComp = react.Icon;
-                return (
-                  <button
-                    key={react.id}
-                    type="button"
-                    className="fb-calligraphy-popup-item"
-                    onClick={(e) => handleSelectReaction(e, react)}
-                    aria-label={react.arabic}
-                  >
-                    <IconComp size={44} />
-                    <span className="fb-calligraphy-tooltip">{react.arabic}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Main Reaction Trigger Button (Arabic جَزَاكَ ٱللَّٰهُ) */}
-          <button
-            type="button"
-            className={`fb-post-action-btn ${
-              currentReaction ? 'fb-post-action-btn--selected' : ''
-            }`}
-            onClick={handleDefaultReactionToggle}
-            aria-label="جَزَاكَ ٱللَّٰهُ প্রতিক্রিয়া দিন"
-            style={{ color: currentReaction ? currentReaction.color : 'inherit' }}
-          >
-            {currentReaction ? (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <currentReaction.Icon size={20} />
-                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
-                  {currentReaction.arabic}
-                </span>
-              </span>
-            ) : (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <CalligraphyJazakallahIcon size={20} />
-                <span style={{ fontFamily: 'var(--font-arabic-calligraphy), var(--sirat-font-arabic), serif', fontSize: '1.05rem', fontWeight: 'bold' }}>
-                  جَزَاكَ ٱللَّٰهُ
-                </span>
-              </span>
-            )}
-          </button>
-        </div>
+        <ReactionButton reaction={reaction} />
 
         {/* Unified Comment & Durood / Arzh Button */}
         <button
@@ -1081,8 +976,19 @@ export const PostCard = ({ article }) => {
           )}
 
           {/* Write Custom Comment Form */}
+          {!user && (
+            <input
+              className="fb-commenter-name"
+              type="text"
+              placeholder="আপনার নাম"
+              value={commenterName}
+              onChange={(e) => setCommenterName(e.target.value)}
+              maxLength={60}
+              aria-label="আপনার নাম"
+            />
+          )}
           <form className="fb-comment-input-row" onSubmit={handleAddComment}>
-            <Avatar name="মুফতী আব্দুল্লাহ" size="sm" />
+            <Avatar name={commenterName || 'পাঠক'} size="sm" />
             <div className="fb-comment-input-wrap">
               <input
                 ref={commentInputRef}
@@ -1106,7 +1012,7 @@ export const PostCard = ({ article }) => {
           <div className="fb-comment-bubble-list">
             {comments.map((c) => {
               const cAdab = getAdabTerminology({
-                currentUser: { name: 'মুফতী আব্দুল্লাহ', seniorityRank: 2 },
+                currentUser: { name: 'পাঠক', seniorityRank: 2 },
                 targetPerson: { name: c.name, seniorityRank: c.seniorityRank },
                 isReplying: true,
               });
