@@ -63,7 +63,10 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "a5VaAezEsHsdR2uCSSuSxAFPJWbdz6_X13n8jUUrHvM",
+    google: [
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "a5VaAezEsHsdR2uCSSuSxAFPJWbdz6_X13n8jUUrHvM",
+      "google94caba9244064123",
+    ],
     yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
   },
 };
