@@ -9,9 +9,9 @@ import { AudioRow, useInitialPlay } from "@/components/dashboard/audio-row";
 import { Chip, EmptyState, HeaderIconButton, MediaHeader } from "@/components/dashboard/ui";
 import { boyanTrack } from "@/lib/tracks";
 import { formatDate, num } from "@/lib/format";
+import { boyanCategoryCounts, boyanCategoryOf } from "@/lib/boyan-categories";
 
 const PAGE = 30;
-const norm = (s: string) => (s || "General").replace(/\s+/g, " ").trim();
 
 export function BoyanClient({
   boyans,
@@ -31,22 +31,18 @@ export function BoyanClient({
   const [sort, setSort] = useState<"new" | "old">("new");
   const [limit, setLimit] = useState(() => Math.max(PAGE, boyans.findIndex((b) => b.id === initialPlay) + 1));
 
-  const catList = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const b of boyans) counts.set(norm(b.category), (counts.get(norm(b.category)) ?? 0) + 1);
-    const order = new Map(categories.map((c) => [norm(c.name), c.order]));
-    return [...counts.entries()].sort((a, b) => (order.get(a[0]) ?? 99) - (order.get(b[0]) ?? 99) || b[1] - a[1]);
-  }, [boyans, categories]);
+  const categoryOf = useMemo(() => boyanCategoryOf(categories), [categories]);
+  const catList = useMemo(() => boyanCategoryCounts(boyans, categories), [boyans, categories]);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const rows = boyans.filter(
       (b) =>
-        (cat === "all" || norm(b.category) === cat) &&
+        (cat === "all" || categoryOf(b) === cat) &&
         (!needle || b.title.toLowerCase().includes(needle) || b.location?.toLowerCase().includes(needle) || b.speaker.toLowerCase().includes(needle)),
     );
     return [...rows].sort((a, b) => (sort === "new" ? b.uploadDate.localeCompare(a.uploadDate) : a.uploadDate.localeCompare(b.uploadDate)));
-  }, [boyans, q, cat, sort]);
+  }, [boyans, q, cat, sort, categoryOf]);
 
   const queue = useMemo(() => filtered.map(boyanTrack), [filtered]);
   const allQueue = useMemo(() => boyans.map(boyanTrack), [boyans]);
@@ -115,7 +111,7 @@ export function BoyanClient({
                 highlight={b.id === initialPlay}
                 meta={
                   <>
-                    <span className="text-brand">{norm(b.category)}</span>
+                    <span className="text-brand">{categoryOf(b)}</span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {formatDate(b.uploadDate, lang)}
