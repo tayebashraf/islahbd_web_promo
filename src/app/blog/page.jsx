@@ -1,23 +1,27 @@
 'use client';
 
-import React, { Suspense, useCallback, useState, useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratQuizFeed, fetchSiratTopics } from '@/lib/sirat/sirat-api';
+import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratTopics } from '@/lib/sirat/sirat-api';
 import { EmptyState } from '@/components/dashboard/ui';
 import BlogNav from '@/components/sirat/layout/BlogNav';
 import { BookOpen, Megaphone, X } from 'lucide-react';
 
 const INITIAL_BATCH_SIZE = 4;
 const LOAD_MORE_BATCH_SIZE = 3;
-const QUIZ_PAGE_SIZE = 10;
+// Posts this browser has already shown (ids), newest last.
+const SEEN_KEY = 'blog-seen';
+const SEEN_LIMIT = 5000;
 
 /**
- * The feed: every profile's posts together, newest first. While the admins
- * have the quiz on, a question of the quiz bank follows every few posts, in
- * order, and the rest of the questions follow once the posts run out.
- * A profile's name links here with `?topic=<profile slug>` to show its posts.
+ * The feed: every profile's posts together (quiz questions come in as posts
+ * of their own, a few a day). Posts this reader has not seen yet come first,
+ * newest first, then the ones already seen, so each visit opens on something
+ * new and every post reaches every reader once.
+ * A profile's name links here with `?topic=<profile slug>` to show its posts,
+ * newest first.
  */
 export default function HomePage() {
   return (
@@ -66,29 +70,64 @@ function Announcement() {
   );
 }
 
-/** Posts with a quiz after every `every` posts; leftover quizzes at the end. */
-function interleave(posts, quizzes, every) {
-  const out = [];
-  let q = 0;
-  posts.forEach((post, i) => {
-    out.push(post);
-    if ((i + 1) % every === 0 && q < quizzes.length) out.push(quizzes[q++]);
-  });
-  return out.concat(quizzes.slice(q));
+function readSeen() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || '[]'));
+  } catch {
+    return new Set();
+  }
+}
+
+function markSeen(id) {
+  try {
+    const seen = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+    if (seen.includes(id)) return;
+    seen.push(id);
+    localStorage.setItem(SEEN_KEY, JSON.stringify(seen.slice(-SEEN_LIMIT)));
+  } catch {
+    // Private windows may block storage; the feed then stays newest first.
+  }
+}
+
+/** Unseen posts first, then the seen ones; each group keeps its order. */
+function unseenFirst(posts) {
+  const seen = readSeen();
+  return [...posts.filter((p) => !seen.has(p.id)), ...posts.filter((p) => seen.has(p.id))];
+}
+
+/** Marks its post seen once the post's top reaches the upper part of the screen. */
+function SeenMarker({ id, children }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          markSeen(id);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -40% 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [id]);
+  return <div ref={ref}>{children}</div>;
 }
 
 function Feed({ topic }) {
   const [posts, setPosts] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [quiz, setQuiz] = useState({ every: 2, total: 0, items: [] });
-  const quizLoading = useRef(false);
   const [displayedCount, setDisplayedCount] = useState(INITIAL_BATCH_SIZE);
   const sentinelRef = useRef(null);
-  const withQuiz = topic === 'all';
 
   useEffect(() => {
     let alive = true;
-    fetchSiratArticles(topic === 'all' ? {} : { topicSlug: topic }).then((list) => alive && setPosts(list));
+    fetchSiratArticles(topic === 'all' ? {} : { topicSlug: topic }).then(
+      // Ordered once on arrival, so posts do not jump while being read.
+      (list) => alive && setPosts(topic === 'all' ? unseenFirst(list) : list)
+    );
     if (topic !== 'all') {
       fetchSiratTopics().then((list) => alive && setProfile(list.find((t) => t.slug === topic) ?? null));
     }
@@ -97,41 +136,15 @@ function Feed({ topic }) {
     };
   }, [topic]);
 
-  const loadQuizzes = useCallback((offset) => {
-    if (quizLoading.current) return;
-    quizLoading.current = true;
-    fetchSiratQuizFeed(offset, QUIZ_PAGE_SIZE).then(({ every, total, results }) => {
-      quizLoading.current = false;
-      setQuiz((q) => ({ every, total, items: [...q.items.slice(0, offset), ...results] }));
-    });
-  }, []);
-
-  useEffect(() => {
-    if (withQuiz) loadQuizzes(0);
-  }, [withQuiz, loadQuizzes]);
-
-  const items = useMemo(
-    () => (posts && withQuiz ? interleave(posts, quiz.items, quiz.every) : posts ?? []),
-    [posts, withQuiz, quiz.items, quiz.every]
-  );
-  const total = posts?.length ?? 0;
-  const moreQuizzes = withQuiz && quiz.items.length < quiz.total;
-  const hasMore = displayedCount < items.length || moreQuizzes;
-
-  // Fetch the next questions before the reader reaches the place of the first missing one.
-  useEffect(() => {
-    if (!posts || !moreQuizzes) return;
-    const loaded = quiz.items.length;
-    const slot = (loaded + 1) * quiz.every <= posts.length ? (loaded + 1) * quiz.every + loaded : posts.length + loaded;
-    if (slot <= displayedCount + LOAD_MORE_BATCH_SIZE * 2) loadQuizzes(loaded);
-  }, [posts, moreQuizzes, quiz.items.length, quiz.every, displayedCount, loadQuizzes]);
+  const items = posts ?? [];
+  const total = items.length;
+  const hasMore = displayedCount < items.length;
 
   // Reveal more posts as the reader nears the end of the list.
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || !hasMore) return;
     const observer = new IntersectionObserver(
-      // While the next questions are still loading there is nothing more to reveal.
       (entries) =>
         entries[0].isIntersecting && setDisplayedCount((n) => (n < items.length ? n + LOAD_MORE_BATCH_SIZE : n)),
       { rootMargin: '350px' }
@@ -174,7 +187,9 @@ function Feed({ topic }) {
       ) : (
         <div className="fb-posts-stream sm:space-y-4">
           {items.slice(0, displayedCount).map((article) => (
-            <PostCard key={article.id} article={article} />
+            <SeenMarker key={article.id} id={article.id}>
+              <PostCard article={article} />
+            </SeenMarker>
           ))}
         </div>
       )}
