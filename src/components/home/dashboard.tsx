@@ -1326,90 +1326,60 @@ function SupportSection() {
   const { t } = useLang();
   return (
     <section className="py-14 sm:py-20">
-      <Container className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
-        <Reveal className="relative mx-auto aspect-square w-full max-w-[360px]">
-          <div className="absolute inset-0 rounded-full border border-line" />
-          <div className="absolute inset-[7%] rounded-full bg-panel-2" />
-          <DonationBox className="absolute inset-[22%]" />
-        </Reveal>
+      <Container className="max-w-4xl">
         <Reveal>
-          <h2 className="font-heading text-[26px] leading-snug text-ink sm:text-[34px]">
-            {t(
-              "জামেআর পাশে থাকুন — হোন সদকায়ে জারিয়ার অংশীদার",
-              "Stand by the Jamia — be part of a sadaqah jariyah",
-            )}
-          </h2>
-          <p className="mt-5 text-[16.5px] leading-relaxed text-ink-2">
-            {t(
-              "মাদরাসা মারকাযুল ইহসানে প্রায় এক হাজার তালিবুল ইলম দ্বীনি শিক্ষা গ্রহণ করছে। ডেমরায় স্থায়ী কমপ্লেক্সের কাজ চলছে। আজীবন সদস্য হয়ে বা অনুদান দিয়ে এই খেদমতে শরিক হোন।",
-              "Nearly a thousand students study at Madrasa Markazul Ihsan, and the permanent campus in Demra is being built. Join this service as a lifetime member or with a donation.",
-            )}
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              href={LINKS.member.href}
-              className="inline-flex h-12 items-center gap-2 rounded-2xl bg-brand px-6 text-[15px] font-medium text-white transition hover:bg-brand-strong"
-            >
-              {t("আজীবন সদস্য হোন", "Become a lifetime member")}
-              <HeartHandshake className="h-4 w-4" />
-            </Link>
-            <Link
-              href={LINKS.about.href}
-              className="inline-flex h-12 items-center rounded-2xl border border-line bg-panel px-6 text-[15px] text-ink transition hover:border-brand/40"
-            >
-              {t("মাদরাসা পরিচিতি", "About the madrasa")}
-            </Link>
+          <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gold-soft/85 p-7 text-center sm:p-12 shadow-sm dark:border-gold/25 dark:bg-gold-soft/20">
+            {/* Subtle background ambient glows */}
+            <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gold/15 blur-3xl dark:bg-gold/10" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-brand/15 blur-3xl dark:bg-brand/10" />
+
+            <div className="relative z-10">
+              {/* Icon badge */}
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-panel text-gold shadow-sm ring-1 ring-gold/25 dark:bg-panel dark:text-gold dark:ring-white/10">
+                <HeartHandshake className="h-7 w-7" />
+              </span>
+
+              {/* Title */}
+              <h2 className="mt-4 font-heading text-2xl font-bold text-ink sm:text-3xl">
+                {t("আমাদের ফিকির ও দোয়া", "Our Aspiration & Dua")}
+              </h2>
+
+              {/* Body text */}
+              <div className="mx-auto mt-4 max-w-2xl space-y-3.5 text-[16px] leading-[1.9] text-ink-2 sm:text-[17.5px]">
+                <p>
+                  {t(
+                    "দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।",
+                    "To participate in this religious service, we intend to become members ourselves and encourage our loved ones to become members, InshaAllah.",
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।",
+                    "Along with that, we pray that Almighty Allah, in His mercy and grace, abundantly accepts and grants success. Ameen.",
+                  )}
+                </p>
+              </div>
+
+              {/* Action Buttons: Highlighting Lifetime Member */}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+                <Link
+                  href={LINKS.member.href}
+                  className="inline-flex h-12 items-center gap-2.5 rounded-2xl bg-brand px-7 text-[15px] font-semibold text-white shadow-md transition hover:bg-brand-strong hover:shadow-lg"
+                >
+                  <HeartHandshake className="h-4 w-4" />
+                  {t("আজীবন সদস্য হোন", "Become a lifetime member")}
+                </Link>
+                <Link
+                  href={LINKS.about.href}
+                  className="inline-flex h-12 items-center rounded-2xl border border-line bg-panel px-6 text-[15px] font-medium text-ink transition hover:border-brand/40 hover:bg-panel-2"
+                >
+                  {t("মাদরাসা পরিচিতি", "About the madrasa")}
+                </Link>
+              </div>
+            </div>
           </div>
         </Reveal>
       </Container>
     </section>
-  );
-}
-
-function DonationBox({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 200 200" className={className} aria-hidden>
-      <path
-        d="M72 46c-10-14-34-8-32 10 2 14 32 30 32 30s30-16 32-30c2-18-22-24-32-10z"
-        fill="#E5484D"
-      />
-      <circle cx="118" cy="64" r="22" fill="#F5B83D" />
-      <circle cx="118" cy="64" r="15" fill="#E8A21E" />
-      <text
-        x="118"
-        y="71"
-        textAnchor="middle"
-        fontSize="20"
-        fontWeight="700"
-        fill="#fff"
-      >
-        ৳
-      </text>
-      <rect
-        x="24"
-        y="96"
-        width="152"
-        height="18"
-        rx="3"
-        fill="var(--brand-tint)"
-      />
-      <rect x="34" y="114" width="132" height="70" rx="4" fill="var(--brand)" />
-      <rect
-        x="64"
-        y="132"
-        width="72"
-        height="30"
-        rx="6"
-        fill="var(--brand-tint)"
-      />
-      <rect
-        x="84"
-        y="94"
-        width="34"
-        height="6"
-        rx="3"
-        fill="var(--brand-strong)"
-      />
-    </svg>
   );
 }
