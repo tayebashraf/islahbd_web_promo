@@ -1,21 +1,13 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { formatHijri } from "./format";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function formatHijriDate(date?: Date): string {
-  const d = date || new Date();
-  try {
-    return new Intl.DateTimeFormat("en-TN-u-ca-islamic", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(d);
-  } catch {
-    return "";
-  }
+  return formatHijri(date || new Date(), "bn");
 }
 
 export function formatGregorianDate(date?: Date, locale = "en"): string {
