@@ -6,9 +6,13 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Ban,
+  Bell,
   CalendarDays,
   ChevronsUpDown,
+  Clock,
+  Compass,
   Grid2x2,
+  Headphones,
   HeartHandshake,
   MapPin,
   Moon,
@@ -19,6 +23,7 @@ import {
   RotateCw,
   SkipBack,
   SkipForward,
+  Sparkles,
   Sun,
   Sunrise,
   Sunset,
@@ -996,15 +1001,221 @@ function MediaSection({ data }: { data: HomeData }) {
 
 /* ── App download ─────────────────────────────────────────────── */
 
+function PhoneMockup3D() {
+  const { t } = useLang();
+  const reduce = useReducedMotion();
+
+  const chips: {
+    bn: string;
+    en: string;
+    icon: LucideIcon;
+    pos: string;
+    delay: number;
+  }[] = [
+    {
+      bn: "নামাজের সময়",
+      en: "Prayer times",
+      icon: Clock,
+      pos: "top-10 end-[calc(100%-12px)] sm:end-full sm:me-4",
+      delay: 0,
+    },
+    {
+      bn: "কিবলা",
+      en: "Qibla",
+      icon: Compass,
+      pos: "top-48 end-[calc(100%-8px)] sm:end-full sm:me-5",
+      delay: 0.6,
+    },
+    {
+      bn: "তাসবীহ",
+      en: "Tasbeeh",
+      icon: Sparkles,
+      pos: "bottom-16 end-[calc(100%-12px)] sm:end-full sm:me-4",
+      delay: 1.2,
+    },
+    {
+      bn: "অফলাইন বয়ান",
+      en: "Offline talks",
+      icon: Headphones,
+      pos: "top-20 start-[calc(100%-12px)] sm:start-full sm:ms-4",
+      delay: 0.9,
+    },
+    {
+      bn: "আযান-অ্যালার্ম",
+      en: "Adhan alarm",
+      icon: Bell,
+      pos: "bottom-32 start-[calc(100%-8px)] sm:start-full sm:ms-5",
+      delay: 1.5,
+    },
+  ];
+
+  return (
+    <div className="relative mx-auto flex w-full max-w-[520px] items-center justify-center py-8 sm:py-12">
+      {/* 1. Ambient Backdrop Rings & Glows */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        {/* Soft emerald radial aura */}
+        <div className="h-[420px] w-[420px] rounded-full bg-gradient-to-tr from-brand/25 via-brand/10 to-transparent blur-3xl dark:from-brand/40 dark:via-brand/15" />
+        {/* Outer orbital decorative ring */}
+        <div className="absolute h-[430px] w-[430px] rounded-full border border-dashed border-brand/25 animate-geometric dark:border-brand/20" />
+        {/* Middle accent ring */}
+        <div className="absolute h-[340px] w-[340px] rounded-full border border-brand/20 dark:border-white/10" />
+        {/* Inner subtle glow ring */}
+        <div className="absolute h-[260px] w-[260px] rounded-full bg-brand-soft/40 blur-sm dark:bg-brand-soft/10" />
+      </div>
+
+      {/* 2. 3D Floating Phone Stage */}
+      <div className="relative z-10 [perspective:1400px]">
+        {/* Ground Depth Contact Shadow */}
+        <div
+          className="pointer-events-none absolute -bottom-9 left-1/2 h-10 w-[82%] -translate-x-1/2 -rotate-2 rounded-full bg-black/45 blur-2xl dark:bg-black/85"
+          aria-hidden="true"
+        />
+
+        {/* 3D Motion Device */}
+        <motion.div
+          className="relative cursor-pointer select-none"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={
+            reduce
+              ? undefined
+              : {
+                  y: [-8, 8, -8],
+                  rotateY: [-14, -8, -14],
+                  rotateX: [10, 6, 10],
+                  rotateZ: [-3, -1.5, -3],
+                }
+          }
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          whileHover={{
+            scale: 1.035,
+            rotateY: -5,
+            rotateX: 4,
+            transition: { duration: 0.35, ease: "easeOut" },
+          }}
+        >
+          {/* Hardware Buttons - Left Edge (Subtle Action & Volume Buttons) */}
+          <span
+            className="absolute -start-[3px] top-[95px] h-[18px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
+            aria-hidden="true"
+          />
+          <span
+            className="absolute -start-[3px] top-[128px] h-[40px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
+            aria-hidden="true"
+          />
+          <span
+            className="absolute -start-[3px] top-[178px] h-[40px] w-[3.5px] rounded-s-sm bg-gradient-to-b from-[#4a524e] to-[#252a27] shadow-sm"
+            aria-hidden="true"
+          />
+
+          {/* Hardware Button - Right Edge (Power/Side Button facing 3D extrusion) */}
+          <span
+            className="absolute -end-[4px] top-[135px] h-[54px] w-[4px] rounded-e-sm bg-gradient-to-b from-[#4a524e] to-[#1a1e1b] shadow-md"
+            aria-hidden="true"
+          />
+
+          {/* Phone Outer Chassis with 3D Extruded Box Shadow on Right and Bottom */}
+          <div
+            className="relative w-[255px] rounded-[48px] bg-[#121513] p-[8px] sm:w-[285px] sm:rounded-[52px] sm:p-[9px]"
+            style={{
+              boxShadow: `
+                1px 1px 0px #404844,
+                2px 2px 0px #373f3b,
+                3px 3px 0px #2f3632,
+                4px 4px 0px #272d2a,
+                5px 5px 0px #202522,
+                6px 6px 0px #191d1b,
+                7px 7px 0px #131614,
+                8px 8px 0px #0e100f,
+                9px 9px 2px rgba(0, 0, 0, 0.45),
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
+                inset -1.5px 0 1.5px rgba(255, 255, 255, 0.25),
+                inset 1.5px -1.5px 2px rgba(0, 0, 0, 0.75),
+                18px 26px 50px -10px rgba(65, 115, 96, 0.38),
+                28px 48px 80px -18px rgba(0, 0, 0, 0.6)
+              `,
+            }}
+          >
+            {/* Top Speaker Ear-piece */}
+            <div className="absolute top-[4px] left-1/2 h-[3.5px] w-14 -translate-x-1/2 rounded-full border-t border-black/80 bg-[#080a09]" />
+
+            {/* Inner Screen Display Bed */}
+            <div className="relative overflow-hidden rounded-[40px] bg-black sm:rounded-[43px]">
+              <Image
+                src="/home.png"
+                alt={t("islahbd অ্যাপের হোম স্ক্রিন", "islahbd app home screen")}
+                width={1206}
+                height={2622}
+                priority
+                className="block h-auto w-full object-cover"
+              />
+
+              {/* 3D Glass Specular Reflection Glare Overlay */}
+              <div
+                className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-[40px] sm:rounded-[43px]"
+                aria-hidden="true"
+              >
+                <div
+                  className="absolute -inset-full opacity-70 dark:opacity-40"
+                  style={{
+                    background:
+                      "linear-gradient(125deg, transparent 35%, rgba(255,255,255,0.32) 44%, rgba(255,255,255,0.08) 53%, transparent 62%)",
+                  }}
+                />
+                {/* Bezel Inner Ring Highlight */}
+                <div className="absolute inset-0 rounded-[40px] ring-1 ring-inset ring-white/15 sm:rounded-[43px]" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 3. Floating 3D Feature Chips Orbiting the Phone */}
+        {chips.map((chip) => {
+          const Icon = chip.icon;
+          return (
+            <motion.div
+              key={chip.en}
+              className={cn(
+                "absolute z-30 flex items-center gap-2.5 rounded-2xl border border-brand/25 bg-panel/95 px-3.5 py-2.5 shadow-[0_12px_28px_-4px_rgba(0,0,0,0.12),0_4px_10px_-2px_rgba(0,0,0,0.06)] backdrop-blur-xl transition hover:border-brand/50 dark:border-white/15 dark:bg-[#181d1a]/95 dark:shadow-[0_14px_32px_-4px_rgba(0,0,0,0.7)]",
+                chip.pos,
+              )}
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      y: [-4, 4, -4],
+                    }
+              }
+              transition={{
+                duration: 4.8,
+                delay: chip.delay,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileHover={{ scale: 1.08, y: -2 }}
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand/20 to-brand/5 text-brand ring-1 ring-brand/30 dark:from-brand/30 dark:to-brand/10 dark:text-emerald-300 dark:ring-brand/40">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="text-[13px] font-semibold tracking-tight text-ink whitespace-nowrap">
+                {t(chip.bn, chip.en)}
+              </span>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function AppSection() {
   const { t } = useLang();
-  const chips = [
-    { bn: "নামাজের সময়", en: "Prayer times", cls: "top-[6%] start-[0%]" },
-    { bn: "কিবলা", en: "Qibla", cls: "top-[40%] start-[-2%]" },
-    { bn: "অফলাইন বয়ান", en: "Offline talks", cls: "top-[16%] end-[-2%]" },
-    { bn: "আযান-অ্যালার্ম", en: "Adhan alarm", cls: "top-[58%] end-[0%]" },
-    { bn: "তাসবীহ", en: "Tasbeeh", cls: "bottom-[8%] start-[6%]" },
-  ];
   return (
     <section className="overflow-hidden bg-canvas-2 py-14 sm:py-20">
       <Container className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
@@ -1041,29 +1252,8 @@ function AppSection() {
           </div>
         </Reveal>
 
-        <Reveal className="relative mx-auto w-full max-w-[400px]">
-          <div className="absolute inset-[6%] rounded-full bg-brand-soft" />
-          <div className="absolute inset-0 rounded-full border border-line" />
-          <div className="relative mx-auto w-[56%] -rotate-3 rounded-[34px] border-[6px] border-[#1b1f1d] bg-[#1b1f1d] shadow-[var(--shadow-float)]">
-            <Image
-              src="/home.png"
-              alt={t("islahbd অ্যাপের হোম স্ক্রিন", "islahbd app home screen")}
-              width={1206}
-              height={2622}
-              className="rounded-3xl"
-            />
-          </div>
-          {chips.map((c) => (
-            <span
-              key={c.en}
-              className={cn(
-                "absolute rounded-xl border border-line bg-panel px-3 py-2 text-[13px] text-brand shadow-sm",
-                c.cls,
-              )}
-            >
-              {t(c.bn, c.en)}
-            </span>
-          ))}
+        <Reveal>
+          <PhoneMockup3D />
         </Reveal>
       </Container>
     </section>
