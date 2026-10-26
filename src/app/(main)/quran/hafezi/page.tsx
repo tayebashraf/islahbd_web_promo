@@ -25,6 +25,36 @@ export const metadata: Metadata = {
   },
 };
 
+import { FaqJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
+
+const hafeziFaqs = [
+  {
+    question: "১৫ লাইনের হাফেজী কুরআন শরীফের বৈশিষ্ট্য কি?",
+    answer: "১৫ লাইনের হাফেজী কুরআনে প্রতিটি পৃষ্ঠা একটি আয়াতের শেষে শুরু ও শেষ হয়। পুরো কুরআনে ৩০ পারায় মোট ৬১১টি সুনির্দিষ্ট পৃষ্ঠা থাকে, যা হিফজ ও পুনরাবৃত্তির জন্য বিশ্বব্যাপী সর্বাধিক সমাদৃত।",
+  },
+  {
+    question: "অনলাইনে হাফেজী কুরআন কীভাবে পড়া যায়?",
+    answer: "IslahBD হাফেজী কুরআন রিডারে পারা, সূরা ও পৃষ্ঠা নম্বর সিলেক্ট করে বা সোয়াইপ করে একদম কাগজের ছাপানো মুসহাফের মতোই ডিজিটাল স্পষ্ট অক্ষরে তেলাওয়াত করা যায়।",
+  },
+  {
+    question: "হাফেজী কুরআনের পাতা কি অফলাইনে পড়া সম্ভব?",
+    answer: "IslahBD মোবাইল অ্যাপে অফলাইন মোড রয়েছে, যার মাধ্যমে ইন্টারনেট সংযোগ ছাড়াই যে কোনো সময় ৩০ পারা হাফেজী কুরআন শরীফ তিলাওয়াত করা যায়।",
+  },
+];
+
 export default function HafeziPage() {
-  return <HafeziReader />;
+  return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "হোম", url: "/" },
+          { name: "আল-কুরআন", url: "/quran" },
+          { name: "হাফেজী কুরআন শরীফ", url: "/quran/hafezi" },
+        ]}
+      />
+      <FaqJsonLd faqs={hafeziFaqs} />
+      <HafeziReader />
+    </>
+  );
 }
+

@@ -3,13 +3,22 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { BookOpenText, Bookmark, ChevronRight, Headphones, History, Search } from "lucide-react";
+import { BookOpen, BookOpenText, Bookmark, ChevronRight, Headphones, History, Search, Sparkles } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 import { Segmented } from "@/components/dashboard/ui";
 import { useStoredString } from "@/lib/use-client-store";
 import { num } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { BISMILLAH, JUZ_STARTS, LAST_READ_KEY, QURAN_SURAHS, parseJson } from "@/lib/quran";
+
+const POPULAR_SURAHS = [
+  { num: 36, bn: "সূরা ইয়াসীন", en: "Yaseen", sub: "কুরআনের হৃৎপিণ্ড" },
+  { num: 18, bn: "সূরা আল-কাহফ", en: "Al-Kahf", sub: "জুমার দিনের নূর" },
+  { num: 55, bn: "সূরা আর-রহমান", en: "Ar-Rahman", sub: "কুরআনের সৌন্দর্য" },
+  { num: 67, bn: "সূরা আল-মুলক", en: "Al-Mulk", sub: "কবরের আজাব থেকে মুক্তি" },
+  { num: 56, bn: "সূরা আল-ওয়াকিয়াহ", en: "Al-Waqi'ah", sub: "দারিদ্র্য দূরীকরণ" },
+  { num: 2, bn: "সূরা আল-বাকারা", en: "Al-Baqarah", sub: "সর্ববৃহৎ সূরা" },
+];
 
 /** The Quran hub — digital Quran & tafsir, audio Quran, then every surah and juz. */
 export function QuranHome() {
@@ -28,8 +37,10 @@ export function QuranHome() {
 
   const doors = [
     { href: "#surahs", icon: BookOpenText, tone: "#0F766E", title: t("ডিজিটাল কুরআন ও তাফসীর", "Digital Quran & tafsir"), sub: t("শব্দে শব্দে অর্থ, প্রামাণ্য অনুবাদ ও বিস্তারিত তাফসীর", "Word by word, translation and tafsir") },
+    { href: "/quran/hafezi", icon: BookOpen, tone: "#1D4ED8", title: t("হাফেজী কুরআন শরীফ", "Hafezi Quran"), sub: t("১৫ লাইনের পৃষ্ঠাভিত্তিক নূরানী হেফজ কুরআন", "15-line page-based Noorani Quran") },
     { href: "/quran/audio", icon: Headphones, tone: "#B8860B", title: t("অডিও কুরআন", "Audio Quran"), sub: t("বিশ্বখ্যাত ক্বারীদের সুললিত তিলাওয়াত", "Recitations by renowned qaris") },
   ];
+
 
   return (
     <div className="mx-auto max-w-[1100px] pb-10">
@@ -73,7 +84,7 @@ export function QuranHome() {
       )}
 
       {/* The doors */}
-      <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         {doors.map((d) => (
           <li key={d.href}>
             <Link href={d.href} className="group flex h-full items-center gap-4 rounded-2xl border border-line bg-panel p-4 transition hover:-translate-y-0.5 hover:border-brand/40 sm:p-5">
@@ -81,13 +92,34 @@ export function QuranHome() {
                 <d.icon className="h-6 w-6" />
               </span>
               <span className="min-w-0">
-                <span className="block font-heading text-[17px] font-bold text-ink group-hover:text-brand">{d.title}</span>
-                <span className="mt-0.5 block text-[13px] leading-snug text-ink-3">{d.sub}</span>
+                <span className="block font-heading text-[16px] font-bold text-ink group-hover:text-brand">{d.title}</span>
+                <span className="mt-0.5 block text-[12px] leading-snug text-ink-3">{d.sub}</span>
               </span>
             </Link>
           </li>
         ))}
       </ul>
+
+      {/* Popular Surahs quick access bar (SEO & UX booster) */}
+      <div className="mt-6 rounded-2xl border border-line bg-panel/60 p-4 sm:p-5">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand">
+          <Sparkles className="h-3.5 w-3.5 text-gold" />
+          <span>{t("সর্বাধিক পঠিত ও ফজিলতপূর্ণ সূরাসমূহ", "Frequently Recited Surahs")}</span>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {POPULAR_SURAHS.map((s) => (
+            <Link
+              key={s.num}
+              href={`/quran/${s.num}`}
+              className="inline-flex items-center gap-2 rounded-xl border border-line bg-panel px-3 py-1.5 text-xs font-medium text-ink transition hover:border-brand/40 hover:bg-brand-soft/40 hover:text-brand"
+            >
+              <span className="font-semibold text-brand">{num(s.num, lang)}.</span>
+              <span>{t(s.bn, s.en)}</span>
+              <span className="text-[11px] text-ink-3">({t(s.sub, s.sub)})</span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {/* Surahs / juz */}
       <section id="surahs" className="mt-8 scroll-mt-24">

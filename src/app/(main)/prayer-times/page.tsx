@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PrayerTimesClient } from "./prayer-times-client";
-import { FaqJsonLd } from "@/components/seo/json-ld";
+import { FaqJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 import { PRAYER_FAQS } from "./prayer-guide";
 
@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 export default function PrayerTimesPage() {
   return (
     <>
+      <BreadcrumbJsonLd items={[{ name: "হোম", url: "/" }, { name: "নামাজের সময়সূচী", url: "/prayer-times" }]} />
       <FaqJsonLd faqs={PRAYER_FAQS.map((f) => ({ question: f.q.bn, answer: f.a.bn }))} />
       <PrayerTimesClient />
     </>

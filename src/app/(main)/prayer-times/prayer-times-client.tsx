@@ -5,7 +5,9 @@ import Link from "next/link";
 import {
   Bed,
   Bell,
+  BookOpen,
   Calculator,
+  CalendarDays,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -14,6 +16,7 @@ import {
   Haze,
   Moon,
   MoonStar,
+  RotateCcw,
   Smartphone,
   Sparkles,
   Sun,
@@ -319,6 +322,7 @@ export function PrayerTimesClient() {
       {now && <MonthTable offset={monthOffset} setOffset={setMonthOffset} city={city} now={now} />}
       {now && <CitiesTable now={now} selected={city.name} onSelect={setCity} />}
       <Method />
+      <RelatedTools />
       <Faq />
     </div>
   );
@@ -659,6 +663,35 @@ function Method() {
         </div>
       </section>
     </div>
+  );
+}
+
+function RelatedTools() {
+  const { t } = useLang();
+  const tools = [
+    { href: "/qibla", icon: Compass, title: t("ক্বিবলা কম্পাস", "Qibla Direction"), sub: t("সঠিক কাবার দিক নির্ণয়", "Find Kaaba direction") },
+    { href: "/tasbeeh", icon: RotateCcw, title: t("ডিজিটাল তাসবীহ", "Digital Tasbeeh"), sub: t("নামাজ পরবর্তী যিকির ও আমল", "Post-prayer adhkar") },
+    { href: "/dua", icon: BookOpen, title: t("মাসনূন দোয়া", "Daily Duas"), sub: t("হিসনুল মুসলিম থেকে দোয়া", "Duas from Hisnul Muslim") },
+    { href: "/ramadan", icon: CalendarDays, title: t("রমজান ক্যালেন্ডার", "Ramadan Calendar"), sub: t("সেহরি ও ইফতারের সময়সূচি", "Suhoor & Iftar schedule") },
+  ];
+
+  return (
+    <Panel className="mt-4 sm:mt-5">
+      <PanelHeader title={t("প্রয়োজনীয় ইসলামিক টুলস", "Related Islamic Tools")} />
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {tools.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex flex-col items-center justify-center rounded-2xl border border-line bg-panel-2 p-3.5 text-center transition hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand-soft/30"
+          >
+            <item.icon className="h-6 w-6 text-brand" />
+            <span className="mt-2 text-sm font-semibold text-ink">{item.title}</span>
+            <span className="mt-0.5 text-[11px] text-ink-3">{item.sub}</span>
+          </Link>
+        ))}
+      </div>
+    </Panel>
   );
 }
 
