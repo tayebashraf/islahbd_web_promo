@@ -18,8 +18,9 @@ const SEEN_LIMIT = 5000;
 /**
  * The feed: every profile's posts together (quiz questions come in as posts
  * of their own, a few a day). Posts this reader has not seen yet come first,
- * newest first, then the ones already seen, so each visit opens on something
- * new and every post reaches every reader once.
+ * oldest first, so a new reader starts from the very first post and a
+ * returning one carries on where they stopped; the ones already seen follow,
+ * newest first. Every post reaches every reader once.
  * A profile's name links here with `?topic=<profile slug>` to show its posts,
  * newest first.
  */
@@ -89,10 +90,10 @@ function markSeen(id) {
   }
 }
 
-/** Unseen posts first, then the seen ones; each group keeps its order. */
+/** `posts` come newest first: unseen ones oldest first, then the seen ones. */
 function unseenFirst(posts) {
   const seen = readSeen();
-  return [...posts.filter((p) => !seen.has(p.id)), ...posts.filter((p) => seen.has(p.id))];
+  return [...posts.filter((p) => !seen.has(p.id)).reverse(), ...posts.filter((p) => seen.has(p.id))];
 }
 
 /** Marks its post seen once the post's top reaches the upper part of the screen. */
