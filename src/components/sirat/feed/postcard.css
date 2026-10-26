@@ -40,8 +40,10 @@
 
 .fb-post-author-name {
   font-family: var(--font-kalpurush), 'Kalpurush', sans-serif;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700 !important;
+  /* Kalpurush ships one weight, so 700 alone renders regular — thicken the strokes. */
+  -webkit-text-stroke: 0.35px currentColor;
   color: #065F46 !important;
   text-decoration: none;
   display: inline-flex;
@@ -227,14 +229,12 @@
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
   font-size: 0.95rem; /* ~15.2px */
   font-weight: 400;
-  line-height: 1.85; /* Relaxed editorial rhythm */
+  line-height: 1.7;
   color: #334155; /* Soft deep charcoal slate — completely eliminates harsh glare */
-  text-align: justify;
-  text-align-last: left;
-  text-justify: inter-character;
+  /* Start-aligned: justifying Bangla spreads letters and words unevenly. */
+  text-align: start;
   word-break: break-word;
   overflow-wrap: break-word;
-  letter-spacing: 0.01em;
   margin: 0;
 }
 
@@ -243,9 +243,7 @@
 }
 
 .fb-post-text p {
-  text-align: justify;
-  text-align-last: left;
-  text-justify: inter-character;
+  text-align: start;
   word-break: break-word;
   overflow-wrap: break-word;
   margin-bottom: 10px;
@@ -257,9 +255,6 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: justify;
-  text-align-last: left;
-  text-justify: inter-character;
 }
 
 
@@ -288,8 +283,7 @@
   font-size: 0.875rem;
   color: #475569;
   line-height: 1.7;
-  text-align: justify;
-  text-align-last: left;
+  text-align: start;
 }
 
 :is(.dark, :root[data-theme="dark"]) .fb-post-hadith-translation {
@@ -373,6 +367,12 @@
 .fb-overlapping-circle-wrap:hover {
   transform: scale(1.2);
   z-index: 10;
+}
+
+.fb-post-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .fb-post-stats-right {

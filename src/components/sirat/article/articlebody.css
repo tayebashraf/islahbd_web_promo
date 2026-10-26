@@ -10,7 +10,7 @@
 .article-body-content {
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
   font-size: 1.05rem; /* ~16.8px — comfortable reading size */
-  line-height: 1.85; /* Relaxed editorial reading rhythm */
+  line-height: 1.75;
   color: #334155; /* Soft deep charcoal slate — prevents eye strain */
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -20,15 +20,12 @@
   color: #CBD5E1;
 }
 
-/* 100% Justified Paragraphs with Optical Character Alignment */
+/* Start-aligned: justifying Bangla spreads letters and words unevenly. */
 .article-body-content p {
   font-family: 'Kalpurush', var(--font-bengali-body), serif;
-  text-align: justify;
-  text-justify: inter-character;
-  text-align-last: left;
+  text-align: start;
   word-break: break-word;
   overflow-wrap: break-word;
-  letter-spacing: 0.01em;
   margin-bottom: 14px;
 }
 
@@ -75,8 +72,7 @@
   margin: 16px 0;
   background-color: var(--color-bg-primary);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  text-align: justify;
-  text-align-last: left;
+  text-align: start;
 }
 
 :root[data-theme="dark"] .article-body-content blockquote,
@@ -117,6 +113,5 @@
 
 .article-body-content li {
   margin-bottom: 6px;
-  text-align: justify;
-  text-align-last: left;
+  text-align: start;
 }

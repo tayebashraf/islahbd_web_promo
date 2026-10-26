@@ -116,7 +116,7 @@ export const ArticleActions = ({
                       onClick={(e) => handleSelectReaction(e, react)}
                       aria-label={react.arabic}
                     >
-                      <IconComp size={36} />
+                      <IconComp size={44} />
                       <span className="fb-calligraphy-tooltip">{react.arabic}</span>
                     </button>
                   );

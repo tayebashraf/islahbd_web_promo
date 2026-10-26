@@ -1,80 +1,70 @@
 import React from 'react';
 
 /**
- * Pure Circular Islamic Reaction Icons (গোল গোল আইকন)
- * Clean, compact, Facebook-style circular reactions with authentic Islamic motifs.
+ * Circular Islamic reaction icons (গোল গোল আইকন): each circle holds the
+ * phrase itself in Arabic calligraphy (Amiri), like the ﷺ seal. Drawn as SVG
+ * so the words always fit the circle at any size.
  */
+const CalligraphyCircle = ({ size, rci, label, lines, scale = 1, className = '' }) => {
+  const two = lines.length > 1;
+  return (
+    <span
+      className={`reaction-circle-icon ${rci} ${className}`}
+      style={{ width: `${size}px`, height: `${size}px` }}
+      aria-label={label}
+      role="img"
+    >
+      <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+        {lines.map((line, i) => (
+          <text
+            key={i}
+            x="50"
+            y={two ? (i === 0 ? 46 : 83) : 68}
+            textAnchor="middle"
+            direction="rtl"
+            fill="currentColor"
+            style={{
+              fontFamily: "'Amiri', 'Noto Naskh Arabic', serif",
+              fontWeight: 700,
+              fontSize: `${(two ? 38 : 64) * scale}px`,
+            }}
+          >
+            {line}
+          </text>
+        ))}
+      </svg>
+    </span>
+  );
+};
 
 // 1. جزاك الله (JazakAllah)
 export const CalligraphyJazakallahIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-jazakallah ${className}`}
-    style={{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.58)}px` }}
-    aria-label="جَزَاكَ ٱللَّٰهُ"
-  >
-    🤲
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-jazakallah" label="جَزَاكَ ٱللَّٰهُ" lines={['جزاك', 'الله']} />
 );
 
 // 2. ما شاء الله (MashaAllah)
 export const CalligraphyMashaallahIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-mashaallah ${className}`}
-    style={{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.58)}px` }}
-    aria-label="مَا شَاءَ ٱللَّٰهُ"
-  >
-    ✨
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-mashaallah" label="مَا شَاءَ ٱللَّٰهُ" lines={['ما شاء', 'الله']} scale={0.82} />
 );
 
 // 3. الحمد لله (Alhamdulillah)
 export const CalligraphyAlhamdulillahIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-alhamdulillah ${className}`}
-    style={{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.58)}px` }}
-    aria-label="ٱلْحَمْدُ لِلَّٰهِ"
-  >
-    🌿
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-alhamdulillah" label="ٱلْحَمْدُ لِلَّٰهِ" lines={['الحمد', 'لله']} />
 );
 
 // 4. سبحان الله (SubhanAllah)
 export const CalligraphySubhanallahIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-subhanallah ${className}`}
-    style={{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.58)}px` }}
-    aria-label="سُبْحَانَ ٱللَّٰهِ"
-  >
-    ☀️
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-subhanallah" label="سُبْحَانَ ٱللَّٰهِ" lines={['سبحان', 'الله']} scale={0.88} />
 );
 
-// 5. ﷺ (Salawat / Durood)
+// 5. ﷺ (Salawat / Durood) — the single-glyph seal
 export const CalligraphySalawatIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-salawat ${className}`}
-    style={{
-      width: `${size}px`,
-      height: `${size}px`,
-      fontSize: `${Math.round(size * 0.65)}px`,
-      fontFamily: "'Amiri', serif",
-      fontWeight: 700,
-    }}
-    aria-label="ﷺ صَلَّى ٱللَّٰهُ"
-  >
-    ﷺ
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-salawat" label="ﷺ صَلَّى ٱللَّٰهُ" lines={['ﷺ']} />
 );
 
 // 6. بارك الله (BarakAllah)
 export const CalligraphyBarakallahIcon = ({ size = 22, className = '' }) => (
-  <span
-    className={`reaction-circle-icon rci-barakallah ${className}`}
-    style={{ width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.58)}px` }}
-    aria-label="بَارَكَ ٱللَّٰهُ"
-  >
-    💎
-  </span>
+  <CalligraphyCircle size={size} className={className} rci="rci-barakallah" label="بَارَكَ ٱللَّٰهُ" lines={['بارك', 'الله']} />
 );
 
 export const ARABIC_CALLIGRAPHY_MAP = {

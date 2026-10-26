@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Avatar from '@/components/sirat/ui/Avatar';
 import VerifiedBadge from '@/components/sirat/author/VerifiedBadge';
@@ -32,8 +32,10 @@ import {
   ShieldCheck,
   Save,
   AlertTriangle,
+  Eye,
 } from 'lucide-react';
 import { useAuth } from '@/lib/sirat/auth';
+import { recordArticleView } from '@/lib/sirat/sirat-api';
 import { sampleTopics } from '@/lib/sirat/sampleData';
 import { getQuoteFontSize } from './CreatePostBox';
 import { getAdabTerminology } from '@/lib/sirat/adabUtils';
@@ -45,14 +47,29 @@ function toBanglaNum(num) {
   return String(num || 0).replace(/[0-9]/g, (d) => banglaDigits[d]);
 }
 
+/** "এইমাত্র", "৫ মিনিট আগে", "২১ ঘণ্টা আগে", "৩ দিন আগে", then the date. */
 function formatTimestamp(ts) {
   if (!ts) return 'এইমাত্র';
   const date = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
+  const mins = Math.floor((Date.now() - date.getTime()) / 60000);
+  if (mins < 1) return 'এইমাত্র';
+  if (mins < 60) return `${toBanglaNum(mins)} মিনিট আগে`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${toBanglaNum(hours)} ঘণ্টা আগে`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${toBanglaNum(days)} দিন আগে`;
   return new Intl.DateTimeFormat('bn-BD', {
-    month: 'short',
+    month: 'long',
     day: 'numeric',
+    ...(date.getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}),
   }).format(date);
 }
+
+/**
+ * Shown views = real views × this. Temporary, for the testing phase only —
+ * set back to 1 when the blog goes public.
+ */
+const VIEW_COUNT_MULTIPLIER = 3;
 
 // Pre-defined Quick Durood Suggestions (কুরআনুল কারীমের খাঁটি আরবি ফন্টে)
 /** The API sends `{}` for a post's unused quiz / quote data; treat that as none. */
@@ -162,6 +179,33 @@ export const PostCard = ({ article }) => {
   const [countdownLeft, setCountdownLeft] = useState(3);
   const countdownTimerRef = useRef(null);
   const optionsMenuRef = useRef(null);
+  const cardRef = useRef(null);
+  const [viewCount, setViewCount] = useState(article.viewCount || 0);
+
+  // Count a view once per browser session when the post is actually seen.
+  useEffect(() => {
+    const el = cardRef.current;
+    const slug = article.slug;
+    if (!el || !slug) return;
+    const key = `sirat_viewed_${slug}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+    } catch {}
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        try {
+          sessionStorage.setItem(key, '1');
+        } catch {}
+        setViewCount((n) => n + 1);
+        recordArticleView(slug).then((res) => res?.viewCount && setViewCount(res.viewCount));
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [article.slug]);
   const { success, error, info } = useToast();
   const hoverTimeoutRef = useRef(null);
   const commentInputRef = useRef(null);
@@ -546,7 +590,7 @@ export const PostCard = ({ article }) => {
   const profileHref = `/blog?topic=${currentArticle.topicSlug}`;
 
   return (
-    <article className="fb-post-card">
+    <article className="fb-post-card" ref={cardRef}>
       {/* 1. Post Header — the topic profile the post is published under */}
       <div className="fb-post-header">
         <div className="fb-post-header__left">
@@ -912,6 +956,10 @@ export const PostCard = ({ article }) => {
         </div>
 
         <div className="fb-post-stats-right">
+          <span className="fb-post-views" title="এই পোস্টটি যতজন দেখেছেন">
+            <Eye size={14} />
+            {toBanglaNum(viewCount * VIEW_COUNT_MULTIPLIER)}
+          </span>
           <span onClick={() => setCommentsOpen(!commentsOpen)} style={{ cursor: 'pointer' }}>
             {toBanglaNum(comments.length)} টি {postAdab.actionBtnLabel}
           </span>
@@ -939,7 +987,7 @@ export const PostCard = ({ article }) => {
                     onClick={(e) => handleSelectReaction(e, react)}
                     aria-label={react.arabic}
                   >
-                    <IconComp size={36} />
+                    <IconComp size={44} />
                     <span className="fb-calligraphy-tooltip">{react.arabic}</span>
                   </button>
                 );
