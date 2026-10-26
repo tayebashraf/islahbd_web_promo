@@ -110,8 +110,9 @@ function Header({ pathname, onSearch }: { pathname: string; onSearch: () => void
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // `!`: the global `* { border-color }` rule is unlayered and would beat a plain utility.
   return (
-    <header className={cn("nav-blur sticky top-0 z-40 border-b transition-colors", scrolled ? "border-line" : "border-transparent")}>
+    <header className={cn("nav-blur sticky top-0 z-40 border-b transition-colors", scrolled ? "border-line!" : "border-transparent!")}>
       <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-3 px-4 sm:h-[72px] sm:px-6 lg:px-8">
         <Logo />
 

@@ -95,7 +95,7 @@ export function HeroBanner() {
       <div className="hn-copy relative z-10 flex flex-col items-center px-5 text-center">
         {/* The lineage line takes exactly the name's width, so both share the same edges */}
         <div className="inline-flex flex-col items-stretch">
-          <p className="hn-sub mb-1.5 flex w-0 min-w-full items-center justify-center gap-3 text-[11.5px] leading-relaxed sm:mb-3 sm:text-[15px]" style={{ animationDelay: `${nameDone}s` }}>
+          <p className="hn-sub mb-1 flex w-0 min-w-full items-center justify-center gap-3 text-[11.5px] leading-[1.5] sm:mb-3 sm:text-[15px] sm:leading-relaxed" style={{ animationDelay: `${nameDone}s` }}>
             <span className="hn-rule hidden h-px flex-1 sm:block" />
             <span className="sm:whitespace-nowrap">
               {t(
@@ -128,7 +128,7 @@ export function HeroBanner() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: nameDone + 0.15 }}
-          className="mt-3.5 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-3"
+          className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-3"
         >
           <Link href={LINKS.boyan.href} className="hn-btn hn-btn-main group">
             {t("বয়ান শুনুন", "Listen to talks")}
@@ -146,7 +146,7 @@ export function HeroBanner() {
            so narrow screens get no empty band on top. */
         .hn { --ring: min(86vw, 420px); --rc-y: calc(var(--ring) / 2 + 18px); --ink-h: #34504a;
           --bg: #f3f8f5; --r0: #e9f4ee; --r1: #d4ece0; --r2: #bfe3d1; --r3: #a6d8bf; --edge: rgba(255,255,255,.85);
-          background: radial-gradient(120% 90% at 50% 0%, #fbfdfb, var(--bg));
+          background: linear-gradient(180deg, var(--canvas), transparent 26%), radial-gradient(120% 90% at 50% 0%, #fbfdfb, var(--bg));
           -webkit-mask-image: linear-gradient(180deg, #000 90%, transparent 100%); mask-image: linear-gradient(180deg, #000 90%, transparent 100%) }
         
         /* Dark Mode: Deep atmospheric Islamic night with radiant emerald glow */
@@ -158,7 +158,7 @@ export function HeroBanner() {
           --r2: #1A3225;
           --r3: #234533;
           --edge: rgba(255, 255, 255, 0.08);
-          background: radial-gradient(120% 90% at 50% 0%, #15221B, var(--bg));
+          background: linear-gradient(180deg, var(--canvas), transparent 26%), radial-gradient(120% 90% at 50% 0%, #15221B, var(--bg));
           box-shadow: none;
           filter: none;
           -webkit-mask-image: linear-gradient(180deg, #000 92%, transparent 100%);
@@ -168,13 +168,15 @@ export function HeroBanner() {
         /* Tablet+: same rule with a wider gap; from 740px up this is the fixed 404px / 515px layout */
         @media (min-width: 640px) { .hn { --ring: min(92vw, 680px); --rc-y: calc(var(--ring) / 2 + 64px); height: calc(var(--rc-y) + 111px) } }
 
-        /* Rings: stacked discs, lit from the top edge */
-        .hn-rings { position: absolute; left: 50%; top: var(--rc-y); width: var(--ring); aspect-ratio: 1; translate: -50% -50%;
-          -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 86%); mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 86%) }
-        .hn-ring { position: absolute; border-radius: 9999px; inset: calc(var(--i) * 11%);
+        /* Rings: stacked discs, lit from the top edge. The box reaches 40px past the rings
+           so their upward glow fades out in the mask instead of ending in a straight cut. */
+        .hn-rings { --pad: 40px; position: absolute; left: 50%; top: var(--rc-y); width: calc(var(--ring) + 2 * var(--pad)); aspect-ratio: 1; translate: -50% -50%;
+          --fade: linear-gradient(180deg, transparent 0, #000 var(--pad), #000 calc(var(--pad) + var(--ring) * .52), transparent calc(var(--pad) + var(--ring) * .86));
+          -webkit-mask-image: var(--fade); mask-image: var(--fade) }
+        .hn-ring { position: absolute; border-radius: 9999px; inset: calc(var(--pad) + var(--i) * var(--ring) * .11);
           background: radial-gradient(closest-side, var(--bg) 0%, color-mix(in srgb, var(--r3) calc(30% + var(--i) * 15%), var(--bg)) 100%);
           box-shadow: inset 0 2px 0 var(--edge), 0 -10px 40px -18px color-mix(in srgb, var(--r3) 70%, transparent) }
-        .hn-orbit { position: absolute; inset: -1.5%; animation: hn-spin 90s linear infinite }
+        .hn-orbit { position: absolute; inset: calc(var(--pad) - var(--ring) * .015); animation: hn-spin 90s linear infinite }
         .hn-orbit i { position: absolute; width: 10px; height: 10px; border-radius: 9999px; background: #fff; box-shadow: 0 0 10px rgba(166,216,191,.9) }
         .hn-orbit i:nth-child(1) { left: 22%; top: 9% } .hn-orbit i:nth-child(2) { left: 49%; top: 0 } .hn-orbit i:nth-child(3) { right: 6%; top: 30% }
         .dark .hn-orbit i { background: #E8F7EE; box-shadow: 0 0 12px rgba(80, 200, 140, 0.95) }
@@ -199,7 +201,7 @@ export function HeroBanner() {
           background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--bg) 80%, transparent) 40%, var(--bg) 85%) }
 
         /* Phones: copy stays in flow, so a wrapped lineage line grows the hero instead of clipping the buttons */
-        .hn-copy { padding-top: calc(var(--rc-y) - 44px); padding-bottom: 34px }
+        .hn-copy { padding-top: calc(var(--rc-y) - 20px); padding-bottom: 28px }
         @media (min-width: 640px) {
           .hn-art { top: calc(var(--rc-y) + 14px - 312px) }
           .hn-art-nabawi { width: 340px; left: calc(50% - 126px) }

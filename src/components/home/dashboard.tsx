@@ -271,23 +271,10 @@ function PrayerRing({ prayer, size }: { prayer: Prayer; size: number }) {
   );
 }
 
-/** Hijri, Bangla and Gregorian dates, one per line — or two lines when `compact`. */
-function DateLines({ now, className, compact }: { now: Date | null; className?: string; compact?: boolean }) {
-  const { t, lang } = useLang();
-  if (!now) return <div className={cn(compact ? "h-[44px]" : "h-[66px]", className)} />;
-  if (compact)
-    return (
-      <div className={cn("space-y-0.5", className)}>
-        <p className="text-[14px] leading-snug text-ink-2">
-          <span className="font-semibold text-ink">
-            {formatHijri(now, lang)} {t("হিজরি", "AH")}
-          </span>
-          <span className="mx-1.5 text-ink-3">·</span>
-          {formatBanglaDate(now, lang)}
-        </p>
-        <p className="text-[13px] text-ink-3">{formatDate(now.toISOString(), lang, { month: "long", weekday: "long" })}</p>
-      </div>
-    );
+/** Hijri, Bangla and Gregorian dates, one per line. */
+function DateLines({ now, className }: { now: Date | null; className?: string }) {
+  const { lang } = useLang();
+  if (!now) return <div className={cn("h-[66px]", className)} />;
   return (
     <div className={cn("space-y-0.5", className)}>
       <p className="text-[15px] font-semibold text-ink">{formatHijri(now, lang)}</p>
@@ -338,7 +325,7 @@ function MobilePrayer({ prayer }: { prayer: Prayer }) {
       {ph?.forbidden && (
         <p className="mt-3 text-[13px] leading-snug text-[#c4552d]">{t(ph.noticeBn ?? "", ph.noticeEn ?? "")}</p>
       )}
-      <DateLines now={prayer.now} compact className="mt-3" />
+      <DateLines now={prayer.now} className="mt-3 leading-snug" />
 
       <div className="mt-4 flex justify-center">
         <button
