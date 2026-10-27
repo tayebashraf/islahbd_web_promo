@@ -254,6 +254,22 @@
   margin-bottom: 0.6em;
 }
 
+/* Quran ayahs of book posts: right to left in Amiri, the reference under them */
+.fb-post-text .arabic-text {
+  font-family: var(--sirat-font-arabic);
+  font-size: 1.3rem;
+  line-height: 2;
+  direction: rtl;
+  text-align: right;
+  margin: 0.4em 0 0.2em;
+}
+
+.fb-post-text .ayah-ref {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
 .fb-post-text--clamped {
   white-space: pre-line;
   display: -webkit-box;
