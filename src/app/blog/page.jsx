@@ -4,7 +4,12 @@ import React, { Suspense, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/sirat/feed/PostCard';
-import { fetchSiratArticles, fetchSiratPlatformSettings, fetchSiratTopics } from '@/lib/sirat/sirat-api';
+import {
+  fetchSiratArticles,
+  fetchSiratManualSettings,
+  fetchSiratPlatformSettings,
+  fetchSiratTopics,
+} from '@/lib/sirat/sirat-api';
 import { EmptyState } from '@/components/dashboard/ui';
 import BlogNav from '@/components/sirat/layout/BlogNav';
 import { BookOpen, Megaphone, X } from 'lucide-react';
@@ -14,6 +19,10 @@ const LOAD_MORE_BATCH_SIZE = 3;
 // Posts this browser has already shown (ids), newest last.
 const SEEN_KEY = 'blog-seen';
 const SEEN_LIMIT = 5000;
+// When this browser last showed each manual post: {id: time}.
+const MANUAL_SHOWN_KEY = 'blog-manual-shown';
+// A manual post after every this many other posts, unless the admin set it.
+const MANUAL_EVERY = 2;
 
 /**
  * The feed: every profile's posts together (quiz questions come in as posts
@@ -21,6 +30,9 @@ const SEEN_LIMIT = 5000;
  * oldest first, so a new reader starts from the very first post and a
  * returning one carries on where they stopped; the ones already seen follow,
  * newest first. Every post reaches every reader once.
+ * The admins' own posts (`source` "manual") are not in that order: one comes
+ * after every one or two other posts (set in the admin panel), the one this
+ * browser showed longest ago first, round and round, so they never sink.
  * A profile's name links here with `?topic=<profile slug>` to show its posts,
  * newest first.
  */
@@ -96,8 +108,53 @@ function unseenFirst(posts) {
   return [...posts.filter((p) => !seen.has(p.id)).reverse(), ...posts.filter((p) => seen.has(p.id))];
 }
 
+function readManualShown() {
+  try {
+    return JSON.parse(localStorage.getItem(MANUAL_SHOWN_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function markManualShown(id) {
+  try {
+    const shown = readManualShown();
+    shown[id] = Date.now();
+    localStorage.setItem(MANUAL_SHOWN_KEY, JSON.stringify(shown));
+  } catch {
+    // Without storage the rotation starts over on each visit.
+  }
+}
+
+/**
+ * The feed with the manual posts woven in: after every `every` other posts
+ * the next manual post, never-shown ones first (newest first), then the one
+ * shown longest ago; when they run out they start again. Each item is
+ * {key, article}.
+ */
+function weave(posts, every) {
+  const manual = posts.filter((p) => p.source === 'manual');
+  const others = unseenFirst(posts.filter((p) => p.source !== 'manual'));
+  const shown = readManualShown();
+  const cycle = [...manual].sort((a, b) => (shown[a.id] ?? 0) - (shown[b.id] ?? 0));
+  const out = [];
+  let turn = 0;
+  const nextManual = () => {
+    const article = cycle[turn % cycle.length];
+    out.push({ key: `${article.id}-${turn}`, article });
+    turn += 1;
+  };
+  others.forEach((article, i) => {
+    out.push({ key: `${article.id}`, article });
+    if (cycle.length && (i + 1) % every === 0) nextManual();
+  });
+  // Every manual post at least once, even when there are few other posts.
+  while (turn < cycle.length) nextManual();
+  return out;
+}
+
 /** Marks its post seen once the post's top reaches the upper part of the screen. */
-function SeenMarker({ id, children }) {
+function SeenMarker({ id, manual, children }) {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
@@ -105,7 +162,8 @@ function SeenMarker({ id, children }) {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          markSeen(id);
+          if (manual) markManualShown(id);
+          else markSeen(id);
           observer.disconnect();
         }
       },
@@ -113,7 +171,7 @@ function SeenMarker({ id, children }) {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [id]);
+  }, [id, manual]);
   return <div ref={ref}>{children}</div>;
 }
 
@@ -125,10 +183,21 @@ function Feed({ topic }) {
 
   useEffect(() => {
     let alive = true;
-    fetchSiratArticles(topic === 'all' ? {} : { topicSlug: topic }).then(
-      // Ordered once on arrival, so posts do not jump while being read.
-      (list) => alive && setPosts(topic === 'all' ? unseenFirst(list) : list)
-    );
+    if (topic === 'all') {
+      Promise.all([fetchSiratArticles(), fetchSiratManualSettings()]).then(([list, manual]) => {
+        if (!alive) return;
+        // Ordered once on arrival, so posts do not jump while being read.
+        if (manual.enabled === false) {
+          setPosts(unseenFirst(list).map((article) => ({ key: `${article.id}`, article })));
+        } else {
+          setPosts(weave(list, Math.max(1, Number(manual.every) || MANUAL_EVERY)));
+        }
+      });
+    } else {
+      fetchSiratArticles({ topicSlug: topic }).then(
+        (list) => alive && setPosts(list.map((article) => ({ key: `${article.id}`, article })))
+      );
+    }
     if (topic !== 'all') {
       fetchSiratTopics().then((list) => alive && setProfile(list.find((t) => t.slug === topic) ?? null));
     }
@@ -162,7 +231,7 @@ function Feed({ topic }) {
       {topic !== 'all' && (
         <div className="mb-3 flex items-center justify-between gap-3 px-4 sm:px-1">
           <p className="text-sm text-ink-2">
-            <span className="font-semibold text-ink">{profile?.name ?? posts?.[0]?.topicName ?? ''}</span>
+            <span className="font-semibold text-ink">{profile?.name ?? posts?.[0]?.article.topicName ?? ''}</span>
             {posts && (
               <>
                 <span className="mx-1.5 text-ink-3">·</span>
@@ -187,8 +256,8 @@ function Feed({ topic }) {
         />
       ) : (
         <div className="fb-posts-stream sm:space-y-4">
-          {items.slice(0, displayedCount).map((article) => (
-            <SeenMarker key={article.id} id={article.id}>
+          {items.slice(0, displayedCount).map(({ key, article }) => (
+            <SeenMarker key={key} id={article.id} manual={article.source === 'manual'}>
               <PostCard article={article} />
             </SeenMarker>
           ))}

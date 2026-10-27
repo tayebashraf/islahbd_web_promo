@@ -72,6 +72,8 @@ export interface SiratArticleItem {
   sources?: string[];
   tags?: string[];
   publishedAt?: any;
+  /** "manual" (written by an admin), "book" (a reserve book) or "quiz". */
+  source?: 'manual' | 'book' | 'quiz';
 }
 
 export interface SiratCommentItem {
@@ -208,6 +210,22 @@ export interface SiratPlatformSettings {
 export async function fetchSiratPlatformSettings(): Promise<SiratPlatformSettings> {
   try {
     const res = await fetch(`${API_BASE}/api/sirat/settings/platform/`);
+    if (res.ok) return (await res.json()).data ?? {};
+  } catch {}
+  return {};
+}
+
+/** How the feed brings back the admins' own posts (ইসলাহ ব্লগ → ম্যানুয়াল পোস্ট). */
+export interface SiratManualSettings {
+  /** Off: manual posts are ordered like every other post. */
+  enabled?: boolean;
+  /** A manual post after every this many other posts. */
+  every?: number;
+}
+
+export async function fetchSiratManualSettings(): Promise<SiratManualSettings> {
+  try {
+    const res = await fetch(`${API_BASE}/api/sirat/settings/manual/`);
     if (res.ok) return (await res.json()).data ?? {};
   } catch {}
   return {};
