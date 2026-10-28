@@ -114,6 +114,18 @@ export const DUROOD_SUGGESTIONS = [
   },
 ];
 
+const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+
+/** `&#x27;` → `'` and the like: the clamped text shows the post's HTML as plain text. */
+function decodeEntity(match, name) {
+  if (name[0] === '#') {
+    const hex = name[1] === 'x' || name[1] === 'X';
+    const code = parseInt(name.slice(hex ? 2 : 1), hex ? 16 : 10);
+    return Number.isFinite(code) ? String.fromCodePoint(code) : match;
+  }
+  return NAMED_ENTITIES[name.toLowerCase()] ?? match;
+}
+
 export const PostCard = ({ article }) => {
   const [currentArticle, setCurrentArticle] = useState(() => normalizePost(article));
   const [isDeleted, setIsDeleted] = useState(false);
@@ -545,6 +557,7 @@ export const PostCard = ({ article }) => {
       ?.replace(/<br\s*\/?>|<\/p>/gi, '\n')
       .replace(/<[^>]+>/g, '')
       .replace(/\n{2,}/g, '\n')
+      .replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi, decodeEntity)
       .trim() ||
     currentArticle.excerpt ||
     '';
