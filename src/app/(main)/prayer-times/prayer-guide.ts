@@ -100,8 +100,8 @@ export const ABOUT: Record<string, Text> = {
     en: "In the Hanafi school Asr begins when an object's shadow is twice its length and lasts until sunset — but pray it before the sun turns pale.",
   },
   sunset: {
-    bn: "সূর্যাস্তের প্রায় ১৫ মিনিট আগে থেকে সূর্য ডোবা পর্যন্ত। এ সময় নফল নিষেধ, তবে সেদিনের আসর না পড়ে থাকলে এখনই পড়ে নিন।",
-    en: "About 15 minutes before sunset until the sun has set. Nafl is forbidden, but if you have not prayed that day's Asr, pray it now.",
+    bn: "সূর্যাস্তের প্রায় ১৫ মিনিট আগে থেকে সূর্য ডোবা পর্যন্ত। এ সময় সকল নামাজ পড়া নিষেধ (আজকের দিনের আসরের নামাজ ব্যতীত)।",
+    en: "About 15 minutes before sunset until the sun has set. All prayers are forbidden (except today's Asr prayer).",
   },
   maghrib: {
     bn: "সূর্য সম্পূর্ণ অস্ত যাওয়ার পর থেকে পশ্চিম আকাশের আভা (শাফাক) মিলিয়ে যাওয়া পর্যন্ত। দেরি না করে শুরুতেই পড়া উত্তম। রোজাদারের ইফতারের সময়।",

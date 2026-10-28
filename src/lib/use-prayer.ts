@@ -70,7 +70,7 @@ function phasesFor(times: PrayerTimes, at: (hhmm: string, dayOffset?: number) =>
     { key: "zawal", bn: "যাওয়াল", en: "Zawal", fardh: "", forbidden: true, noticeBn: "সূর্য মাথার উপর, এখন নামাজ নিষেধ", noticeEn: "The sun is at its zenith — no prayer now", start: min(dhuhr, -10), end: dhuhr },
     { key: "dhuhr", bn: dh.bn, en: dh.en, fardh: "Dhuhr", forbidden: false, start: dhuhr, end: asr },
     { key: "asr", bn: "আসর", en: "Asr", fardh: "Asr", forbidden: false, start: asr, end: min(maghrib, -15) },
-    { key: "sunset", bn: "সূর্যাস্ত", en: "Sunset", fardh: "Asr", forbidden: true, noticeBn: "নফল নামাজ নিষেধ • আসর না পড়ে থাকলে এখনই পড়ুন", noticeEn: "No nafl prayer now • pray Asr now if you haven't", start: min(maghrib, -15), end: maghrib },
+    { key: "sunset", bn: "সূর্যাস্ত", en: "Sunset", fardh: "Asr", forbidden: true, noticeBn: "এখন সকল নামাজ পড়া নিষেধ (আজকের দিনের আসরের নামাজ ব্যতীত)", noticeEn: "All prayers are forbidden now (except today's Asr prayer)", start: min(maghrib, -15), end: maghrib },
     { key: "maghrib", bn: "মাগরিব", en: "Maghrib", fardh: "Maghrib", forbidden: false, start: maghrib, end: isha },
     { key: "isha", bn: "এশা", en: "Isha", fardh: "Isha", forbidden: false, start: isha, end: at(times.Fajr, 1) },
   ];
