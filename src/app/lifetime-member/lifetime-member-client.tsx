@@ -258,6 +258,61 @@ interface MemberRecord {
   joinYear: string;
   dueYears: number[];
   yearlyRecords: Record<number, string>;
+  /** from the MMS database: per year amount and receipts (absent when read from the sheet) */
+  yearDetails?: Record<number, { paid: number; expected: number; status: string; receipts: string[] }>;
+}
+
+interface BackendYear {
+  period: string;
+  paid: number;
+  expected: number;
+  status: string;
+  receipts: { receipt_no: string; transaction_id: string; amount: number }[];
+}
+
+// Live record from the MMS database (online payments included); null = no such member,
+// undefined = database not reachable (then the published sheet is used).
+async function searchMemberLive(memberId: string, mobile: string): Promise<MemberRecord | null | undefined> {
+  try {
+    const res = await fetch("/api/lifetime-member/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberId, mobile }),
+    });
+    if (res.status === 404) return null;
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data?.ok || !data.member) return undefined;
+    const m = data.member;
+    const yearlyRecords: Record<number, string> = {};
+    const yearDetails: NonNullable<MemberRecord["yearDetails"]> = {};
+    for (const y of (m.years || []) as BackendYear[]) {
+      const year = parseInt(y.period, 10);
+      if (!year) continue;
+      const paid = Number(y.paid) || 0;
+      // a partly paid year stays selectable as due
+      yearlyRecords[year] = paid > 0 && y.status !== "partial" ? `${paid}` : "";
+      yearDetails[year] = {
+        paid,
+        expected: Number(y.expected) || 0,
+        status: y.status,
+        receipts: (y.receipts || []).map((r) => (r.transaction_id || r.receipt_no || "").replace(/^TRX-/, "")).filter(Boolean),
+      };
+    }
+    return {
+      punchCode: "",
+      memberId: String(m.member_no || m.donor_id || memberId),
+      name: String(m.name || ""),
+      pledgedAmount: `৳ ${Math.round(Number(m.pledge) || 0).toLocaleString("en-IN")}`,
+      address: String(m.address || ""),
+      mobile,
+      joinYear: m.join_year ? String(m.join_year) : "তথ্য নেই",
+      dueYears: Array.isArray(m.due_years) ? m.due_years.map(Number) : [],
+      yearlyRecords,
+      yearDetails,
+    };
+  } catch {
+    return undefined;
+  }
 }
 
 function normalizeBanglaDigits(input: string): string {
@@ -898,7 +953,9 @@ export function LifetimeMemberClient() {
     setSelectedDueYears(new Set());
     try {
       const mobile = normalizePhone(rawMobile);
-      const result = await searchMember(memberId, mobile);
+      // the MMS database first (it has online payments too); the published sheet only if it is unreachable
+      const live = await searchMemberLive(memberId, mobile);
+      const result = live === undefined ? await searchMember(memberId, mobile) : live;
       if (result) {
         setFoundMember(result);
         setSelectedDueYears(new Set(result.dueYears));
@@ -1655,9 +1712,16 @@ export function LifetimeMemberClient() {
                                   {year} {t("সাল", "")}
                                 </span>
                                 <div className="flex-1" />
+                                {isPaid && foundMember.yearDetails?.[year] && (
+                                  <span className="text-[11px] text-muted-foreground truncate">
+                                    ৳{num(foundMember.yearDetails[year].paid.toLocaleString("en-IN"), lang)}
+                                    {foundMember.yearDetails[year].receipts.length > 0 &&
+                                      ` · ${t("রসিদ", "Receipt")} ${foundMember.yearDetails[year].receipts.join(", ")}`}
+                                  </span>
+                                )}
                                 {isPaid ? (
-                                  <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[11.5px] font-bold">
-                                    {t("পরিশোধিত", "Paid")} ✓
+                                  <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[11.5px] font-bold shrink-0">
+                                    {foundMember.yearDetails?.[year]?.status === "partial" ? t("আংশিক", "Partial") : t("পরিশোধিত", "Paid")} ✓
                                   </span>
                                 ) : (
                                   <button
