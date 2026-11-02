@@ -56,6 +56,7 @@ import {
   calculateBkashCharge,
   getBkashTotalAmount,
 } from "@/lib/lifetime-member";
+import { LifetimeAdMode, useTripleTap } from "./ad-mode";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -67,6 +68,10 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 // Target Conference Date: December 5, 2026, 09:00 AM
 const TARGET_DATE = new Date(2026, 11, 5, 9, 0, 0);
+const CONF_DATE_BN = "৫ই ডিসেম্বর ২০২৬ · শনিবার";
+const FIKIR_DUA_BN = `দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
+
+সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`;
 
 const BENEFITS = [
   {
@@ -635,6 +640,18 @@ export function LifetimeMemberClient() {
 
   const { days, hours, minutes } = useCountdown(TARGET_DATE);
 
+  // ── Ad mode (hidden): tap "বিশেষ এলান ও দাওয়াত" three times for the full-screen display loop ──
+  const [adMode, setAdMode] = useState(false);
+  const enterAdMode = useCallback(() => {
+    setAdMode(true);
+    document.documentElement.requestFullscreen?.().catch(() => {});
+  }, []);
+  const exitAdMode = useCallback(() => {
+    setAdMode(false);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  }, []);
+  const onInviteTap = useTripleTap(enterAdMode);
+
   // ── New Member form state ──
   const [selectedTierId, setSelectedTierId] = useState("gold");
   const [newName, setNewName] = useState("");
@@ -1184,7 +1201,10 @@ export function LifetimeMemberClient() {
             <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.03] invert dark:opacity-[0.05] dark:invert-0" />
 
             <div className="relative">
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-soft px-4 py-1.5 text-[13px] font-semibold text-gold">
+              <span
+                onClick={onInviteTap}
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-soft px-4 py-1.5 text-[13px] font-semibold text-gold select-none"
+              >
                 <Megaphone className="h-4 w-4" />
                 বিশেষ এলান ও দাওয়াত
               </span>
@@ -1192,7 +1212,7 @@ export function LifetimeMemberClient() {
               <p className="mt-5 text-[15px] text-ink-2">চলতি বছর</p>
               <h1 className="font-heading text-[30px] leading-tight font-bold text-ink sm:text-[40px]">আজীবন সদস্য সম্মেলন</h1>
               <p className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-brand px-4 py-2 text-[17px] font-semibold text-white sm:text-lg">
-                ৫ই ডিসেম্বর ২০২৬ · শনিবার
+                {CONF_DATE_BN}
               </p>
               <p className="mt-2 text-[15px] text-brand">অনুষ্ঠিত হবে ইনশাআল্লাহ</p>
 
@@ -1322,9 +1342,7 @@ export function LifetimeMemberClient() {
             </span>
             <h3 className="mt-3 font-heading text-xl font-bold text-ink">আমাদের ফিকির ও দোয়া</h3>
             <p className="mx-auto mt-3 max-w-xl text-[16px] leading-[1.9] whitespace-pre-line text-ink-2">
-              {`দ্বীনি এ খেদমতে অংশগ্রহণ করার লক্ষ্যে আমরা নিজেরা সদস্য হওয়ার ও নিজেদের আপনজন প্রিয়জনদেরকে সদস্য করার ফিকির করবো ইনশাআল্লাহ।
-
-সেই সাথে দোয়া করবো, মহান আল্লাহ রাব্বুল আলামীন নিজ দয়া ও অনুগ্রহে খুব বেশি কবুল করুন এবং সফল করুন। আমীন।`}
+              {FIKIR_DUA_BN}
             </p>
           </div>
 
@@ -2275,6 +2293,20 @@ export function LifetimeMemberClient() {
               </button>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── AD MODE — full-screen loop for the portrait display monitor ─── */}
+      <AnimatePresence>
+        {adMode && (
+          <LifetimeAdMode
+            target={TARGET_DATE}
+            dateLabel={CONF_DATE_BN}
+            venue={VENUE}
+            benefits={BENEFITS}
+            fikirDua={FIKIR_DUA_BN}
+            onExit={exitAdMode}
+          />
         )}
       </AnimatePresence>
 

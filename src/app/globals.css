@@ -395,3 +395,78 @@ input[type="range"].seek::-moz-range-thumb { height: 12px; width: 12px; border-r
 }
 
 .font-nastaliq { font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif; }
+
+/* ── Lifetime-member ad mode (src/app/lifetime-member/ad-mode.tsx) ──
+   Two palettes that alternate each loop. The tokens are registered so the swap cross-fades. */
+@property --ad-outer { syntax: "<color>"; inherits: true; initial-value: #04110c; }
+@property --ad-bg-a { syntax: "<color>"; inherits: true; initial-value: #2a6b55; }
+@property --ad-bg-b { syntax: "<color>"; inherits: true; initial-value: #123a2d; }
+@property --ad-bg-c { syntax: "<color>"; inherits: true; initial-value: #06170f; }
+@property --ad-ink { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --ad-ink-2 { syntax: "<color>"; inherits: true; initial-value: #ffffffc7; }
+@property --ad-accent { syntax: "<color>"; inherits: true; initial-value: #e8c96c; }
+@property --ad-accent-ink { syntax: "<color>"; inherits: true; initial-value: #f3d98b; }
+@property --ad-title-a { syntax: "<color>"; inherits: true; initial-value: #e8c96c; }
+@property --ad-title-b { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --ad-glow { syntax: "<color>"; inherits: true; initial-value: #e8c96c59; }
+@property --ad-drop { syntax: "<color>"; inherits: true; initial-value: #000000a6; }
+@property --ad-hinge { syntax: "<color>"; inherits: true; initial-value: #00000080; }
+@property --ad-tone-mix { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --ad-flip-1 { syntax: "<color>"; inherits: true; initial-value: #2a5f4f; }
+@property --ad-flip-2 { syntax: "<color>"; inherits: true; initial-value: #1d4a3c; }
+@property --ad-flip-3 { syntax: "<color>"; inherits: true; initial-value: #173f33; }
+@property --ad-flip-4 { syntax: "<color>"; inherits: true; initial-value: #112f26; }
+@property --ad-flip-ink { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --ad-flip-ink-2 { syntax: "<color>"; inherits: true; initial-value: #f3d98b; }
+
+.ad-theme {
+  transition-property: --ad-outer, --ad-bg-a, --ad-bg-b, --ad-bg-c, --ad-ink, --ad-ink-2, --ad-accent, --ad-accent-ink,
+    --ad-title-a, --ad-title-b, --ad-glow, --ad-drop, --ad-hinge, --ad-tone-mix, --ad-flip-1, --ad-flip-2, --ad-flip-3,
+    --ad-flip-4, --ad-flip-ink, --ad-flip-ink-2;
+  transition-duration: 1.6s;
+  transition-timing-function: ease;
+}
+.ad-theme-dark {
+  --ad-outer: #04110c;
+  --ad-bg-a: #2a6b55;
+  --ad-bg-b: #123a2d;
+  --ad-bg-c: #06170f;
+  --ad-ink: #ffffff;
+  --ad-ink-2: #ffffffc7;
+  --ad-accent: #e8c96c;
+  --ad-accent-ink: #f3d98b;
+  --ad-title-a: #e8c96c;
+  --ad-title-b: #ffffff;
+  --ad-glow: #e8c96c59;
+  --ad-drop: #000000a6;
+  --ad-hinge: #00000080;
+  --ad-tone-mix: #ffffff;
+  --ad-flip-1: #2a5f4f;
+  --ad-flip-2: #1d4a3c;
+  --ad-flip-3: #173f33;
+  --ad-flip-4: #112f26;
+  --ad-flip-ink: #ffffff;
+  --ad-flip-ink-2: #f3d98b;
+}
+.ad-theme-light {
+  --ad-outer: #d3e5da;
+  --ad-bg-a: #fffcf0;
+  --ad-bg-b: #eef6f0;
+  --ad-bg-c: #d6e8dd;
+  --ad-ink: #173b2f;
+  --ad-ink-2: #173b2fb8;
+  --ad-accent: #c08a2e;
+  --ad-accent-ink: #94661a;
+  --ad-title-a: #2f6450;
+  --ad-title-b: #d4a043;
+  --ad-glow: #c08a2e33;
+  --ad-drop: #2f645047;
+  --ad-hinge: #2f645033;
+  --ad-tone-mix: #000000;
+  --ad-flip-1: #ffffff;
+  --ad-flip-2: #f5faf7;
+  --ad-flip-3: #ebf4ef;
+  --ad-flip-4: #deece4;
+  --ad-flip-ink: #2f6450;
+  --ad-flip-ink-2: #b07d22;
+}
