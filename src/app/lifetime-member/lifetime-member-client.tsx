@@ -56,7 +56,19 @@ import {
   calculateBkashCharge,
   getBkashTotalAmount,
 } from "@/lib/lifetime-member";
-import { LifetimeAdMode, useTripleTap } from "./ad-mode";
+import dynamic from "next/dynamic";
+import { useTripleTap } from "./use-tap-count";
+import type { PunchMember } from "@/lib/lifetime-punch";
+
+// The two hidden screens are not part of the page: each is its own file, fetched only when its
+// secret tap starts (first tap) — so the page stays light and the screen is ready by the last tap.
+const loadAdMode = () => import("./ad-mode").then((m) => m.LifetimeAdMode);
+const loadPunchKiosk = () => import("./punch-kiosk").then((m) => m.PunchKiosk);
+const LifetimeAdMode = dynamic(loadAdMode, { ssr: false });
+const PunchKiosk = dynamic(loadPunchKiosk, { ssr: false });
+const preload = (load: () => Promise<unknown>) => () => void load().catch(() => {});
+const preloadAdMode = preload(loadAdMode);
+const preloadPunchKiosk = preload(loadPunchKiosk);
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -650,7 +662,19 @@ export function LifetimeMemberClient() {
     setAdMode(false);
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }, []);
-  const onInviteTap = useTripleTap(enterAdMode);
+  const onInviteTap = useTripleTap(enterAdMode, 900, 3, preloadAdMode);
+
+  // ── Punch kiosk (hidden): tap the member-portal card four times; members punch their card ──
+  const [punchOpen, setPunchOpen] = useState(false);
+  const enterPunch = useCallback(() => {
+    setPunchOpen(true);
+    document.documentElement.requestFullscreen?.().catch(() => {});
+  }, []);
+  const exitPunch = useCallback(() => {
+    setPunchOpen(false);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  }, []);
+  const onPortalCardTap = useTripleTap(enterPunch, 1200, 4, preloadPunchKiosk);
 
   // ── New Member form state ──
   const [selectedTierId, setSelectedTierId] = useState("gold");
@@ -687,6 +711,7 @@ export function LifetimeMemberClient() {
     applicantPhone: string;
     memberId?: string;
     yearsToPay?: number[];
+    applicantAddress?: string;
     // Amount charged through bKash online checkout; null hides that option.
     onlineAmount: number | null;
   }>(null);
@@ -786,8 +811,9 @@ export function LifetimeMemberClient() {
     setSenderNumber("");
     setTrxId("");
     setSenderError(null);
-    router.push("/");
-  }, [router]);
+    // the punch kiosk stays up for the next member
+    if (!punchOpen) router.push("/");
+  }, [router, punchOpen]);
 
   const openPortal = (tab: 0 | 1 = 0) => {
     setPortalTab(tab);
@@ -805,7 +831,7 @@ export function LifetimeMemberClient() {
   };
 
   useEffect(() => {
-    if (!portalOpen && !payModal && !successDialog && !bkashFailure) return;
+    if (!portalOpen && !payModal && !successDialog && !bkashFailure && !punchOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (bkashFailure) setBkashFailure(null);
@@ -819,7 +845,7 @@ export function LifetimeMemberClient() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [portalOpen, payModal, successDialog, bkashFailure, closeSuccessAndReturn]);
+  }, [portalOpen, payModal, successDialog, bkashFailure, punchOpen, closeSuccessAndReturn]);
 
   // ── New member submit ──
   const validateNewMemberForm = () => {
@@ -1021,6 +1047,37 @@ export function LifetimeMemberClient() {
     });
   };
 
+  // Punch kiosk: the member ticked due years (or one year) — open the same payment sheet.
+  const openPayForPunch = useCallback((member: PunchMember, years: number[], amount: number) => {
+    setSenderNumber(member.phone);
+    setTrxId("");
+    setPaymentMethod("বিকাশ (মার্চেন্ট)");
+    setSenderError(null);
+    setBkashError(null);
+    setSslczError(null);
+    setPayModal({
+      title: "আজীবন সদস্য বকেয়া/চলতি অনুদান",
+      titleEn: "Lifetime Member Due/Current Contribution",
+      amountText: `${formatTaka(amount, true)}${years.length > 1 ? ` · ${num(years.length, "bn")} বছর` : ""}`,
+      applicantName: member.name,
+      applicantPhone: member.phone,
+      applicantAddress: member.address,
+      memberId: member.memberId,
+      yearsToPay: years,
+      // what is still owed for the chosen years (a partly paid year only its rest); the kiosk never sends 0
+      onlineAmount: amount,
+    });
+  }, []);
+
+  // A new card punch comes first: whatever sheet the last member left open is closed.
+  const closeSheetsForPunch = useCallback(() => {
+    setPayModal(null);
+    setSuccessDialog(null);
+    setBkashFailure(null);
+    setSslczFailure(null);
+    setReceiptModalData(null);
+  }, []);
+
   // Starts bKash online checkout; the browser leaves for bKash and comes back via /api/bkash/callback.
   const startBkashPayment = async () => {
     if (!payModal || bkashStarting) return;
@@ -1035,7 +1092,7 @@ export function LifetimeMemberClient() {
             name: payModal.applicantName || newName.trim(),
             phone: normalizePhone(payModal.applicantPhone || newPhone),
             memberId: payModal.memberId || "",
-            address: newAddress.trim() || (foundMember?.address ?? ""),
+            address: payModal.applicantAddress || newAddress.trim() || (foundMember?.address ?? ""),
             amount: payModal.onlineAmount ?? currentTier.amount,
             tierTitle: payModal.memberId ? "আজীবন সদস্য অনুদান" : currentTier.titleBn,
             years: payModal.yearsToPay,
@@ -1093,7 +1150,7 @@ export function LifetimeMemberClient() {
             name: payModal.applicantName || newName.trim(),
             phone: normalizePhone(payModal.applicantPhone || newPhone),
             memberId: payModal.memberId || "",
-            address: newAddress.trim() || (foundMember?.address ?? ""),
+            address: payModal.applicantAddress || newAddress.trim() || (foundMember?.address ?? ""),
             amount: payModal.onlineAmount ?? currentTier.amount,
             tierTitle: payModal.memberId ? "আজীবন সদস্য অনুদান" : currentTier.titleBn,
             years: payModal.yearsToPay,
@@ -1260,8 +1317,13 @@ export function LifetimeMemberClient() {
             </p>
           </div>
 
-          {/* 3. MEMBER PORTAL ACTION CARD */}
-          <div className="hero-surface relative overflow-hidden rounded-2xl p-5 sm:p-7">
+          {/* 3. MEMBER PORTAL ACTION CARD — four taps on the card (not its buttons) open the punch kiosk */}
+          <div
+            className="hero-surface relative overflow-hidden rounded-2xl p-5 select-none sm:p-7"
+            onClick={(e) => {
+              if (!(e.target as HTMLElement).closest("button, a")) onPortalCardTap();
+            }}
+          >
             <div className="star-lattice pointer-events-none absolute inset-0 opacity-[0.08]" />
             <div className="relative flex items-center gap-3">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15">
@@ -2306,6 +2368,20 @@ export function LifetimeMemberClient() {
             benefits={BENEFITS}
             fikirDua={FIKIR_DUA_BN}
             onExit={exitAdMode}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ─── PUNCH KIOSK — members punch their card at the desk; payments use the sheet above ─── */}
+      <AnimatePresence>
+        {punchOpen && (
+          <PunchKiosk
+            paused={!!payModal || !!successDialog || !!receiptModalData || !!bkashFailure || !!sslczFailure}
+            dateLabel={CONF_DATE_BN}
+            venue={VENUE}
+            onPay={openPayForPunch}
+            onInterrupt={closeSheetsForPunch}
+            onExit={exitPunch}
           />
         )}
       </AnimatePresence>

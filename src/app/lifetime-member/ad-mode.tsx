@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Crown, HeartHandshake, MapPin, Megaphone, X } from "lucide-react";
 import { bnNum } from "@/lib/format";
+import { useTripleTap } from "./use-tap-count";
 
 /**
  * Ad mode — a full-screen, self-running loop of the lifetime-member page for a tall display.
@@ -50,19 +51,6 @@ const SHINE =
 /** Theme token, optionally faded to `pct`% opacity. */
 const v = (name: string, pct?: number) =>
   pct === undefined ? `var(--ad-${name})` : `color-mix(in oklab, var(--ad-${name}) ${pct}%, transparent)`;
-
-/** Calls `onTriple` after three taps within `windowMs` — a hidden switch, like a developer mode. */
-export function useTripleTap(onTriple: () => void, windowMs = 900) {
-  const taps = useRef<number[]>([]);
-  return useCallback(() => {
-    const now = Date.now();
-    taps.current = [...taps.current.filter((t) => now - t < windowMs), now];
-    if (taps.current.length >= 3) {
-      taps.current = [];
-      onTriple();
-    }
-  }, [onTriple, windowMs]);
-}
 
 // ─────────────────────────────────────────────
 // Motion helpers — soft blur-in, never bouncy
