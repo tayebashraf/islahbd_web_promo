@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowUpCircle, CircleAlert, CircleCheck, Loader2, Search, X } from "lucide-react";
+import { ChevronRight, CircleAlert, CircleCheck, HandHeart, Loader2, Search, TrendingUp, X } from "lucide-react";
 import { useLang } from "@/components/providers/lang-provider";
 
 interface Tier {
@@ -22,7 +22,7 @@ const inputCls =
   "w-full h-11 px-3.5 rounded-xl border border-border bg-background text-[14px] text-foreground outline-none focus:border-primary";
 
 /**
- * "প্যাকেজ আপগ্রেড" under the existing-member search. The member proves who they are (member number +
+ * "বাৎসরিক অনুদান বাড়াতে চাই" under the existing-member search. The member proves who they are (member number +
  * mobile), picks a bigger package and sends a request; the office approves it, and from that year the
  * new amount applies. Earlier years stay as they were.
  */
@@ -118,10 +118,16 @@ export function UpgradePackage({ memberId, mobile, tiers }: { memberId: string; 
       <button
         type="button"
         onClick={start}
-        className="w-full mt-2.5 h-11 inline-flex items-center justify-center gap-2 rounded-xl border border-primary/40 text-primary font-bold text-[13.5px] hover:bg-primary/5"
+        className="group w-full mt-3 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#B45309] via-[#D97706] to-[#0F766E] px-4 py-3 text-left text-white shadow-md shadow-amber-900/20 transition hover:brightness-110 active:scale-[0.99]"
       >
-        <ArrowUpCircle className="w-4 h-4" />
-        {t("প্যাকেজ আপগ্রেড করতে চাই", "Upgrade my package")}
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/40">
+          <TrendingUp className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-bold leading-snug">{t("বাৎসরিক অনুদান বাড়াতে চাই", "Increase my yearly contribution")}</span>
+          <span className="block text-[12px] text-white/85 leading-snug">{t("আরও বড় অংকে খেদমতে শরিক হতে এখানে চাপুন", "Tap here to give a bigger share")}</span>
+        </span>
+        <ChevronRight className="h-5 w-5 shrink-0 transition group-hover:translate-x-0.5" />
       </button>
 
       {open && (
@@ -129,15 +135,15 @@ export function UpgradePackage({ memberId, mobile, tiers }: { memberId: string; 
           className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md p-0 sm:p-4"
           role="dialog"
           aria-modal="true"
-          aria-label={t("প্যাকেজ আপগ্রেড", "Upgrade package")}
+          aria-label={t("বাৎসরিক অনুদান বাড়ান", "Increase yearly contribution")}
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div className="w-full sm:max-w-md max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-border bg-background p-5 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-[17px] font-bold text-foreground">{t("প্যাকেজ আপগ্রেড", "Upgrade package")}</h3>
+                <h3 className="text-[17px] font-bold text-foreground">{t("বাৎসরিক অনুদান বাড়ান", "Increase your yearly contribution")}</h3>
                 <p className="text-[12.5px] text-muted-foreground mt-0.5">
-                  {t("বড় প্যাকেজ বেছে অনুরোধ পাঠান — অফিস অনুমোদন করলে কার্যকর হবে।", "Pick a bigger package and send a request. It applies once the office approves.")}
+                  {t("নতুন পরিমাণ বেছে অনুরোধ পাঠান — অফিস অনুমোদন করলে চালু হবে।", "Pick the new amount and send a request. It starts once the office approves.")}
                 </p>
               </div>
               <button type="button" onClick={() => setOpen(false)} aria-label={t("বন্ধ করুন", "Close")} className="p-1.5 -mr-1.5 rounded-lg text-muted-foreground hover:text-foreground">
@@ -172,13 +178,14 @@ export function UpgradePackage({ memberId, mobile, tiers }: { memberId: string; 
               <div className="space-y-3.5">
                 <div className="rounded-2xl border border-border px-4 py-3">
                   <p className="text-[15px] font-bold text-foreground truncate">{found.name}</p>
-                  <p className="text-[12.5px] text-muted-foreground">{t("বর্তমান প্যাকেজ", "Current package")}: {money(found.pledge)} {t("(বাৎসরিক)", "(yearly)")}</p>
+                  <p className="text-[12.5px] text-muted-foreground">{t("এখন আপনার বাৎসরিক অনুদান", "Your yearly contribution now")}: <b className="text-foreground">{money(found.pledge)}</b></p>
                 </div>
                 {bigger.length === 0 ? (
-                  <p className="text-sm font-semibold text-emerald-600 text-center py-1">{t("আপনি সর্বোচ্চ প্যাকেজে আছেন। জাযাকাল্লাহু খাইরান।", "You are on the highest package. Jazakallahu khairan.")}</p>
+                  <p className="text-sm font-semibold text-emerald-600 text-center py-1">{t("আপনি সর্বোচ্চ পরিমাণে অনুদান দিচ্ছেন। জাযাকাল্লাহু খাইরান।", "You already give the highest amount. Jazakallahu khairan.")}</p>
                 ) : (
                   <>
-                    <div className="space-y-2" role="radiogroup" aria-label={t("নতুন প্যাকেজ", "New package")}>
+                    <p className="text-[13px] font-semibold text-foreground">{t("নতুন বাৎসরিক অনুদান বেছে নিন", "Choose the new yearly amount")}</p>
+                    <div className="space-y-2" role="radiogroup" aria-label={t("নতুন বাৎসরিক অনুদান", "New yearly amount")}>
                       {bigger.map((x) => {
                         const on = tierId === x.id;
                         return (
@@ -190,21 +197,21 @@ export function UpgradePackage({ memberId, mobile, tiers }: { memberId: string; 
                             onClick={() => setTierId(x.id)}
                             className={`w-full flex items-center justify-between gap-3 px-4 h-12 rounded-xl border-2 text-left ${on ? "border-primary bg-primary/5" : "border-border"}`}
                           >
-                            <span className="text-[13.5px] font-bold text-foreground truncate">{x.title}</span>
-                            <span className="text-[13.5px] font-bold text-primary shrink-0">{money(x.amount)}</span>
+                            <span className="text-[15px] font-bold text-primary shrink-0">{money(x.amount)} <span className="text-[11.5px] font-medium text-muted-foreground">{t("/ বছর", "/ year")}</span></span>
+                            <span className="text-[12px] text-muted-foreground truncate">{x.title}</span>
                           </button>
                         );
                       })}
                     </div>
                     <p className="text-[12.5px] leading-relaxed text-muted-foreground">
                       {t(
-                        `অনুমোদনের পর ${yearText} সাল থেকে নতুন প্যাকেজের টাকা ধরা হবে। আগের বছরগুলোর হিসাব আগের টাকাতেই থাকবে, আর এ বছর যা দিয়েছেন তা নতুন প্যাকেজে গণ্য হবে।`,
-                        `Once approved, the new amount applies from ${yearText}. Earlier years stay at the old amount, and what you have paid this year counts toward the new package.`
+                        `অনুমোদনের পর ${yearText} সাল থেকে নতুন পরিমাণ ধরা হবে। আগের বছরগুলোর হিসাব আগের মতোই থাকবে, আর এ বছর যা দিয়েছেন তা নতুন পরিমাণের সাথে গণ্য হবে।`,
+                        `Once approved, the new amount applies from ${yearText}. Earlier years stay as they were, and what you have paid this year counts toward the new amount.`
                       )}
                     </p>
                     <button type="button" onClick={send} disabled={loading || !tierId} className="w-full h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-bold text-[15px] disabled:opacity-50">
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpCircle className="w-4 h-4" />}
-                      <span>{loading ? t("পাঠানো হচ্ছে...", "Sending...") : t("আপগ্রেডের অনুরোধ পাঠান", "Send upgrade request")}</span>
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <HandHeart className="w-4 h-4" />}
+                      <span>{loading ? t("পাঠানো হচ্ছে...", "Sending...") : t("অনুরোধ পাঠান", "Send request")}</span>
                     </button>
                   </>
                 )}

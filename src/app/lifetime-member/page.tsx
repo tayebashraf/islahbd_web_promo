@@ -3,6 +3,10 @@ import { LifetimeMemberClient } from "./lifetime-member-client";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
+// The line under the title when the link is shared (WhatsApp, Facebook …).
+const SHARE_TEXT =
+  "আজীবন সদস্য হয়ে তালিবুল ইলমের দ্বীনি শিক্ষা, এতিম-অসহায়ের খেদমত ও মানুষের কল্যাণে শরিক হোন — আপনার দান হোক চিরস্থায়ী সদকায়ে জারিয়া।";
+
 export const metadata: Metadata = {
   title: `আজীবন সদস্য সম্মেলন ২০২৬ — সদকায়ে জারিয়ার অংশীদার হোন | ${SITE_NAME}`,
   description:
@@ -20,7 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/lifetime-member` },
   openGraph: {
     title: `আজীবন সদস্য সম্মেলন ২০২৬ | ${SITE_NAME}`,
-    description: "Become a Lifetime Member of Jamea Markazul Ihsan Dhaka. Learn the benefits and apply online.",
+    description: SHARE_TEXT,
     url: `${SITE_URL}/lifetime-member`,
     siteName: SITE_NAME,
     type: "website",
@@ -28,7 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `আজীবন সদস্য সম্মেলন ২০২৬ | ${SITE_NAME}`,
-    description: "Become a Lifetime Member of Jamea Markazul Ihsan Dhaka. Learn the benefits and apply online.",
+    description: SHARE_TEXT,
   },
 };
 

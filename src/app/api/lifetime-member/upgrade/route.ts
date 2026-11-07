@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   if (phone.startsWith("880")) phone = "0" + phone.slice(3);
   const tierId = String(body?.tierId ?? "");
   if (!memberId || !/^01[3-9]\d{8}$/.test(phone) || !TIER_IDS.includes(tierId)) {
-    return NextResponse.json({ ok: false, message: "সদস্য নং, মোবাইল নম্বর ও নতুন প্যাকেজ — তিনটিই দিন।" }, { status: 400 });
+    return NextResponse.json({ ok: false, message: "সদস্য নং, মোবাইল নম্বর ও নতুন পরিমাণ — তিনটিই দিন।" }, { status: 400 });
   }
   try {
     const res = await fetch(`${BACKEND}/api/v1/payments/lifetime-member/upgrade/`, {
