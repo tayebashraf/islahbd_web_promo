@@ -58,6 +58,7 @@ import {
 } from "@/lib/lifetime-member";
 import dynamic from "next/dynamic";
 import { useTripleTap } from "./use-tap-count";
+import { UpgradePackage } from "./upgrade-package";
 import type { PunchMember } from "@/lib/lifetime-punch";
 
 // The two hidden screens are not part of the page: each is its own file, fetched only when its
@@ -274,6 +275,8 @@ interface MemberRecord {
   mobile: string;
   joinYear: string;
   dueYears: number[];
+  /** from the MMS database: what each due year still needs (after an upgrade, old years stay at the old pledge) */
+  dueAmounts?: Record<string, number>;
   yearlyRecords: Record<number, string>;
   /** from the MMS database: per year amount and receipts (absent when read from the sheet) */
   yearDetails?: Record<number, { paid: number; expected: number; status: string; receipts: string[] }>;
@@ -324,6 +327,7 @@ async function searchMemberLive(memberId: string, mobile: string): Promise<Membe
       mobile,
       joinYear: m.join_year ? String(m.join_year) : "তথ্য নেই",
       dueYears: Array.isArray(m.due_years) ? m.due_years.map(Number) : [],
+      dueAmounts: m.due_amounts && typeof m.due_amounts === "object" ? m.due_amounts : undefined,
       yearlyRecords,
       yearDetails,
     };
@@ -1030,6 +1034,8 @@ export function LifetimeMemberClient() {
     if (!foundMember) return;
     const years = Array.from(selectedDueYears).sort((a, b) => a - b);
     const pledged = parsePledgedAmount(foundMember.pledgedAmount);
+    const yearAmounts = years.map((y) => Number(foundMember.dueAmounts?.[String(y)]) || pledged || 0);
+    const sameEveryYear = yearAmounts.every((a) => a === pledged);
     setSenderNumber(foundMember.mobile);
     setTrxId("");
     setPaymentMethod("বিকাশ (মার্চেন্ট)");
@@ -1038,12 +1044,14 @@ export function LifetimeMemberClient() {
     setPayModal({
       title: "আজীবন সদস্য বকেয়া/চলতি অনুদান",
       titleEn: "Lifetime Member Due/Current Contribution",
-      amountText: `${foundMember.pledgedAmount}${years.length > 1 ? ` × ${years.length} ${t("বছর", "years")}` : ""}`,
+      amountText: sameEveryYear
+        ? `${foundMember.pledgedAmount}${years.length > 1 ? ` × ${years.length} ${t("বছর", "years")}` : ""}`
+        : formatTaka(yearAmounts.reduce((s, a) => s + a, 0), lang === "bn"),
       applicantName: foundMember.name,
       applicantPhone: foundMember.mobile,
       memberId: foundMember.memberId,
       yearsToPay: years,
-      onlineAmount: pledged ? pledged * Math.max(1, years.length) : null,
+      onlineAmount: pledged ? (years.length ? yearAmounts.reduce((s, a) => s + a, 0) : pledged) : null,
     });
   };
 
@@ -1721,6 +1729,11 @@ export function LifetimeMemberClient() {
                         {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                         <span>{searching ? t("অনুসন্ধান হচ্ছে...", "Searching...") : t("হিসেব ও বকেয়া দেখুন", "View Ledger & Dues")}</span>
                       </button>
+                      <UpgradePackage
+                        memberId={existingId}
+                        mobile={existingMobile}
+                        tiers={TIERS.map((x) => ({ id: x.id, amount: x.amount, title: t(x.titleBn, x.titleEn) }))}
+                      />
                     </div>
 
                     {searchError && (

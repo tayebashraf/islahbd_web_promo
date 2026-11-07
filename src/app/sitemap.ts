@@ -42,8 +42,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/listen",
     "/library",
     "/about",
-    "/khidmat",
-    "/khidmat-fund",
     "/notices",
     "/gallery",
     "/more",

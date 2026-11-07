@@ -93,7 +93,7 @@ export const LINKS = {
   paribar: { href: "/paribar", bn: "পরিবার", en: "Paribar", icon: Users, descBn: "হযরতের পরিচিতি, মিশন ও বাইয়াত", descEn: "The shaykh, his mission & bay'ah", tone: "#BE185D" },
   about: { href: "/about", bn: "মাদরাসা পরিচিতি", en: "About the Madrasa", icon: Building2, descBn: "মারকাযুল ইহসান পরিচিতি", descEn: "About Markazul Ihsan", tone: "#417360" },
   member: { href: "/lifetime-member", bn: "আজীবন সদস্য সম্মেলন", en: "Lifetime Member", icon: HeartHandshake, descBn: "জামেআর পাশে থাকুন", descEn: "Support the Jamia", tone: "#BE185D" },
-  khidmat: { href: "/khidmat", bn: "খিদমত ফান্ড", en: "Khidmat Fund", icon: HandHeart, descBn: "তোলাবায়ে কেরামের খেদমত ও যাকাত ফান্ড", descEn: "Student welfare & zakat fund", tone: "#059669" },
+  khidmat: { href: "https://www.markazulihsan.com/khidmat", bn: "খিদমত ফান্ড", en: "Khidmat Fund", icon: HandHeart, descBn: "তোলাবায়ে কেরামের খেদমত ও যাকাত ফান্ড", descEn: "Student welfare & zakat fund", tone: "#059669", external: true },
   notices: { href: "/notices", bn: "নোটিশ", en: "Notices", icon: Megaphone, descBn: "সর্বশেষ ঘোষণা", descEn: "Latest announcements", tone: "#EA580C" },
 
   // Dedicated "More" Page

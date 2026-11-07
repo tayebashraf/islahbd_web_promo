@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   poweredByHeader: false,
+  async redirects() {
+    // Khidmat lives on the madrasa's own site; old links and bookmarks go there too.
+    return ["/khidmat", "/khidmat-fund"].map((source) => ({
+      source,
+      destination: "https://www.markazulihsan.com/khidmat",
+      permanent: false,
+    }));
+  },
   async rewrites() {
     // Proxy HLS streams same-origin to eliminate browser CORS problems
     // (cdn2 currently answers with a duplicated Access-Control-Allow-Origin,
